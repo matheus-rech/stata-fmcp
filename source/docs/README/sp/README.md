@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://www.statamcp.com"><img src="../../../img/logo_with_name.jpg" alt="logo" width="300"></a>
+  <a href="https://www.statamcp.com"><img src="https://example-data.statamcp.com/stata-mcp-logo.png" alt="logo" width="300"/></a>
 </h1>
 
 <h1 align="center">Stata-MCP</h1>
@@ -76,7 +76,7 @@ A continuación, encontrarás el binario `stata-mcp` compilado en el directorio 
 
 Por ejemplo:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.3.10-py3-non-any.whl  # cambia el nombre del archivo según tu versión
+uvx /path/to/your/whl/stata_mcp-1.4.0-py3-non-any.whl  # cambia el nombre del archivo según tu versión
 ```
 
 ## 📝 Documentación
@@ -118,18 +118,18 @@ Si utilizas Stata-MCP en tu investigación, por favor cita este repositorio util
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.3.10}
+  version = {1.4.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.3.10) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.4.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.3.10. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.4.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contacto

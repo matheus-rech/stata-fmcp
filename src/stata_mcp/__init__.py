@@ -1,3 +1,4 @@
+import asyncio
 from typing import List, Optional, Union, Dict, Any
 
 import subprocess
@@ -13,6 +14,7 @@ from mcp.server.fastmcp import FastMCP
 
 from .utils import StataFinder
 from .utils.Prompt import pmp
+from .utils.installer import Installer
 
 from .usable import main as usable
 
@@ -30,13 +32,16 @@ elif sys_os == "Windows":
 output_base_path = os.path.join(documents_path, "stata-mcp-folder")
 os.makedirs(output_base_path, exist_ok=True)
 
-# stata_cli
-stata_cli = os.getenv('stata_cli', StataFinder.find_stata())
-if stata_cli is None:
-    exit_msg = ('Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n'
-                r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
-                r'/usr/local/bin/stata-mp')
-    sys.exit(exit_msg)
+try:
+    # stata_cli
+    stata_cli = os.getenv('stata_cli', StataFinder.find_stata())
+    if stata_cli is None:
+        exit_msg = ('Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n'
+                    r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
+                    r'/usr/local/bin/stata-mp')
+        sys.exit(exit_msg)
+except:
+    stata_cli = None
 
 # Create a series of folder
 log_file_path = os.path.join(output_base_path, "stata-mcp-log")
@@ -551,16 +556,36 @@ def stata_do(dofile_path: str) -> str:
 
     return log_file
 
+def help():
+    help_text = """
+Usage: stata-mcp [OPTIONS]
+
+Options:
+  -H, --help       Show this help message and exit.
+  --usable         Check if Stata CLI is usable.
+  --version        Print Stata-MCP version.
+  --install        Install the configuration for Stata-MCP.
+"""
+    print(help_text.strip())
+
+    return help_text
 
 def main() -> None:
     """Entry point for the command line interface."""
     if len(sys.argv) == 1:
         mcp.run(transport="stdio")
     else:
-        if sys.argv[1] == "--usable":
+        cmd = sys.argv[1]
+        if cmd == "-H" or cmd == "--help":
+            help()
+        elif cmd == "--usable":
             usable()
-        elif sys.argv[1] == "--version":
-            print("Stata-MCP version==1.3.10")
+        elif cmd == "--version":
+            print("Stata-MCP version==1.4.0")
+        elif cmd == "--install":
+            Installer(sys_os=sys_os).install()
+        else:
+            pass
 
 
 if __name__ == "__main__":
