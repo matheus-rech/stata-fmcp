@@ -86,6 +86,7 @@ def stata_assistant_role(lang: str = None) -> str:
     """
     return pmp.get_prompt(prompt_id="stata_assistant_role", lang=lang)
 
+
 @mcp.prompt()
 def stata_analysis_strategy(lang: str = None) -> str:
     """
@@ -116,6 +117,7 @@ def stata_analysis_strategy(lang: str = None) -> str:
     """
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
+
 @mcp.tool()
 def read_log(log_path: str) -> str:
     """
@@ -130,6 +132,7 @@ def read_log(log_path: str) -> str:
     with open(log_path, 'r') as file:
         log = file.read()
     return log
+
 
 # @mcp.tool(name="get_data_info", description="Get descriptive statistics for the data file")
 def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encoding: str = 'utf-8') -> str:
@@ -208,9 +211,11 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
             df = pd.read_excel(data_path)
             file_type = f"Excel file ({file_extension})"
         except ImportError:
-            raise ImportError("Missing package required to read Excel files. Please install openpyxl: pip install openpyxl")
+            raise ImportError(
+                "Missing package required to read Excel files. Please install openpyxl: pip install openpyxl")
     else:
-        raise ValueError(f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls")
+        raise ValueError(
+            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls")
 
     # If variable list is provided, only keep these variables
     if vars_list is not None:
@@ -303,7 +308,8 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
             output.append(f"    Median: {desc_stats.loc[col, '50%']:.4f}")
             output.append(f"    75th Percentile: {desc_stats.loc[col, '75%']:.4f}")
             output.append(f"    Max: {desc_stats.loc[col, 'max']:.4f}")
-            output.append(f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})")
+            output.append(
+                f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})")
             output.append(f"    Skewness: {desc_stats.loc[col, 'Skewness']:.4f}")
             output.append(f"    Kurtosis: {desc_stats.loc[col, 'Kurtosis']:.4f}")
 
@@ -366,11 +372,14 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
                     is_balanced = (cross_table == 1).all().all()
 
                     if is_balanced and n_ids * n_times == n_obs:
-                        output.append("  Panel status: Strongly balanced panel (each ID has one observation at each time point)")
+                        output.append(
+                            "  Panel status: Strongly balanced panel (each ID has one observation at each time point)")
                     elif df.groupby(id_col)[time_col].count().var() == 0:
-                        output.append("  Panel status: Weakly balanced panel (each ID has the same number of observations, but possibly not at the same time points)")
+                        output.append(
+                            "  Panel status: Weakly balanced panel (each ID has the same number of observations, but possibly not at the same time points)")
                     else:
-                        output.append("  Panel status: Unbalanced panel (different IDs have different numbers of observations)")
+                        output.append(
+                            "  Panel status: Unbalanced panel (different IDs have different numbers of observations)")
 
                     # Calculate average observations per ID
                     avg_obs_per_id = df.groupby(id_col).size().mean()
@@ -387,6 +396,7 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
     # Return formatted output
     return "\n".join(output)
+
 
 # @mcp.tool(name="results_doc_path", description="Storage path for Stata `outreg2` and other command return files (for convenient result management)")
 def results_doc_path() -> str:
@@ -416,6 +426,7 @@ def results_doc_path() -> str:
     )
     return path
 
+
 @mcp.tool(name="write_dofile", description="write the stata-code to dofile")
 def write_dofile(content: str) -> str:
     """
@@ -440,10 +451,11 @@ def write_dofile(content: str) -> str:
         If you want to use the function `write_dofile`, please use `results_doc_path` before which is necessary.
 
     """
-    file_path = os.path.join(dofile_base_path,  datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")+".do")
+    file_path = os.path.join(dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
     return file_path
+
 
 @mcp.tool(name="append_dofile", description="append stata-code to an existing dofile or create a new one")
 def append_dofile(original_dofile_path: str, content: str) -> str:
@@ -496,6 +508,7 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
         f.write(content)
 
     return new_file_path
+
 
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str) -> str:
@@ -556,6 +569,7 @@ def stata_do(dofile_path: str) -> str:
 
     return log_file
 
+
 def help():
     help_text = """
 Usage: stata-mcp [OPTIONS]
@@ -570,6 +584,42 @@ Options:
 
     return help_text
 
+
+def get_local_version() -> str:
+    """
+    Get the local version of the Stata-MCP package from `pyproject.toml` file
+    """
+    import tomllib
+    from pathlib import Path
+
+    try:
+        # 尝试从 pyproject.toml 读取（开发环境）
+        current_file = Path(__file__)
+        # 从 src/stata_mcp/__init__.py 回到项目根目录
+        project_root = current_file.parent.parent.parent
+        pyproject_path = project_root / "pyproject.toml"
+
+        if pyproject_path.exists():
+            with open(pyproject_path, "rb") as f:
+                data = tomllib.load(f)
+                return data["project"]["version"]
+    except Exception:
+        pass
+
+    try:
+        # 如果无法读取 pyproject.toml，尝试从已安装包的元数据获取
+        from importlib.metadata import version
+        return version("stata-mcp")
+    except Exception:
+        pass
+
+    # 如果都失败了，返回默认值
+    return "unknown"
+
+def version():
+    print(f"Stata-MCP version is {get_local_version()}")
+
+
 def main() -> None:
     """Entry point for the command line interface."""
     if len(sys.argv) == 1:
@@ -581,7 +631,7 @@ def main() -> None:
         elif cmd == "--usable":
             usable()
         elif cmd == "--version":
-            print("Stata-MCP version==1.4.0")
+            version()
         elif cmd == "--install":
             Installer(sys_os=sys_os).install()
         else:

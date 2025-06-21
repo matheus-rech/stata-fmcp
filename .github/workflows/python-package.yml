@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'  # 或者指定具体版本如 '3.11'
+        python-version: '3.11'
 
     - name: Install uv
       uses: astral-sh/setup-uv@v3

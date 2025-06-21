@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://www.statamcp.com"><img src="https://example-data.statamcp.com/stata-mcp-logo.png" alt="logo" width="300"/></a>
+  <a href="https://example-data.statamcp.com/logo_with_name.jpg" alt="logo" width="300"/></a>
 </h1>
 
 <h1 align="center">Stata-MCP</h1>
@@ -77,7 +77,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.4.0-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.4.1-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -119,18 +119,18 @@ uvx /path/to/your/whl/stata_mcp-1.4.0-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.4.0}
+  version = {1.4.1}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.4.0) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.4.1) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.4.0. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.4.1. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 联系方式
