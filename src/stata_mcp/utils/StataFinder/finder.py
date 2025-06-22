@@ -5,7 +5,7 @@
 #
 # @Author : Sepine Tam
 # @Email  : sepinetam@gmail.com
-# @File   : StataFinder.py
+# @File   : finder.py
 
 import os
 import glob

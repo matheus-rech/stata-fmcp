@@ -5,7 +5,7 @@
 #
 # @Author : Sepine Tam
 # @Email  : sepinetam@gmail.com
-# @File   : __init__.py
+# @File   : windows.py
 
 import os
 import string
