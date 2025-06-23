@@ -530,30 +530,30 @@ def stata_do(dofile_path: str) -> str:
     nowtime: str = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
     log_file = os.path.join(log_file_path, f"{nowtime}.log")
 
-    # 针对不同操作系统使用不同的执行方式
+    # Use different execution methods for different operating systems
     if sys_os == "Darwin" or sys_os == "Linux":
-        # macOS/Linux 方式
+        # macOS/Linux approach
         proc = subprocess.Popen(
-            [stata_cli],  # 启动 Stata 命令行
-            stdin=subprocess.PIPE,  # 准备输入命令
+            [stata_cli],  # Launch the Stata CLI
+            stdin=subprocess.PIPE,  # Prepare to send commands
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True  # 如果路径有空格需要 shell=True
+            shell=True  # Required when the path contains spaces
         )
 
-        # 在 Stata 中依次执行命令
+        # Execute commands sequentially in Stata
         commands = f"""
         log using "{log_file}", replace
         do "{dofile_path}"
         log close
         exit, STATA
         """
-        proc.communicate(input=commands)  # 发送命令并等待结束
+        proc.communicate(input=commands)  # Send commands and wait for completion
 
     elif sys_os == "Windows":
-        # Windows 方式 - 使用 /e 参数执行批处理命令
-        # 创建临时批处理文件
+        # Windows approach - use the /e flag to run a batch command
+        # Create a temporary batch file
         batch_file = os.path.join(dofile_base_path, f"{nowtime}_batch.do")
         with open(batch_file, 'w', encoding='utf-8') as f:
             f.write(f'log using "{log_file}", replace\n')
@@ -561,8 +561,8 @@ def stata_do(dofile_path: str) -> str:
             f.write('log close\n')
             f.write('exit, STATA\n')
 
-        # 在Windows上执行Stata，使用/e参数运行批处理文件
-        # 使用双引号处理路径中的空格
+        # Run Stata on Windows using /e to execute the batch file
+        # Use double quotes to handle spaces in the path
         cmd = f'"{stata_cli}" /e do "{batch_file}"'
         subprocess.run(cmd, shell=True)
 
