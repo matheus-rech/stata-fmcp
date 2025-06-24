@@ -601,17 +601,17 @@ def main() -> None:
 
         # mcp.run
         parser.add_argument(
-            "stdio",
+            "--stdio",
             action="store_true",
             help="mcp server transport method: stdio (default)"
         )
         parser.add_argument(
-            "sse",
+            "--sse",
             action="store_true",
             help="mcp server transport method: sse"
         )
         parser.add_argument(
-            "http",
+            "--http",
             action="store_true",
             help="mcp server transport method: streamable-http"
         )
@@ -632,4 +632,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    print(f"Hello Stata-MCP@version{__version__}")
     main()
