@@ -12,24 +12,12 @@ import glob
 import dotenv
 
 import platform
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, Optional
 
 from .windows import *
 
 dotenv.load_dotenv()
 
-def _stata_version_macos():
-    stata_dir = "/Applications/Stata"
-    stata_apps = []
-    for item in os.listdir(stata_dir):
-        full_path = os.path.join(stata_dir, item)
-        if os.path.isdir(full_path) and item.endswith(".app"):
-            stata_apps.append(item)
-    stata_app = stata_apps[0]
-    stata_type = stata_app.split(".")[0].split("Stata")[-1]
-    if stata_type == "":
-        stata_type = None
-    return stata_type.lower()
 
 def _stata_version_windows(driver: str = "C:\\"):
     stata_paths = []
@@ -59,25 +47,28 @@ def _stata_version_windows(driver: str = "C:\\"):
 
     return stata_paths
 
-def _find_stata_macos(is_env: bool = False) -> str:
-    """
-    For macOS, there is not important for the number version but the version type.
 
-    Args:
-        is_env (bool): whether to use the env config of the path of stata cli
+def _find_stata_macos() -> str | None:
+    """Locate the Stata CLI on macOS systems.
 
-    Returns:
-        The path of stata cli
+    This implementation searches ``/usr/local/bin`` for common Stata binary
+    names in order of preference. If ``is_env`` is ``True`` the environment
+    variable ``stata_cli`` will be consulted with the discovered path as the
+    fallback value.
     """
-    stata_type = _stata_version_macos()
-    __default_cli_path = f"/Applications/Stata/Stata{stata_type.upper()}.app/Contents/MacOS/stata-{stata_type}"
-    if is_env:
-        import dotenv
-        dotenv.load_dotenv()
-        _stata_cli = os.getenv("stata_cli", __default_cli_path)
-    else:
-        _stata_cli = __default_cli_path
-    return _stata_cli
+    search_dir = "/usr/local/bin"
+    variants = ["stata-mp", "stata-se", "stata-be"]
+
+    found_cli = None
+    for variant in variants:
+        candidate = os.path.join(search_dir, variant)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            found_cli = candidate
+            break
+        return os.getenv("stata_cli", found_cli)
+
+    return found_cli
+
 
 def __default_stata_cli_path_windows() -> Any | None:
     drives: list = get_available_drives()
@@ -96,61 +87,54 @@ def __default_stata_cli_path_windows() -> Any | None:
                 pass
         return stata_cli_path_list[0]
 
-def _find_stata_windows(is_env: bool = False) -> str:
+
+def _find_stata_windows() -> str:
     _stata_cli_path = None
     __default_cli_path = __default_stata_cli_path_windows()
-    if is_env:
-        import dotenv
-        dotenv.load_dotenv()
-
-        _stata_cli_path = os.getenv("stata_cli", __default_cli_path)
-    else:
-        _stata_cli_path = __default_cli_path
+    _stata_cli_path = __default_cli_path
     return _stata_cli_path
 
 def __default_stata_cli_path_linux() -> Any | None:
     pass
 
 
-def _find_stata_linux(is_env: bool = False) -> str:
+def _find_stata_linux() -> str:
     """
     Find the Stata CLI path on Linux systems.
-
     For Linux users, this function attempts to locate the Stata CLI executable.
-    If is_env is True, it will check the "stata_cli" environment variable.
-
-    Args:
-        is_env: Boolean flag to determine whether to check environment variables
-                for the Stata path. Defaults to False.
 
     Returns:
         The path to the Stata CLI executable, or None if not found.
     """
-    # Get default path
     default_path = __default_stata_cli_path_linux()
+    return os.getenv("stata_cli", default_path)
 
-    # If using environment variables, check "stata_cli" env var with default as fallback
+
+_OS_FINDERS: dict[str, Callable[[], str]] = {
+    "Darwin": _find_stata_macos,
+    "Windows": _find_stata_windows,
+    "Linux": _find_stata_linux,
+}
+
+
+def find_stata(os_name: Optional[str] = None, is_env: bool = True):
     if is_env:
-        return os.getenv("stata_cli", default_path)
+        stata_cli = os.getenv("stata_cli", None)
+        if stata_cli:
+            return stata_cli
 
-    # Otherwise just return the default path
-    return default_path
+    current_os = os_name or platform.system()
+    finder = _OS_FINDERS.get(current_os)
+    if not finder:
+        raise RuntimeError(f"Unsupported OS: {current_os!r}")
 
-def find_stata(os_name: str = None, is_env: bool = True):
-    if os_name is None:
-        os_name = platform.system()
-    if os_name == "Darwin":
-        return _find_stata_macos(is_env=is_env)
-    elif os_name == "Windows":
-        return _find_stata_windows(is_env=is_env)
-    elif os_name == "Linux":
-        return _find_stata_linux(is_env=is_env)
+    return finder()
 
 
 if __name__ == "__main__":
     sys_os = platform.system()
     if sys_os == "Darwin":
-        stata_cli = _find_stata_macos(False)
+        stata_cli = _find_stata_macos()
         print(stata_cli)
     elif sys_os == "Windows":
         _stata_version_windows()
