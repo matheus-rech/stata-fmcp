@@ -10,8 +10,8 @@ import dotenv
 import pandas as pd
 
 from mcp.server.fastmcp import FastMCP
+from importlib.metadata import version
 
-from .__version import __version__
 from .usable import main as usable
 
 from .utils.Installer import Installer
@@ -19,6 +19,8 @@ from .utils.Prompt import pmp
 
 from .core.stata.StataFinder.finder import StataFinder
 from .core.stata.StataController.controller import StataController
+
+__version__ = version("stata-mcp")
 
 dotenv.load_dotenv()
 mcp = FastMCP(name='stata-mcp')
