@@ -16,11 +16,10 @@ import os
 import platform
 import subprocess
 import sys
-from pathlib import Path
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Tuple
 
-from .utils import StataFinder
+from stata_mcp.core.stata import StataFinder
 
 
 def print_status(message: str, status: bool) -> None:

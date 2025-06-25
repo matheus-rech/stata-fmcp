@@ -16,7 +16,9 @@ from .usable import main as usable
 
 from .utils.Installer import Installer
 from .utils.Prompt import pmp
-from .utils.StataFinder import find_stata
+
+from .core.stata.StataFinder.finder import StataFinder
+from .core.stata.StataController.controller import StataController
 
 dotenv.load_dotenv()
 mcp = FastMCP(name='stata-mcp')
@@ -36,7 +38,8 @@ os.makedirs(output_base_path, exist_ok=True)
 
 try:
     # stata_cli
-    stata_cli = os.getenv('stata_cli', find_stata())
+    finder = StataFinder()
+    stata_cli = os.getenv('stata_cli', finder.find_stata())
     if stata_cli is None:
         exit_msg = ('Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n'
                     r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
@@ -119,6 +122,28 @@ def stata_analysis_strategy(lang: str = None) -> str:
     """
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
+@mcp.prompt(name="help", description="Get help for a Stata command")
+def help(cmd: str) -> str:
+    """
+    Execute the Stata 'help' command and return its output.
+
+    Args:
+        cmd (str): The name of the Stata command to query, e.g., "regress" or "describe".
+
+    Returns:
+        str: The help text returned by Stata for the specified command,
+             or a message indicating that no help was found.
+    """
+    controller = StataController(stata_cli)
+    std_error_msg = (f"help {cmd}\r\n"
+                     f"help for {cmd} not found\r\n"
+                     f"try help contents or search {cmd}")
+    help_result = controller.run(f"help {cmd}")
+
+    if help_result != std_error_msg:
+        return help_result
+    else:
+        return "No help found for the command: " + cmd
 
 @mcp.tool()
 def read_log(log_path: str) -> str:
@@ -577,61 +602,49 @@ def stata_do(dofile_path: str) -> str:
 
 def main() -> None:
     """Entry point for the command line interface."""
-    if len(sys.argv) == 1:
-        mcp.run(transport="stdio")
+    parser = argparse.ArgumentParser(
+        prog="stata-mcp",
+        description="Stata-MCP command line interface",
+        add_help=True
+    )
+    parser.add_argument(
+        "-v", "--version",
+        action="version",
+        version=f"Stata-MCP version is {__version__}",
+        help="show version information"
+    )
+    parser.add_argument(
+        "--usable",
+        action="store_true",
+        help="check whether Stata-MCP could be used on this computer"
+    )
+    parser.add_argument(
+        "--install",
+        action="store_true",
+        help="install Stata-MCP to Claude Desktop"
+    )
+
+    # mcp.run
+    parser.add_argument(
+        "-t", "--transport",
+        choices=["stdio", "sse", "http", "streamable-http"],
+        default=None,
+        help="mcp server transport method (default: stdio)"
+    )
+    args = parser.parse_args()
+
+    if args.usable:
+        usable()
+    elif args.install:
+        Installer(sys_os=sys.platform).install()
     else:
-        parser = argparse.ArgumentParser(
-            prog="stata-mcp",
-            description="Stata-MCP command line interface",
-            add_help=True
-        )
-        parser.add_argument(
-            "-v", "--version",
-            action="version",
-            version=f"Stata-MCP version is {__version__}",
-            help="show version information"
-        )
-        parser.add_argument(
-            "--usable",
-            action="store_true",
-            help="check whether Stata-MCP could be used on this computer"
-        )
-        parser.add_argument(
-            "--install",
-            action="store_true",
-            help="install Stata-MCP to Claude Desktop"
-        )
+        print("Starting Stata-MCP...")
 
-        # mcp.run
-        parser.add_argument(
-            "--stdio",
-            action="store_true",
-            help="mcp server transport method: stdio (default)"
-        )
-        parser.add_argument(
-            "--sse",
-            action="store_true",
-            help="mcp server transport method: sse"
-        )
-        parser.add_argument(
-            "--http",
-            action="store_true",
-            help="mcp server transport method: streamable-http"
-        )
-        args = parser.parse_args()
-
-        if args.stdio:
-            mcp.run(transport="stdio")
-        elif args.sse:
-            mcp.run(transport="sse")
-        elif args.http:
-            mcp.run(transport="streamable-http")
-        elif args.usable:
-            usable()
-        elif args.install:
-            Installer(sys_os=sys.platform).install()
-        else:
-            parser.print_help()
+        # Use stdio if there is no transport argument
+        transport = args.transport or "stdio"
+        if transport == "http":
+            transport = "streamable-http"  # Default to streamable-http for HTTP transport
+        mcp.run(transport=transport)
 
 
 if __name__ == "__main__":

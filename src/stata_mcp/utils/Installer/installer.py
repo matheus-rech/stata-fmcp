@@ -10,7 +10,7 @@
 import os
 import json
 
-from ..StataFinder import find_stata
+from stata_mcp.core.stata.StataFinder import find_stata
 
 class Installer:
     def __init__(self, sys_os):
