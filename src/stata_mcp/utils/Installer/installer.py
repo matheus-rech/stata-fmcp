@@ -10,10 +10,12 @@
 import os
 import json
 
-from stata_mcp.core.stata.StataFinder import find_stata
+from ...core.stata.StataFinder.finder import StataFinder
+
+find_stata = StataFinder().find_stata
 
 class Installer:
-    def __init__(self, sys_os):
+    def __init__(self, sys_os, is_env=False):
         self.config_file_path: str = None
         if sys_os == "Darwin":
             self.config_file_path = os.path.expanduser(
@@ -34,7 +36,7 @@ class Installer:
             with open(self.config_file_path, "w", encoding="utf-8") as f:
                 f.write("{\"mcpServers\": {}}")  # Or write the default configuration
 
-        stata_cli = find_stata(os_name=sys_os)
+        stata_cli = find_stata(os_name=sys_os, is_env=False)
         self.stata_mcp_config = {
             "stata-mcp": {
                 "command": "uvx",
