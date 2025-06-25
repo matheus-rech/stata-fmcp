@@ -10,7 +10,7 @@
 import os
 import json
 
-from .StataFinder import find_stata
+from ..StataFinder import find_stata
 
 class Installer:
     def __init__(self, sys_os):
@@ -29,10 +29,10 @@ class Installer:
 
         os.makedirs(os.path.dirname(self.config_file_path), exist_ok=True)
 
-        # 如果文件不存在，就创建一个空文件
+        # Create an empty file if it does not already exist
         if not os.path.exists(self.config_file_path):
             with open(self.config_file_path, "w", encoding="utf-8") as f:
-                f.write("{\"mcpServers\": {}}")  # 或者写入默认配置
+                f.write("{\"mcpServers\": {}}")  # Or write the default configuration
 
         stata_cli = find_stata(os_name=sys_os)
         self.stata_mcp_config = {
@@ -52,7 +52,7 @@ class Installer:
         print(f"  stata_cli path: {stata_cli_path}\n")
         print(f"Configuration file to modify:\n  {self.config_file_path}\n")
 
-        # 用户确认
+        # Ask the user for confirmation
         choice = input("Do you want to proceed and add this configuration? [y/N]: ")
         if choice.strip().lower() != 'y':
             print("Installation aborted.")

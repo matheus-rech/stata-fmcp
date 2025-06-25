@@ -1,22 +1,22 @@
-import asyncio
-from typing import List, Optional, Union, Dict, Any
-
-import subprocess
-import sys
+import argparse
+from datetime import datetime
 import os
 import platform
-from datetime import datetime
-
-import pandas as pd
+import subprocess
+import sys
+from typing import List, Optional
 
 import dotenv
+import pandas as pd
+
 from mcp.server.fastmcp import FastMCP
 
-from .utils import StataFinder
-from .utils.Prompt import pmp
-from .utils.installer import Installer
-
+from .__version import __version__
 from .usable import main as usable
+
+from .utils.Installer import Installer
+from .utils.Prompt import pmp
+from .utils.StataFinder import find_stata
 
 dotenv.load_dotenv()
 mcp = FastMCP(name='stata-mcp')
@@ -29,12 +29,14 @@ if sys_os == "Darwin" or sys_os == "Linux":
     documents_path = os.getenv("documents_path", os.path.expanduser("~/Documents"))
 elif sys_os == "Windows":
     documents_path = os.getenv("documents_path", os.path.join(os.environ["USERPROFILE"], "Documents"))
+else:
+    sys.exit("Unknown System")
 output_base_path = os.path.join(documents_path, "stata-mcp-folder")
 os.makedirs(output_base_path, exist_ok=True)
 
 try:
     # stata_cli
-    stata_cli = os.getenv('stata_cli', StataFinder.find_stata())
+    stata_cli = os.getenv('stata_cli', find_stata())
     if stata_cli is None:
         exit_msg = ('Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n'
                     r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
@@ -134,7 +136,7 @@ def read_log(log_path: str) -> str:
     return log
 
 
-# @mcp.tool(name="get_data_info", description="Get descriptive statistics for the data file")
+@mcp.tool(name="get_data_info", description="Get descriptive statistics for the data file")
 def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encoding: str = 'utf-8') -> str:
     """
     Analyze the data file and return descriptive statistics. Supports various file formats,
@@ -398,7 +400,7 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
     return "\n".join(output)
 
 
-# @mcp.tool(name="results_doc_path", description="Storage path for Stata `outreg2` and other command return files (for convenient result management)")
+@mcp.prompt()
 def results_doc_path() -> str:
     """
     Generate and return a result document storage path based on the current timestamp.
@@ -528,30 +530,33 @@ def stata_do(dofile_path: str) -> str:
     nowtime: str = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
     log_file = os.path.join(log_file_path, f"{nowtime}.log")
 
-    # 针对不同操作系统使用不同的执行方式
+    # Use different execution methods for different operating systems
     if sys_os == "Darwin" or sys_os == "Linux":
-        # macOS/Linux 方式
+        # macOS/Linux approach
         proc = subprocess.Popen(
-            [stata_cli],  # 启动 Stata 命令行
-            stdin=subprocess.PIPE,  # 准备输入命令
+            [stata_cli],  # Launch the Stata CLI
+            stdin=subprocess.PIPE,  # Prepare to send commands
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True  # 如果路径有空格需要 shell=True
+            shell=True  # Required when the path contains spaces
         )
 
-        # 在 Stata 中依次执行命令
+        # Execute commands sequentially in Stata
         commands = f"""
         log using "{log_file}", replace
         do "{dofile_path}"
         log close
         exit, STATA
         """
-        proc.communicate(input=commands)  # 发送命令并等待结束
+        stdout, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+
+        if proc.returncode != 0:
+            raise RuntimeError(f"Something went wrong: {stderr}")
 
     elif sys_os == "Windows":
-        # Windows 方式 - 使用 /e 参数执行批处理命令
-        # 创建临时批处理文件
+        # Windows approach - use the /e flag to run a batch command
+        # Create a temporary batch file
         batch_file = os.path.join(dofile_base_path, f"{nowtime}_batch.do")
         with open(batch_file, 'w', encoding='utf-8') as f:
             f.write(f'log using "{log_file}", replace\n')
@@ -559,8 +564,8 @@ def stata_do(dofile_path: str) -> str:
             f.write('log close\n')
             f.write('exit, STATA\n')
 
-        # 在Windows上执行Stata，使用/e参数运行批处理文件
-        # 使用双引号处理路径中的空格
+        # Run Stata on Windows using /e to execute the batch file
+        # Use double quotes to handle spaces in the path
         cmd = f'"{stata_cli}" /e do "{batch_file}"'
         subprocess.run(cmd, shell=True)
 
@@ -570,73 +575,65 @@ def stata_do(dofile_path: str) -> str:
     return log_file
 
 
-def help():
-    help_text = """
-Usage: stata-mcp [OPTIONS]
-
-Options:
-  -H, --help       Show this help message and exit.
-  --usable         Check if Stata CLI is usable.
-  --version        Print Stata-MCP version.
-  --install        Install the configuration for Stata-MCP.
-"""
-    print(help_text.strip())
-
-    return help_text
-
-
-def get_local_version() -> str:
-    """
-    Get the local version of the Stata-MCP package from `pyproject.toml` file
-    """
-    import tomllib
-    from pathlib import Path
-
-    try:
-        # 尝试从 pyproject.toml 读取（开发环境）
-        current_file = Path(__file__)
-        # 从 src/stata_mcp/__init__.py 回到项目根目录
-        project_root = current_file.parent.parent.parent
-        pyproject_path = project_root / "pyproject.toml"
-
-        if pyproject_path.exists():
-            with open(pyproject_path, "rb") as f:
-                data = tomllib.load(f)
-                return data["project"]["version"]
-    except Exception:
-        pass
-
-    try:
-        # 如果无法读取 pyproject.toml，尝试从已安装包的元数据获取
-        from importlib.metadata import version
-        return version("stata-mcp")
-    except Exception:
-        pass
-
-    # 如果都失败了，返回默认值
-    return "unknown"
-
-def version():
-    print(f"Stata-MCP version is {get_local_version()}")
-
-
 def main() -> None:
     """Entry point for the command line interface."""
     if len(sys.argv) == 1:
         mcp.run(transport="stdio")
     else:
-        cmd = sys.argv[1]
-        if cmd == "-H" or cmd == "--help":
-            help()
-        elif cmd == "--usable":
+        parser = argparse.ArgumentParser(
+            prog="stata-mcp",
+            description="Stata-MCP command line interface",
+            add_help=True
+        )
+        parser.add_argument(
+            "-v", "--version",
+            action="version",
+            version=f"Stata-MCP version is {__version__}",
+            help="show version information"
+        )
+        parser.add_argument(
+            "--usable",
+            action="store_true",
+            help="check whether Stata-MCP could be used on this computer"
+        )
+        parser.add_argument(
+            "--install",
+            action="store_true",
+            help="install Stata-MCP to Claude Desktop"
+        )
+
+        # mcp.run
+        parser.add_argument(
+            "--stdio",
+            action="store_true",
+            help="mcp server transport method: stdio (default)"
+        )
+        parser.add_argument(
+            "--sse",
+            action="store_true",
+            help="mcp server transport method: sse"
+        )
+        parser.add_argument(
+            "--http",
+            action="store_true",
+            help="mcp server transport method: streamable-http"
+        )
+        args = parser.parse_args()
+
+        if args.stdio:
+            mcp.run(transport="stdio")
+        elif args.sse:
+            mcp.run(transport="sse")
+        elif args.http:
+            mcp.run(transport="streamable-http")
+        elif args.usable:
             usable()
-        elif cmd == "--version":
-            version()
-        elif cmd == "--install":
-            Installer(sys_os=sys_os).install()
+        elif args.install:
+            Installer(sys_os=sys.platform).install()
         else:
-            pass
+            parser.print_help()
 
 
 if __name__ == "__main__":
+    print(f"Hello Stata-MCP@version{__version__}")
     main()
