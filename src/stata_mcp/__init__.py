@@ -549,7 +549,10 @@ def stata_do(dofile_path: str) -> str:
         log close
         exit, STATA
         """
-        proc.communicate(input=commands)  # Send commands and wait for completion
+        stdout, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+
+        if proc.returncode != 0:
+            raise RuntimeError(f"Something went wrong: {stderr}")
 
     elif sys_os == "Windows":
         # Windows approach - use the /e flag to run a batch command
