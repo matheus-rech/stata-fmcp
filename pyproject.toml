@@ -17,3 +17,7 @@ stata-mcp = "stata_mcp:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[project.urls]
+Homepage = "https://www.statamcp.com"
+Source = "https://github.com/sepinetam/stata-mcp"
