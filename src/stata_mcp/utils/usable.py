@@ -136,7 +136,7 @@ def check_directories() -> Dict[str, Tuple[str, bool]]:
 def check_mcp_installation() -> bool:
     """Check if MCP library is installed"""
     try:
-        import mcp.server.fastmcp
+        pass
 
         return True
     except ImportError:

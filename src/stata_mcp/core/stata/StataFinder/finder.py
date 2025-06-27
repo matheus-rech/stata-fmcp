@@ -8,13 +8,14 @@
 # @File   : finder.py
 
 import glob
+import logging
 import os
 import platform
-from typing import Any, Callable, Dict, Optional
+from typing import Optional
 
 import dotenv
 
-from .windows import *
+from .windows import get_available_drives, windows_stata_match
 
 dotenv.load_dotenv()
 
@@ -60,7 +61,7 @@ class StataFinder:
                                 stata_paths.append(os.path.join(root, file))
 
             except Exception as e:
-                pass
+                logging.warn(e)
 
         return stata_paths
 

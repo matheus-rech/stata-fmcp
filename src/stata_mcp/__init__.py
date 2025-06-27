@@ -45,11 +45,12 @@ try:
     stata_cli = os.getenv("stata_cli", finder.find_stata())
     if stata_cli is None:
         exit_msg = (
-            "Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n"
+            "Missing Stata.exe, "
+            "you could config your Stata.exe abspath in your env\ne.g\n"
             r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
             r"/usr/local/bin/stata-mp")
         sys.exit(exit_msg)
-except BaseException:
+except Exception:
     stata_cli = None
 
 # Create a series of folder
@@ -481,7 +482,7 @@ def get_data_info(data_path: str,
                         min_time = df[time_col].min()
                         max_time = df[time_col].max()
                         output.append(f"  Time span: {min_time} to {max_time}")
-                except BaseException:
+                except Exception:
                     # If calculation fails, skip panel analysis
                     pass
 

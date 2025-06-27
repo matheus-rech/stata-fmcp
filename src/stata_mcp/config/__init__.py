@@ -24,11 +24,9 @@ class Config:
 
     def delete_config(self, key: str):
         """ask whether to delete the config item"""
-        pass
 
     def update_config(self, key: str, value: str):
         """ask whether to update the config item"""
-        pass
 
     def get_config(self, key: str) -> str:
         pass

@@ -571,7 +571,7 @@ class StataCommandGenerator:
 
         if type and type not in valid_types:
             raise ValueError(
-                f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
+                "type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
             )
 
         # Validate incompatible options
@@ -807,7 +807,7 @@ class StataCommandGenerator:
 
         if type and type not in valid_types:
             raise ValueError(
-                f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
+                "type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
             )
 
         # Start building the command
