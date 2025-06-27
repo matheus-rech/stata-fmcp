@@ -12,8 +12,7 @@ import pandas as pd
 from mcp.server.fastmcp import FastMCP
 from importlib.metadata import version
 
-from .usable import main as usable
-
+from .utils.usable import usable
 from .utils.Installer import Installer
 from .utils.Prompt import pmp
 
@@ -636,7 +635,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.usable:
-        usable()
+        sys.exit(usable())
     elif args.install:
         Installer(sys_os=sys.platform).install()
     else:

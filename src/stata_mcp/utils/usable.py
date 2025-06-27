@@ -152,7 +152,7 @@ def animate_loading(seconds: int) -> None:
     sys.stdout.flush()
 
 
-def main():
+def usable():
     """Main function to check Stata MCP configuration"""
     print("\n===== Stata MCP Configuration Check =====\n")
 
@@ -222,4 +222,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(usable())
