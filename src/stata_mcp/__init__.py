@@ -1,18 +1,16 @@
 import argparse
 import os
 import platform
-import subprocess
 import sys
 from datetime import datetime
 from importlib.metadata import version
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
 from mcp.server.fastmcp import FastMCP
 
-from .core.stata.StataController.controller import StataController
-from .core.stata.StataFinder.finder import StataFinder
+from .core.stata import StataController, StataDo, StataFinder
 from .utils.Installer import Installer
 from .utils.Prompt import pmp
 from .utils.usable import usable
@@ -54,8 +52,8 @@ except Exception:
     stata_cli = None
 
 # Create a series of folder
-log_file_path = os.path.join(output_base_path, "stata-mcp-log")
-os.makedirs(log_file_path, exist_ok=True)
+log_base_path = os.path.join(output_base_path, "stata-mcp-log")
+os.makedirs(log_base_path, exist_ok=True)
 dofile_base_path = os.path.join(output_base_path, "stata-mcp-dofile")
 os.makedirs(dofile_base_path, exist_ok=True)
 result_doc_path = os.path.join(output_base_path, "stata-mcp-result")
@@ -618,68 +616,66 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
 
 
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")
-def stata_do(dofile_path: str) -> str:
+def stata_do(dofile_path: str,
+             is_read_log: bool = True) -> Dict[str, Union[str, None]]:
     """
-    Execute a Stata do-file and return the path to its log file.
+    Execute a Stata do-file and return the log file path with optional log content.
+
+    This function runs a Stata do-file using the configured Stata executable and
+    generates a log file. It supports cross-platform execution (macOS, Windows, Linux).
 
     Args:
-        dofile_path: Path to the Stata do-file to be executed.
+        dofile_path (str): Absolute or relative path to the Stata do-file (.do) to execute.
+        is_read_log (bool, optional): Whether to read and return the log file content.
+                                    Defaults to True.
 
     Returns:
-        str: Path to the generated Stata log file.
+        Dict[str, Union[str, None]]: A dictionary containing:
+            - "log_file_path" (str): Path to the generated Stata log file
+            - "log_content" (str, optional): Content of the log file if is_read_log is True
+
+    Raises:
+        FileNotFoundError: If the specified do-file does not exist
+        RuntimeError: If Stata execution fails or log file cannot be generated
+        PermissionError: If there are insufficient permissions to execute Stata or write log files
+
+    Example:
+        >>> result = stata_do(do_file_path, is_read_log=True)
+        >>> print(result[log_file_path])
+        /path/to/logs/analysis.log
+        >>> print(result[log_content])
+        Stata log content...
 
     Note:
-        Supports multiple operating systems (macOS, Windows, Linux).
-        The log file will be created in the log_file_path directory.
+        - The log file is automatically created in the configured log_file_path directory
+        - Supports multiple operating systems through the StataDo executor
+        - Log file naming follows Stata conventions with .log extension
     """
-    nowtime: str = datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
-    log_file = os.path.join(log_file_path, f"{nowtime}.log")
+    # Initialize Stata executor with system configuration
+    stata_executor = StataDo(
+        stata_cli=stata_cli,  # Path to Stata executable
+        log_file_path=log_base_path,  # Directory for log files
+        dofile_base_path=dofile_base_path,  # Base directory for do-files
+        sys_os=sys_os  # Operating system identifier
+    )
 
-    # Use different execution methods for different operating systems
-    if sys_os == "Darwin" or sys_os == "Linux":
-        # macOS/Linux approach
-        proc = subprocess.Popen(
-            [stata_cli],  # Launch the Stata CLI
-            stdin=subprocess.PIPE,  # Prepare to send commands
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True,  # Required when the path contains spaces
-        )
+    # Execute the do-file and get log file path
+    log_file_path = stata_executor.execute_dofile(dofile_path)
 
-        # Execute commands sequentially in Stata
-        commands = f"""
-        log using "{log_file}", replace
-        do "{dofile_path}"
-        log close
-        exit, STATA
-        """
-        stdout, stderr = proc.communicate(
-            input=commands
-        )  # Send commands and wait for completion
-
-        if proc.returncode != 0:
-            raise RuntimeError(f"Something went wrong: {stderr}")
-
-    elif sys_os == "Windows":
-        # Windows approach - use the /e flag to run a batch command
-        # Create a temporary batch file
-        batch_file = os.path.join(dofile_base_path, f"{nowtime}_batch.do")
-        with open(batch_file, "w", encoding="utf-8") as f:
-            f.write(f'log using "{log_file}", replace\n')
-            f.write(f'do "{dofile_path}"\n')
-            f.write("log close\n")
-            f.write("exit, STATA\n")
-
-        # Run Stata on Windows using /e to execute the batch file
-        # Use double quotes to handle spaces in the path
-        cmd = f'"{stata_cli}" /e do "{batch_file}"'
-        subprocess.run(cmd, shell=True)
-
+    # Return log content based on user preference
+    if is_read_log:
+        # Read and include log file content in response
+        log_content = stata_executor.read_log(log_file_path)
+        return {
+            "log_file_path": log_file_path,
+            "log_content": log_content
+        }
     else:
-        raise ValueError(f"不支持的操作系统: {sys_os}")
-
-    return log_file
+        # Return only the log file path
+        return {
+            "log_file_path": log_file_path,
+            "log_content": None
+        }
 
 
 def main() -> None:
