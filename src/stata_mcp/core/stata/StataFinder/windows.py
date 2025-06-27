@@ -36,7 +36,7 @@ def windows_stata_match(path: str) -> bool:
     # Regular expression matching ``Stata\d+\Stata(MP|SE|BE|IC)?.exe``
     # ``\d+`` matches one or more digits (the version number)
     # ``(MP|SE|BE|IC)?`` matches an optional edition suffix
-    pattern = r'Stata\d+\\\\Stata(MP|SE|BE|IC)?\.exe$'
+    pattern = r"Stata\d+\\\\Stata(MP|SE|BE|IC)?\.exe$"
 
     if re.search(pattern, path):
         return True

@@ -20,6 +20,7 @@ dotenv.load_dotenv()
 
 class StataFinder:
     """A class to find Stata CLI installations across different operating systems."""
+
     def __init__(self):
         """Initialize the StataFinder."""
         self.current_os = platform.system()
@@ -34,7 +35,7 @@ class StataFinder:
         stata_paths = []
         common_patterns = [
             os.path.join(driver, "Program Files", "Stata*", "*.exe"),
-            os.path.join(driver, "Program Files(x86)", "Stata*", "*.exe")
+            os.path.join(driver, "Program Files(x86)", "Stata*", "*.exe"),
         ]
 
         for pattern in common_patterns:
@@ -51,7 +52,10 @@ class StataFinder:
                             continue
 
                         for file in files:
-                            if file.lower().endswith(".exe") and "stata" in file.lower():
+                            if (
+                                file.lower().endswith(".exe")
+                                and "stata" in file.lower()
+                            ):
                                 stata_paths.append(os.path.join(root, file))
 
             except Exception as e:
@@ -114,7 +118,9 @@ class StataFinder:
         """
         return self._default_stata_cli_path_linux()
 
-    def find_stata(self, os_name: Optional[str] = None, is_env: bool = True) -> Optional[str]:
+    def find_stata(
+        self, os_name: Optional[str] = None, is_env: bool = True
+    ) -> Optional[str]:
         """Find Stata CLI installation.
 
         Args:
@@ -144,7 +150,9 @@ class StataFinder:
         """Get list of supported operating systems."""
         return list(self._os_finders.keys())
 
-    def is_stata_available(self, os_name: Optional[str] = None, is_env: bool = True) -> bool:
+    def is_stata_available(
+        self, os_name: Optional[str] = None, is_env: bool = True
+    ) -> bool:
         """Check if Stata is available on the system.
 
         Args:

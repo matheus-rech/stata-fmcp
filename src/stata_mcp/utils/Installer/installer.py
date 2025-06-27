@@ -14,15 +14,18 @@ from ...core.stata.StataFinder.finder import StataFinder
 
 find_stata = StataFinder().find_stata
 
+
 class Installer:
     def __init__(self, sys_os, is_env=False):
         self.config_file_path: str = None
         if sys_os == "Darwin":
             self.config_file_path = os.path.expanduser(
-                '~/Library/Application Support/Claude/claude_desktop_config.json'
+                "~/Library/Application Support/Claude/claude_desktop_config.json"
             )
         elif sys_os == "Linux":
-            print("There is not a Linux version of Claude yet, please use the Windows or macOS version.")
+            print(
+                "There is not a Linux version of Claude yet, please use the Windows or macOS version."
+            )
         elif sys_os == "Windows":
             appdata = os.getenv("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
             self.config_file_path = os.path.join(
@@ -34,14 +37,15 @@ class Installer:
         # Create an empty file if it does not already exist
         if not os.path.exists(self.config_file_path):
             with open(self.config_file_path, "w", encoding="utf-8") as f:
-                f.write("{\"mcpServers\": {}}")  # Or write the default configuration
+                f.write('{"mcpServers": {}}')  # Or write the default configuration
 
         stata_cli = find_stata(os_name=sys_os, is_env=False)
         self.stata_mcp_config = {
             "stata-mcp": {
                 "command": "uvx",
                 "args": ["stata-mcp"],
-                "env": {"stata_cli": stata_cli}}
+                "env": {"stata_cli": stata_cli},
+            }
         }
 
     def install(self):
@@ -56,7 +60,7 @@ class Installer:
 
         # Ask the user for confirmation
         choice = input("Do you want to proceed and add this configuration? [y/N]: ")
-        if choice.strip().lower() != 'y':
+        if choice.strip().lower() != "y":
             print("Installation aborted.")
             return
 
@@ -75,8 +79,6 @@ class Installer:
         with open(self.config_file_path, "w", encoding="utf-8") as f:
             json.dump(config, f, ensure_ascii=False, indent=2)
 
-        print(f"✅ Successfully wrote 'stata-mcp' configuration to: {self.config_file_path}")
-
-
-
-
+        print(
+            f"✅ Successfully wrote 'stata-mcp' configuration to: {self.config_file_path}"
+        )

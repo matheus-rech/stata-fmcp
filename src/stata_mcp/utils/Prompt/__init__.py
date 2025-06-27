@@ -9,6 +9,7 @@
 
 from .string import frame
 
+
 class Prompt:
     def __init__(self):
         self.prompts = {}
@@ -47,13 +48,17 @@ class Prompt:
             prompt_id, lang = Prompt.extract(key)
             self.add_prompt(prompt_id=prompt_id, lang=lang, prompt=prompt)
 
+
 def filter_system_vars(dictionary):
-    exclude_prefixes = ['__']
-    exclude_vars = ['inspect', 'frame']
+    exclude_prefixes = ["__"]
+    exclude_vars = ["inspect", "frame"]
 
     filtered_dict = {}
     for key, value in dictionary.items():
-        if not any(key.startswith(prefix) for prefix in exclude_prefixes) and key not in exclude_vars:
+        if (
+            not any(key.startswith(prefix) for prefix in exclude_prefixes)
+            and key not in exclude_vars
+        ):
             filtered_dict[key] = value
     return filtered_dict
 

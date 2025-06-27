@@ -19,13 +19,17 @@ class StataCommandGenerator:
     # def __init__(self): pass
 
     @staticmethod
-    @mcp.tool(name="use", description="生成并返回 Stata 的 'use' 命令（加载数据集的命令）")
-    def use(filename: str,
-            varlist: Optional[List[str]] = None,
-            if_condition: Optional[str] = None,
-            in_range: Optional[str] = None,
-            clear: bool = False,
-            nolabel: bool = False) -> str:
+    @mcp.tool(
+        name="use", description="生成并返回 Stata 的 'use' 命令（加载数据集的命令）"
+    )
+    def use(
+        filename: str,
+        varlist: Optional[List[str]] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        clear: bool = False,
+        nolabel: bool = False,
+    ) -> str:
         """
         Generate Stata's use command with various options.
 
@@ -116,13 +120,17 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="save", description="生成并返回 Stata 的 'save' 命令（保存数据集的命令）")
-    def save(filename: Optional[str] = None,
-             nolabel: bool = False,
-             replace: bool = False,
-             all: bool = False,
-             orphans: bool = False,
-             emptyok: bool = False) -> str:
+    @mcp.tool(
+        name="save", description="生成并返回 Stata 的 'save' 命令（保存数据集的命令）"
+    )
+    def save(
+        filename: Optional[str] = None,
+        nolabel: bool = False,
+        replace: bool = False,
+        all: bool = False,
+        orphans: bool = False,
+        emptyok: bool = False,
+    ) -> str:
         """
         Generate Stata's save command with various options.
 
@@ -185,15 +193,21 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="summarize", description="生成并返回 Stata 的 'summarize' 命令（数据的描述性统计命令）")
-    def summarize(varlist: Optional[List[str]] = None, if_condition: Optional[str] = None,
-                  in_range: Optional[str] = None,
-                  weight: Optional[str] = None,
-                  detail: bool = False,
-                  meanonly: bool = False,
-                  fmt: bool = False,
-                  separator: Optional[int] = None,
-                  **display_options) -> str:
+    @mcp.tool(
+        name="summarize",
+        description="生成并返回 Stata 的 'summarize' 命令（数据的描述性统计命令）",
+    )
+    def summarize(
+        varlist: Optional[List[str]] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        weight: Optional[str] = None,
+        detail: bool = False,
+        meanonly: bool = False,
+        fmt: bool = False,
+        separator: Optional[int] = None,
+        **display_options,
+    ) -> str:
         """
         Generate Stata's summarize command with various options.
 
@@ -269,8 +283,13 @@ class StataCommandGenerator:
 
         # Display options
         valid_display_opts = {
-            'vsquish', 'noemptycells', 'baselevels', 'allbaselevels',
-            'nofvlabel', 'fvwrap', 'fvwrapon'
+            "vsquish",
+            "noemptycells",
+            "baselevels",
+            "allbaselevels",
+            "nofvlabel",
+            "fvwrap",
+            "fvwrapon",
         }
 
         for opt, value in display_options.items():
@@ -293,25 +312,31 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="regress", description="Generate and return Stata's 'regress' command (linear regression)")
-    def regress(depvar: str, indepvars: Optional[List[str]] = None,
-                if_condition: Optional[str] = None,
-                in_range: Optional[str] = None,
-                weight: Optional[str] = None,
-                noconstant: bool = False,
-                hascons: bool = False,
-                tsscons: bool = False,
-                vce: Optional[str] = None,
-                level: Optional[int] = None,
-                beta: bool = False,
-                eform: Optional[str] = None,
-                depname: Optional[str] = None,
-                noheader: bool = False,
-                notable: bool = False,
-                plus: bool = False,
-                mse1: bool = False,
-                coeflegend: bool = False,
-                **display_options) -> str:
+    @mcp.tool(
+        name="regress",
+        description="Generate and return Stata's 'regress' command (linear regression)",
+    )
+    def regress(
+        depvar: str,
+        indepvars: Optional[List[str]] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        weight: Optional[str] = None,
+        noconstant: bool = False,
+        hascons: bool = False,
+        tsscons: bool = False,
+        vce: Optional[str] = None,
+        level: Optional[int] = None,
+        beta: bool = False,
+        eform: Optional[str] = None,
+        depname: Optional[str] = None,
+        noheader: bool = False,
+        notable: bool = False,
+        plus: bool = False,
+        mse1: bool = False,
+        coeflegend: bool = False,
+        **display_options,
+    ) -> str:
         """
         Generate Stata's regress command with various options.
 
@@ -407,7 +432,9 @@ class StataCommandGenerator:
             valid_vce = ["ols", "robust", "bootstrap", "jackknife", "hc2", "hc3"]
             # For cluster, we check if it starts with "cluster " to allow for the cluster variable
             if not (vce in valid_vce or vce.startswith("cluster ")):
-                raise ValueError(f"vce must be one of {valid_vce} or 'cluster clustvar'")
+                raise ValueError(
+                    f"vce must be one of {valid_vce} or 'cluster clustvar'"
+                )
             options.append(f"vce({vce})")
 
         # Reporting options
@@ -436,9 +463,20 @@ class StataCommandGenerator:
 
         # Display options
         valid_display_opts = {
-            'noci', 'nopvalues', 'noomitted', 'vsquish', 'noemptycells',
-            'baselevels', 'allbaselevels', 'nofvlabel', 'fvwrap', 'fvwrapon',
-            'cformat', 'pformat', 'sformat', 'nolstretch'
+            "noci",
+            "nopvalues",
+            "noomitted",
+            "vsquish",
+            "noemptycells",
+            "baselevels",
+            "allbaselevels",
+            "nofvlabel",
+            "fvwrap",
+            "fvwrapon",
+            "cformat",
+            "pformat",
+            "sformat",
+            "nolstretch",
         }
 
         for opt, value in display_options.items():
@@ -461,15 +499,20 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="generate",
-              description="Generate and return Stata's 'generate' command (create or change variable contents)")
-    def generate(newvar: str, exp: str,
-                 type: Optional[str] = None,
-                 lblname: Optional[str] = None,
-                 if_condition: Optional[str] = None,
-                 in_range: Optional[str] = None,
-                 before: Optional[str] = None,
-                 after: Optional[str] = None) -> str:
+    @mcp.tool(
+        name="generate",
+        description="Generate and return Stata's 'generate' command (create or change variable contents)",
+    )
+    def generate(
+        newvar: str,
+        exp: str,
+        type: Optional[str] = None,
+        lblname: Optional[str] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> str:
         """
         Generate Stata's generate command to create a new variable.
 
@@ -518,7 +561,9 @@ class StataCommandGenerator:
         valid_types.update(str_types)
 
         if type and type not in valid_types:
-            raise ValueError(f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045")
+            raise ValueError(
+                f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
+            )
 
         # Validate incompatible options
         if before and after:
@@ -564,12 +609,17 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="replace",
-              description="Generate and return Stata's 'replace' command (replace contents of existing variable)")
-    def replace(oldvar: str, exp: str,
-                if_condition: Optional[str] = None,
-                in_range: Optional[str] = None,
-                nopromote: bool = False) -> str:
+    @mcp.tool(
+        name="replace",
+        description="Generate and return Stata's 'replace' command (replace contents of existing variable)",
+    )
+    def replace(
+        oldvar: str,
+        exp: str,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        nopromote: bool = False,
+    ) -> str:
         """
         Generate Stata's replace command to change the contents of an existing variable.
 
@@ -625,12 +675,19 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="egen", description="Generate and return Stata's 'egen' command (extensions to generate)")
-    def egen(newvar: str, fcn: str, arguments: Optional[str] = None,
-             if_condition: Optional[str] = None,
-             in_range: Optional[str] = None,
-             type: Optional[str] = None,
-             options: Optional[Dict[str, Any]] = None) -> str:
+    @mcp.tool(
+        name="egen",
+        description="Generate and return Stata's 'egen' command (extensions to generate)",
+    )
+    def egen(
+        newvar: str,
+        fcn: str,
+        arguments: Optional[str] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        type: Optional[str] = None,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Generate Stata's egen command with various function options.
 
@@ -687,17 +744,53 @@ class StataCommandGenerator:
         # Valid egen functions
         valid_fcns = {
             # Single expression functions
-            "count", "iqr", "kurt", "mad", "max", "mdev", "mean", "median",
-            "min", "mode", "pc", "pctile", "rank", "sd", "skew", "std", "total",
+            "count",
+            "iqr",
+            "kurt",
+            "mad",
+            "max",
+            "mdev",
+            "mean",
+            "median",
+            "min",
+            "mode",
+            "pc",
+            "pctile",
+            "rank",
+            "sd",
+            "skew",
+            "std",
+            "total",
             # Variable list functions
-            "anycount", "anymatch", "anyvalue", "concat", "cut", "diff", "ends",
-            "fill", "group", "mtr", "rowfirst", "rowlast", "rowmax", "rowmean",
-            "rowmedian", "rowmin", "rowmiss", "rownonmiss", "rowpctile", "rowsd",
-            "rowtotal", "seq", "tag"
+            "anycount",
+            "anymatch",
+            "anyvalue",
+            "concat",
+            "cut",
+            "diff",
+            "ends",
+            "fill",
+            "group",
+            "mtr",
+            "rowfirst",
+            "rowlast",
+            "rowmax",
+            "rowmean",
+            "rowmedian",
+            "rowmin",
+            "rowmiss",
+            "rownonmiss",
+            "rowpctile",
+            "rowsd",
+            "rowtotal",
+            "seq",
+            "tag",
         }
 
         if fcn not in valid_fcns:
-            raise ValueError(f"fcn must be one of the valid egen functions: {', '.join(valid_fcns)}")
+            raise ValueError(
+                f"fcn must be one of the valid egen functions: {', '.join(valid_fcns)}"
+            )
 
         # Validate storage type if provided
         valid_types = {"byte", "int", "long", "float", "double", "str"}
@@ -705,7 +798,9 @@ class StataCommandGenerator:
         valid_types.update(str_types)
 
         if type and type not in valid_types:
-            raise ValueError(f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045")
+            raise ValueError(
+                f"type must be one of: byte, int, long, float, double, str, str1, ..., str2045"
+            )
 
         # Start building the command
         cmd_parts = ["egen"]
@@ -853,12 +948,44 @@ class StataCommandGenerator:
 
             # Add general options that apply to all functions
             for opt, val in options.items():
-                if opt not in ["values", "format", "decode", "maxlength", "punct",
-                               "at", "group", "icodes", "label", "trim", "head",
-                               "last", "tail", "missing", "autotype", "replace",
-                               "truncate", "minmode", "maxmode", "nummode", "prop",
-                               "p", "field", "track", "unique", "strok", "from",
-                               "to", "block", "mean", "sd"] and isinstance(val, bool) and val:
+                if (
+                    opt
+                    not in [
+                        "values",
+                        "format",
+                        "decode",
+                        "maxlength",
+                        "punct",
+                        "at",
+                        "group",
+                        "icodes",
+                        "label",
+                        "trim",
+                        "head",
+                        "last",
+                        "tail",
+                        "missing",
+                        "autotype",
+                        "replace",
+                        "truncate",
+                        "minmode",
+                        "maxmode",
+                        "nummode",
+                        "prop",
+                        "p",
+                        "field",
+                        "track",
+                        "unique",
+                        "strok",
+                        "from",
+                        "to",
+                        "block",
+                        "mean",
+                        "sd",
+                    ]
+                    and isinstance(val, bool)
+                    and val
+                ):
                     option_parts.append(opt)
 
             # Combine options if any exist
@@ -869,14 +996,18 @@ class StataCommandGenerator:
             return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="xtset", description="生成并返回 Stata 的 'xtset' 命令（面板数据声明命令）")
-    def xtset(panelvar: Optional[str] = None,
-              timevar: Optional[str] = None,
-              clear: bool = False,
-              unit: Optional[str] = None,
-              delta: Optional[str] = None,
-              format: Optional[str] = None,
-              noquery: bool = False) -> str:
+    @mcp.tool(
+        name="xtset", description="生成并返回 Stata 的 'xtset' 命令（面板数据声明命令）"
+    )
+    def xtset(
+        panelvar: Optional[str] = None,
+        timevar: Optional[str] = None,
+        clear: bool = False,
+        unit: Optional[str] = None,
+        delta: Optional[str] = None,
+        format: Optional[str] = None,
+        noquery: bool = False,
+    ) -> str:
         """
         Generate Stata's xtset command with various options.
 
@@ -921,15 +1052,23 @@ class StataCommandGenerator:
         """
         # Validate input parameters
         valid_units = {
-            "clocktime", "daily", "weekly", "monthly", "quarterly",
-            "halfyearly", "yearly", "generic"
+            "clocktime",
+            "daily",
+            "weekly",
+            "monthly",
+            "quarterly",
+            "halfyearly",
+            "yearly",
+            "generic",
         }
 
         if unit and unit not in valid_units:
             raise ValueError(f"unit must be one of: {', '.join(valid_units)}")
 
         if clear and (panelvar or timevar or unit or delta or format):
-            raise ValueError("When clear is specified, no other options should be provided")
+            raise ValueError(
+                "When clear is specified, no other options should be provided"
+            )
 
         if not panelvar and not clear:
             # Display only - no arguments
@@ -982,29 +1121,33 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="xtreg", description="生成并返回 Stata 的 'xtreg' 命令（面板数据回归命令）")
-    def xtreg(depvar: str,
-              indepvars: Optional[List[str]] = None,
-              if_condition: Optional[str] = None,
-              in_range: Optional[str] = None,
-              weight: Optional[str] = None,
-              model_type: str = "re",
-              vce: Optional[str] = None,
-              noconstant: bool = False,
-              theta: bool = False,
-              level: Optional[int] = None,
-              sa: bool = False,
-              wls: bool = False,
-              offset: Optional[str] = None,
-              correlation: Optional[str] = None,
-              force: bool = False,
-              nmp: bool = False,
-              rgf: bool = False,
-              scale: Optional[str] = None,
-              maximize_options: Optional[Dict[str, Any]] = None,
-              optimize_options: Optional[Dict[str, Any]] = None,
-              display_options: Optional[Dict[str, Any]] = None,
-              coeflegend: bool = False) -> str:
+    @mcp.tool(
+        name="xtreg", description="生成并返回 Stata 的 'xtreg' 命令（面板数据回归命令）"
+    )
+    def xtreg(
+        depvar: str,
+        indepvars: Optional[List[str]] = None,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        weight: Optional[str] = None,
+        model_type: str = "re",
+        vce: Optional[str] = None,
+        noconstant: bool = False,
+        theta: bool = False,
+        level: Optional[int] = None,
+        sa: bool = False,
+        wls: bool = False,
+        offset: Optional[str] = None,
+        correlation: Optional[str] = None,
+        force: bool = False,
+        nmp: bool = False,
+        rgf: bool = False,
+        scale: Optional[str] = None,
+        maximize_options: Optional[Dict[str, Any]] = None,
+        optimize_options: Optional[Dict[str, Any]] = None,
+        display_options: Optional[Dict[str, Any]] = None,
+        coeflegend: bool = False,
+    ) -> str:
         """
         Generate Stata's xtreg command with various options for panel data regression models.
 
@@ -1071,7 +1214,9 @@ class StataCommandGenerator:
 
         valid_model_types = {"re", "be", "fe", "mle", "pa"}
         if model_type not in valid_model_types:
-            raise ValueError(f"model_type must be one of: {', '.join(valid_model_types)}")
+            raise ValueError(
+                f"model_type must be one of: {', '.join(valid_model_types)}"
+            )
 
         # Validate model-specific options
         if sa and model_type != "re":
@@ -1083,26 +1228,45 @@ class StataCommandGenerator:
         if theta and model_type != "re":
             raise ValueError("theta option is only valid with re model type")
 
-        if (offset or correlation or force or nmp or rgf or scale or optimize_options) and model_type != "pa":
+        if (
+            offset or correlation or force or nmp or rgf or scale or optimize_options
+        ) and model_type != "pa":
             raise ValueError(
-                "offset, correlation, force, nmp, rgf, scale, and optimize_options are only valid with pa model type")
+                "offset, correlation, force, nmp, rgf, scale, and optimize_options are only valid with pa model type"
+            )
 
         if maximize_options and model_type != "mle":
             raise ValueError("maximize_options are only valid with mle model type")
 
         if noconstant and model_type not in {"mle", "pa"}:
-            raise ValueError("noconstant option is only valid with mle or pa model types")
+            raise ValueError(
+                "noconstant option is only valid with mle or pa model types"
+            )
 
         # Validate weights based on model type
         if weight:
             if model_type == "re" or model_type == "be":
-                raise ValueError(f"weights are not allowed with {model_type} model type")
-            elif model_type == "fe" and not any(w in weight for w in ["aweight", "fweight", "pweight"]):
-                raise ValueError("fe model allows only aweights, fweights, and pweights")
-            elif model_type == "mle" and not any(w in weight for w in ["iweight", "fweight", "pweight"]):
-                raise ValueError("mle model allows only iweights, fweights, and pweights")
-            elif model_type == "pa" and not any(w in weight for w in ["iweight", "fweight", "pweight"]):
-                raise ValueError("pa model allows only iweights, fweights, and pweights")
+                raise ValueError(
+                    f"weights are not allowed with {model_type} model type"
+                )
+            elif model_type == "fe" and not any(
+                w in weight for w in ["aweight", "fweight", "pweight"]
+            ):
+                raise ValueError(
+                    "fe model allows only aweights, fweights, and pweights"
+                )
+            elif model_type == "mle" and not any(
+                w in weight for w in ["iweight", "fweight", "pweight"]
+            ):
+                raise ValueError(
+                    "mle model allows only iweights, fweights, and pweights"
+                )
+            elif model_type == "pa" and not any(
+                w in weight for w in ["iweight", "fweight", "pweight"]
+            ):
+                raise ValueError(
+                    "pa model allows only iweights, fweights, and pweights"
+                )
 
         # Start building the command
         cmd_parts = ["xtreg", depvar]
@@ -1181,9 +1345,13 @@ class StataCommandGenerator:
             for opt, value in maximize_options.items():
                 if opt == "iterate" and isinstance(value, int):
                     options.append(f"iterate({value})")
-                elif opt == "tolerance" and (isinstance(value, (int, float)) or isinstance(value, str)):
+                elif opt == "tolerance" and (
+                    isinstance(value, (int, float)) or isinstance(value, str)
+                ):
                     options.append(f"tolerance({value})")
-                elif opt == "ltolerance" and (isinstance(value, (int, float)) or isinstance(value, str)):
+                elif opt == "ltolerance" and (
+                    isinstance(value, (int, float)) or isinstance(value, str)
+                ):
                     options.append(f"ltolerance({value})")
                 elif opt == "log" and isinstance(value, bool):
                     options.append("log" if value else "nolog")
@@ -1197,7 +1365,9 @@ class StataCommandGenerator:
             for opt, value in optimize_options.items():
                 if opt == "iterate" and isinstance(value, int):
                     options.append(f"iterate({value})")
-                elif opt == "tolerance" and (isinstance(value, (int, float)) or isinstance(value, str)):
+                elif opt == "tolerance" and (
+                    isinstance(value, (int, float)) or isinstance(value, str)
+                ):
                     options.append(f"tolerance({value})")
                 elif opt == "log" and isinstance(value, bool):
                     options.append("log" if value else "nolog")
@@ -1206,9 +1376,20 @@ class StataCommandGenerator:
 
         # Add display options
         valid_display_opts = {
-            'noci', 'nopvalues', 'noomitted', 'vsquish', 'noemptycells',
-            'baselevels', 'allbaselevels', 'nofvlabel', 'fvwrap', 'fvwrapon',
-            'cformat', 'pformat', 'sformat', 'nolstretch'
+            "noci",
+            "nopvalues",
+            "noomitted",
+            "vsquish",
+            "noemptycells",
+            "baselevels",
+            "allbaselevels",
+            "nofvlabel",
+            "fvwrap",
+            "fvwrapon",
+            "cformat",
+            "pformat",
+            "sformat",
+            "nolstretch",
         }
 
         if display_options:
@@ -1236,12 +1417,17 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="by", description="生成并返回 Stata 的 'by' 命令（在数据子集上重复执行命令）")
-    def by(varlist1: Union[str, List[str]],
-           stata_cmd: str,
-           varlist2: Optional[Union[str, List[str]]] = None,
-           sort: bool = False,
-           rc0: bool = False) -> str:
+    @mcp.tool(
+        name="by",
+        description="生成并返回 Stata 的 'by' 命令（在数据子集上重复执行命令）",
+    )
+    def by(
+        varlist1: Union[str, List[str]],
+        stata_cmd: str,
+        varlist2: Optional[Union[str, List[str]]] = None,
+        sort: bool = False,
+        rc0: bool = False,
+    ) -> str:
         """
         Generate Stata's by command to repeat a command on subsets of the data.
 
@@ -1329,13 +1515,17 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="append", description="生成并返回 Stata 的 'append' 命令（追加数据集命令）")
-    def append(using_files: Union[str, List[str]],
-               generate: Optional[str] = None,
-               keep: Optional[List[str]] = None,
-               nolabel: bool = False,
-               nonotes: bool = False,
-               force: bool = False) -> str:
+    @mcp.tool(
+        name="append", description="生成并返回 Stata 的 'append' 命令（追加数据集命令）"
+    )
+    def append(
+        using_files: Union[str, List[str]],
+        generate: Optional[str] = None,
+        keep: Optional[List[str]] = None,
+        nolabel: bool = False,
+        nonotes: bool = False,
+        force: bool = False,
+    ) -> str:
         """
         Generate Stata's append command to append datasets.
 
@@ -1425,11 +1615,16 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="drop", description="生成并返回 Stata 的 'drop' 命令（删除变量或观测值命令）")
-    def drop(varlist: Optional[Union[str, List[str]]] = None,
-             if_exp: Optional[str] = None,
-             in_range: Optional[str] = None,
-             all: bool = False) -> str:
+    @mcp.tool(
+        name="drop",
+        description="生成并返回 Stata 的 'drop' 命令（删除变量或观测值命令）",
+    )
+    def drop(
+        varlist: Optional[Union[str, List[str]]] = None,
+        if_exp: Optional[str] = None,
+        in_range: Optional[str] = None,
+        all: bool = False,
+    ) -> str:
         """
         Generate Stata's drop command to eliminate variables or observations.
 
@@ -1502,10 +1697,15 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="keep", description="生成并返回 Stata 的 'keep' 命令（保留变量或观测值命令）")
-    def keep(varlist: Optional[Union[str, List[str]]] = None,
-             if_exp: Optional[str] = None,
-             in_range: Optional[str] = None) -> str:
+    @mcp.tool(
+        name="keep",
+        description="生成并返回 Stata 的 'keep' 命令（保留变量或观测值命令）",
+    )
+    def keep(
+        varlist: Optional[Union[str, List[str]]] = None,
+        if_exp: Optional[str] = None,
+        in_range: Optional[str] = None,
+    ) -> str:
         """
         Generate Stata's keep command to retain specified variables or observations.
 
@@ -1569,22 +1769,26 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="merge", description="生成并返回 Stata 的 'merge' 命令（合并数据集命令）")
-    def merge(merge_type: str,
-              key_vars: Union[str, List[str]],
-              using_file: str,
-              keepusing: Optional[List[str]] = None,
-              generate: Optional[str] = None,
-              nogenerate: bool = False,
-              nolabel: bool = False,
-              nonotes: bool = False,
-              update: bool = False,
-              replace: bool = False,
-              noreport: bool = False,
-              force: bool = False,
-              assert_results: Optional[List[str]] = None,
-              keep_results: Optional[List[str]] = None,
-              sorted: bool = False) -> str:
+    @mcp.tool(
+        name="merge", description="生成并返回 Stata 的 'merge' 命令（合并数据集命令）"
+    )
+    def merge(
+        merge_type: str,
+        key_vars: Union[str, List[str]],
+        using_file: str,
+        keepusing: Optional[List[str]] = None,
+        generate: Optional[str] = None,
+        nogenerate: bool = False,
+        nolabel: bool = False,
+        nonotes: bool = False,
+        update: bool = False,
+        replace: bool = False,
+        noreport: bool = False,
+        force: bool = False,
+        assert_results: Optional[List[str]] = None,
+        keep_results: Optional[List[str]] = None,
+        sorted: bool = False,
+    ) -> str:
         """
         Generate Stata's merge command to join datasets.
 
@@ -1637,7 +1841,9 @@ class StataCommandGenerator:
         # Input validation
         valid_merge_types = {"1:1", "m:1", "1:m", "m:m"}
         if merge_type not in valid_merge_types:
-            raise ValueError(f"merge_type must be one of: {', '.join(valid_merge_types)}")
+            raise ValueError(
+                f"merge_type must be one of: {', '.join(valid_merge_types)}"
+            )
 
         if not using_file:
             raise ValueError("using_file must be provided")
@@ -1650,11 +1856,22 @@ class StataCommandGenerator:
 
         # Valid result codes for assert and keep options
         valid_results = {
-            "master": "1", "masters": "1", "1": "1",
-            "using": "2", "usings": "2", "2": "2",
-            "match": "3", "matches": "3", "matched": "3", "3": "3",
-            "match_update": "4", "match_updates": "4", "4": "4",
-            "match_conflict": "5", "match_conflicts": "5", "5": "5"
+            "master": "1",
+            "masters": "1",
+            "1": "1",
+            "using": "2",
+            "usings": "2",
+            "2": "2",
+            "match": "3",
+            "matches": "3",
+            "matched": "3",
+            "3": "3",
+            "match_update": "4",
+            "match_updates": "4",
+            "4": "4",
+            "match_conflict": "5",
+            "match_conflicts": "5",
+            "5": "5",
         }
 
         # Process key variables
@@ -1769,13 +1986,18 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="encode", description="生成并返回 Stata 的 'encode' 命令（将字符串变量转换为数值变量）")
-    def encode(varname: str,
-               generate: str,
-               if_condition: Optional[str] = None,
-               in_range: Optional[str] = None,
-               label: Optional[str] = None,
-               noextend: bool = False) -> str:
+    @mcp.tool(
+        name="encode",
+        description="生成并返回 Stata 的 'encode' 命令（将字符串变量转换为数值变量）",
+    )
+    def encode(
+        varname: str,
+        generate: str,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        label: Optional[str] = None,
+        noextend: bool = False,
+    ) -> str:
         """
         Generate Stata's encode command to convert string variable to numeric.
 
@@ -1845,12 +2067,17 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="decode", description="生成并返回 Stata 的 'decode' 命令（将数值变量转换为字符串变量）")
-    def decode(varname: str,
-               generate: str,
-               if_condition: Optional[str] = None,
-               in_range: Optional[str] = None,
-               maxlength: Optional[int] = None) -> str:
+    @mcp.tool(
+        name="decode",
+        description="生成并返回 Stata 的 'decode' 命令（将数值变量转换为字符串变量）",
+    )
+    def decode(
+        varname: str,
+        generate: str,
+        if_condition: Optional[str] = None,
+        in_range: Optional[str] = None,
+        maxlength: Optional[int] = None,
+    ) -> str:
         """
         Generate Stata's decode command to convert numeric variable to string.
 
@@ -1918,7 +2145,10 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_data", description="生成并返回 Stata 的 'label data' 命令（为数据集添加标签）")
+    @mcp.tool(
+        name="label_data",
+        description="生成并返回 Stata 的 'label data' 命令（为数据集添加标签）",
+    )
     def label_data(label: Optional[str] = None) -> str:
         """
         Generate Stata's label data command to attach a label to the dataset.
@@ -1948,7 +2178,10 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_variable", description="生成并返回 Stata 的 'label variable' 命令（为变量添加标签）")
+    @mcp.tool(
+        name="label_variable",
+        description="生成并返回 Stata 的 'label variable' 命令（为变量添加标签）",
+    )
     def label_variable(varname: str, label: Optional[str] = None) -> str:
         """
         Generate Stata's label variable command to attach a label to a variable.
@@ -1985,13 +2218,18 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_define", description="生成并返回 Stata 的 'label define' 命令（定义值标签）")
-    def label_define(lblname: str,
-                     values_labels: Dict[Union[int, str], str],
-                     add: bool = False,
-                     modify: bool = False,
-                     replace: bool = False,
-                     nofix: bool = False) -> str:
+    @mcp.tool(
+        name="label_define",
+        description="生成并返回 Stata 的 'label define' 命令（定义值标签）",
+    )
+    def label_define(
+        lblname: str,
+        values_labels: Dict[Union[int, str], str],
+        add: bool = False,
+        modify: bool = False,
+        replace: bool = False,
+        nofix: bool = False,
+    ) -> str:
         """
         Generate Stata's label define command to create or modify value labels.
 
@@ -2036,8 +2274,10 @@ class StataCommandGenerator:
         value_label_parts = []
         for value, label in values_labels.items():
             # Handle extended missing values
-            if isinstance(value, str) and value.startswith('.'):
-                value_str = value  # Keep as is for extended missing values like .a, .b, etc.
+            if isinstance(value, str) and value.startswith("."):
+                value_str = (
+                    value  # Keep as is for extended missing values like .a, .b, etc.
+                )
             else:
                 value_str = str(value)
 
@@ -2064,10 +2304,15 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="label_values", description="生成并返回 Stata 的 'label values' 命令（将值标签分配给变量）")
-    def label_values(varlist: Union[str, List[str]],
-                     lblname: Optional[str] = None,
-                     nofix: bool = False) -> str:
+    @mcp.tool(
+        name="label_values",
+        description="生成并返回 Stata 的 'label values' 命令（将值标签分配给变量）",
+    )
+    def label_values(
+        varlist: Union[str, List[str]],
+        lblname: Optional[str] = None,
+        nofix: bool = False,
+    ) -> str:
         """
         Generate Stata's label values command to attach value labels to variables.
 
@@ -2125,7 +2370,10 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(name="label_dir", description="生成并返回 Stata 的 'label dir' 命令（列出值标签的名称）")
+    @mcp.tool(
+        name="label_dir",
+        description="生成并返回 Stata 的 'label dir' 命令（列出值标签的名称）",
+    )
     def label_dir() -> str:
         """
         Generate Stata's label dir command to list names of value labels stored in memory.
@@ -2140,7 +2388,10 @@ class StataCommandGenerator:
         return "label dir"
 
     @staticmethod
-    @mcp.tool(name="label_list", description="生成并返回 Stata 的 'label list' 命令（列出值标签的名称和内容）")
+    @mcp.tool(
+        name="label_list",
+        description="生成并返回 Stata 的 'label list' 命令（列出值标签的名称和内容）",
+    )
     def label_list(lblnames: Optional[Union[str, List[str]]] = None) -> str:
         """
         Generate Stata's label list command to display names and contents of value labels.
@@ -2176,7 +2427,10 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_copy", description="生成并返回 Stata 的 'label copy' 命令（复制值标签）")
+    @mcp.tool(
+        name="label_copy",
+        description="生成并返回 Stata 的 'label copy' 命令（复制值标签）",
+    )
     def label_copy(lblname_from: str, lblname_to: str, replace: bool = False) -> str:
         """
         Generate Stata's label copy command to copy value labels.
@@ -2213,7 +2467,10 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_drop", description="生成并返回 Stata 的 'label drop' 命令（删除值标签）")
+    @mcp.tool(
+        name="label_drop",
+        description="生成并返回 Stata 的 'label drop' 命令（删除值标签）",
+    )
     def label_drop(lblnames: Union[str, List[str], bool] = False) -> str:
         """
         Generate Stata's label drop command to eliminate value labels.
@@ -2258,10 +2515,13 @@ class StataCommandGenerator:
         return cmd
 
     @staticmethod
-    @mcp.tool(name="label_save", description="生成并返回 Stata 的 'label save' 命令（将值标签保存为do文件）")
-    def label_save(lblnames: Optional[Union[str, List[str]]],
-                   filename: str,
-                   replace: bool = False) -> str:
+    @mcp.tool(
+        name="label_save",
+        description="生成并返回 Stata 的 'label save' 命令（将值标签保存为do文件）",
+    )
+    def label_save(
+        lblnames: Optional[Union[str, List[str]]], filename: str, replace: bool = False
+    ) -> str:
         """
         Generate Stata's label save command to save value labels to a do-file.
 

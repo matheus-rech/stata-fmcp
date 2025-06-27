@@ -22,7 +22,7 @@ from .core.stata.StataController.controller import StataController
 __version__ = version("stata-mcp")
 
 dotenv.load_dotenv()
-mcp = FastMCP(name='stata-mcp')
+mcp = FastMCP(name="stata-mcp")
 
 # Initialize optional parameters
 sys_os = platform.system()
@@ -31,7 +31,9 @@ sys_os = platform.system()
 if sys_os == "Darwin" or sys_os == "Linux":
     documents_path = os.getenv("documents_path", os.path.expanduser("~/Documents"))
 elif sys_os == "Windows":
-    documents_path = os.getenv("documents_path", os.path.join(os.environ["USERPROFILE"], "Documents"))
+    documents_path = os.getenv(
+        "documents_path", os.path.join(os.environ["USERPROFILE"], "Documents")
+    )
 else:
     sys.exit("Unknown System")
 output_base_path = os.path.join(documents_path, "stata-mcp-folder")
@@ -40,11 +42,13 @@ os.makedirs(output_base_path, exist_ok=True)
 try:
     # stata_cli
     finder = StataFinder()
-    stata_cli = os.getenv('stata_cli', finder.find_stata())
+    stata_cli = os.getenv("stata_cli", finder.find_stata())
     if stata_cli is None:
-        exit_msg = ('Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n'
-                    r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
-                    r'/usr/local/bin/stata-mp')
+        exit_msg = (
+            "Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n"
+            r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
+            r"/usr/local/bin/stata-mp"
+        )
         sys.exit(exit_msg)
 except:
     stata_cli = None
@@ -123,6 +127,7 @@ def stata_analysis_strategy(lang: str = None) -> str:
     """
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
+
 @mcp.prompt(name="help", description="Get help for a Stata command")
 def help(cmd: str) -> str:
     """
@@ -136,15 +141,18 @@ def help(cmd: str) -> str:
              or a message indicating that no help was found.
     """
     controller = StataController(stata_cli)
-    std_error_msg = (f"help {cmd}\r\n"
-                     f"help for {cmd} not found\r\n"
-                     f"try help contents or search {cmd}")
+    std_error_msg = (
+        f"help {cmd}\r\n"
+        f"help for {cmd} not found\r\n"
+        f"try help contents or search {cmd}"
+    )
     help_result = controller.run(f"help {cmd}")
 
     if help_result != std_error_msg:
         return help_result
     else:
         return "No help found for the command: " + cmd
+
 
 @mcp.tool()
 def read_log(log_path: str) -> str:
@@ -157,13 +165,17 @@ def read_log(log_path: str) -> str:
     Returns:
         str: The content of the log file.
     """
-    with open(log_path, 'r') as file:
+    with open(log_path, "r") as file:
         log = file.read()
     return log
 
 
-@mcp.tool(name="get_data_info", description="Get descriptive statistics for the data file")
-def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encoding: str = 'utf-8') -> str:
+@mcp.tool(
+    name="get_data_info", description="Get descriptive statistics for the data file"
+)
+def get_data_info(
+    data_path: str, vars_list: Optional[List[str]] = None, encoding: str = "utf-8"
+) -> str:
     """
     Analyze the data file and return descriptive statistics. Supports various file formats,
     including Stata data files (.dta), CSV files (.csv), and Excel files (.xlsx, .xls).
@@ -215,42 +227,50 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
     file_extension = os.path.splitext(data_path)[1].lower()
 
     # Read data according to file extension
-    if file_extension == '.dta':
+    if file_extension == ".dta":
         try:
             # Try to read Stata file
             df = pd.read_stata(data_path)
             file_type = "Stata data file (.dta)"
         except ImportError:
-            raise ImportError("Missing package required to read Stata files. Please install pandas: pip install pandas")
-    elif file_extension == '.csv':
+            raise ImportError(
+                "Missing package required to read Stata files. Please install pandas: pip install pandas"
+            )
+    elif file_extension == ".csv":
         try:
             # Try to read CSV file, handle potential encoding issues
             try:
                 df = pd.read_csv(data_path, encoding=encoding)
             except UnicodeDecodeError:
                 # Try different encoding
-                df = pd.read_csv(data_path, encoding='latin1')
+                df = pd.read_csv(data_path, encoding="latin1")
             file_type = "CSV file (.csv)"
         except ImportError:
-            raise ImportError("Missing package required to read CSV files. Please install pandas: pip install pandas")
-    elif file_extension in ['.xlsx', '.xls']:
+            raise ImportError(
+                "Missing package required to read CSV files. Please install pandas: pip install pandas"
+            )
+    elif file_extension in [".xlsx", ".xls"]:
         try:
             # Try to read Excel file
             df = pd.read_excel(data_path)
             file_type = f"Excel file ({file_extension})"
         except ImportError:
             raise ImportError(
-                "Missing package required to read Excel files. Please install openpyxl: pip install openpyxl")
+                "Missing package required to read Excel files. Please install openpyxl: pip install openpyxl"
+            )
     else:
         raise ValueError(
-            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls")
+            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls"
+        )
 
     # If variable list is provided, only keep these variables
     if vars_list is not None:
         # Check if all requested variables exist
         missing_vars = [var for var in vars_list if var not in df.columns]
         if missing_vars:
-            raise ValueError(f"The following variables do not exist in the dataset: {', '.join(missing_vars)}")
+            raise ValueError(
+                f"The following variables do not exist in the dataset: {', '.join(missing_vars)}"
+            )
 
         # Select specified variables
         df = df[vars_list]
@@ -271,7 +291,10 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
     # 2. Variable type statistics
     num_numeric = sum(pd.api.types.is_numeric_dtype(df[col]) for col in df.columns)
-    num_categorical = sum(pd.api.types.is_categorical_dtype(df[col]) or df[col].dtype == 'object' for col in df.columns)
+    num_categorical = sum(
+        pd.api.types.is_categorical_dtype(df[col]) or df[col].dtype == "object"
+        for col in df.columns
+    )
     num_datetime = sum(pd.api.types.is_datetime64_dtype(df[col]) for col in df.columns)
     num_boolean = sum(pd.api.types.is_bool_dtype(df[col]) for col in df.columns)
 
@@ -290,7 +313,9 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
     output.append(f"Missing value percentage: {missing_percent:.2f}%")
 
     # Get missing value count and percentage for each variable
-    if df.shape[1] <= 30:  # If there aren't many variables, show missing values for each
+    if (
+        df.shape[1] <= 30
+    ):  # If there aren't many variables, show missing values for each
         output.append("\nMissing values by variable:")
         for col in df.columns:
             missing_count = df[col].isna().sum()
@@ -308,7 +333,7 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
                 output.append(f"  {col}: {count} ({missing_percent:.2f}%)")
 
     # 4. Statistical summary of numerical variables
-    numeric_cols = df.select_dtypes(include=['number']).columns
+    numeric_cols = df.select_dtypes(include=["number"]).columns
 
     if len(numeric_cols) > 0:
         output.append("\nNumerical Variable Statistics:")
@@ -318,12 +343,12 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
         # Add additional statistics
         if df.shape[0] > 0:  # Ensure there is data
-            desc_stats['Missing'] = df[numeric_cols].isna().sum()
-            desc_stats['Missing Ratio'] = df[numeric_cols].isna().sum() / df.shape[0]
+            desc_stats["Missing"] = df[numeric_cols].isna().sum()
+            desc_stats["Missing Ratio"] = df[numeric_cols].isna().sum() / df.shape[0]
 
             # Optional: Add more statistics
-            desc_stats['Skewness'] = df[numeric_cols].skew()
-            desc_stats['Kurtosis'] = df[numeric_cols].kurtosis()
+            desc_stats["Skewness"] = df[numeric_cols].skew()
+            desc_stats["Kurtosis"] = df[numeric_cols].kurtosis()
 
         # Format and add to output
         for col in desc_stats.index:
@@ -337,12 +362,13 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
             output.append(f"    75th Percentile: {desc_stats.loc[col, '75%']:.4f}")
             output.append(f"    Max: {desc_stats.loc[col, 'max']:.4f}")
             output.append(
-                f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})")
+                f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})"
+            )
             output.append(f"    Skewness: {desc_stats.loc[col, 'Skewness']:.4f}")
             output.append(f"    Kurtosis: {desc_stats.loc[col, 'Kurtosis']:.4f}")
 
     # 5. Frequency distribution of categorical variables
-    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+    categorical_cols = df.select_dtypes(include=["object", "category"]).columns
 
     if len(categorical_cols) > 0:
         output.append("\nCategorical Variable Frequency Distribution:")
@@ -374,11 +400,22 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
     # 6. Detect if it's panel data and analyze panel structure
     # Typically panel data has ID and time dimensions
-    potential_id_cols = [col for col in df.columns if 'id' in str(col).lower() or
-                         'code' in str(col).lower() or 'key' in str(col).lower()]
-    potential_time_cols = [col for col in df.columns if 'time' in str(col).lower() or
-                           'date' in str(col).lower() or 'year' in str(col).lower() or
-                           'month' in str(col).lower() or 'day' in str(col).lower()]
+    potential_id_cols = [
+        col
+        for col in df.columns
+        if "id" in str(col).lower()
+        or "code" in str(col).lower()
+        or "key" in str(col).lower()
+    ]
+    potential_time_cols = [
+        col
+        for col in df.columns
+        if "time" in str(col).lower()
+        or "date" in str(col).lower()
+        or "year" in str(col).lower()
+        or "month" in str(col).lower()
+        or "day" in str(col).lower()
+    ]
 
     # If there are potential ID columns and time columns, try to analyze panel structure
     if potential_id_cols and potential_time_cols:
@@ -392,7 +429,9 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
                     output.append("\nPotential Panel Data Structure Detection:")
                     output.append(f"  ID variable: {id_col} (unique values: {n_ids})")
-                    output.append(f"  Time variable: {time_col} (unique values: {n_times})")
+                    output.append(
+                        f"  Time variable: {time_col} (unique values: {n_times})"
+                    )
                     output.append(f"  Total observations: {n_obs}")
 
                     # Check if panel is balanced
@@ -401,17 +440,22 @@ def get_data_info(data_path: str, vars_list: Optional[List[str]] = None, encodin
 
                     if is_balanced and n_ids * n_times == n_obs:
                         output.append(
-                            "  Panel status: Strongly balanced panel (each ID has one observation at each time point)")
+                            "  Panel status: Strongly balanced panel (each ID has one observation at each time point)"
+                        )
                     elif df.groupby(id_col)[time_col].count().var() == 0:
                         output.append(
-                            "  Panel status: Weakly balanced panel (each ID has the same number of observations, but possibly not at the same time points)")
+                            "  Panel status: Weakly balanced panel (each ID has the same number of observations, but possibly not at the same time points)"
+                        )
                     else:
                         output.append(
-                            "  Panel status: Unbalanced panel (different IDs have different numbers of observations)")
+                            "  Panel status: Unbalanced panel (different IDs have different numbers of observations)"
+                        )
 
                     # Calculate average observations per ID
                     avg_obs_per_id = df.groupby(id_col).size().mean()
-                    output.append(f"  Average observations per ID: {avg_obs_per_id:.2f}")
+                    output.append(
+                        f"  Average observations per ID: {avg_obs_per_id:.2f}"
+                    )
 
                     # Calculate time span
                     if pd.api.types.is_datetime64_dtype(df[time_col]):
@@ -449,8 +493,12 @@ def results_doc_path() -> str:
         - In specific Stata code, you can set the file output path at the beginning.
     """
     os.makedirs(
-        (path := os.path.join(result_doc_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S"))),
-        exist_ok=True
+        (
+            path := os.path.join(
+                result_doc_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
+            )
+        ),
+        exist_ok=True,
     )
     return path
 
@@ -479,13 +527,18 @@ def write_dofile(content: str) -> str:
         If you want to use the function `write_dofile`, please use `results_doc_path` before which is necessary.
 
     """
-    file_path = os.path.join(dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do")
+    file_path = os.path.join(
+        dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
+    )
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
     return file_path
 
 
-@mcp.tool(name="append_dofile", description="append stata-code to an existing dofile or create a new one")
+@mcp.tool(
+    name="append_dofile",
+    description="append stata-code to an existing dofile or create a new one",
+)
 def append_dofile(original_dofile_path: str, content: str) -> str:
     """
     Append stata code to an existing dofile or create a new one if the original doesn't exist.
@@ -512,7 +565,9 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
         If you want to use the function `append_dofile`, please use `results_doc_path` before which is necessary.
     """
     # Create a new file path for the output
-    new_file_path = os.path.join(dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do")
+    new_file_path = os.path.join(
+        dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
+    )
 
     # Check if original file exists and is valid
     original_exists = False
@@ -565,7 +620,7 @@ def stata_do(dofile_path: str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True  # Required when the path contains spaces
+            shell=True,  # Required when the path contains spaces
         )
 
         # Execute commands sequentially in Stata
@@ -575,7 +630,9 @@ def stata_do(dofile_path: str) -> str:
         log close
         exit, STATA
         """
-        stdout, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+        stdout, stderr = proc.communicate(
+            input=commands
+        )  # Send commands and wait for completion
 
         if proc.returncode != 0:
             raise RuntimeError(f"Something went wrong: {stderr}")
@@ -584,11 +641,11 @@ def stata_do(dofile_path: str) -> str:
         # Windows approach - use the /e flag to run a batch command
         # Create a temporary batch file
         batch_file = os.path.join(dofile_base_path, f"{nowtime}_batch.do")
-        with open(batch_file, 'w', encoding='utf-8') as f:
+        with open(batch_file, "w", encoding="utf-8") as f:
             f.write(f'log using "{log_file}", replace\n')
             f.write(f'do "{dofile_path}"\n')
-            f.write('log close\n')
-            f.write('exit, STATA\n')
+            f.write("log close\n")
+            f.write("exit, STATA\n")
 
         # Run Stata on Windows using /e to execute the batch file
         # Use double quotes to handle spaces in the path
@@ -604,33 +661,31 @@ def stata_do(dofile_path: str) -> str:
 def main() -> None:
     """Entry point for the command line interface."""
     parser = argparse.ArgumentParser(
-        prog="stata-mcp",
-        description="Stata-MCP command line interface",
-        add_help=True
+        prog="stata-mcp", description="Stata-MCP command line interface", add_help=True
     )
     parser.add_argument(
-        "-v", "--version",
+        "-v",
+        "--version",
         action="version",
         version=f"Stata-MCP version is {__version__}",
-        help="show version information"
+        help="show version information",
     )
     parser.add_argument(
         "--usable",
         action="store_true",
-        help="check whether Stata-MCP could be used on this computer"
+        help="check whether Stata-MCP could be used on this computer",
     )
     parser.add_argument(
-        "--install",
-        action="store_true",
-        help="install Stata-MCP to Claude Desktop"
+        "--install", action="store_true", help="install Stata-MCP to Claude Desktop"
     )
 
     # mcp.run
     parser.add_argument(
-        "-t", "--transport",
+        "-t",
+        "--transport",
         choices=["stdio", "sse", "http", "streamable-http"],
         default=None,
-        help="mcp server transport method (default: stdio)"
+        help="mcp server transport method (default: stdio)",
     )
     args = parser.parse_args()
 
@@ -644,7 +699,9 @@ def main() -> None:
         # Use stdio if there is no transport argument
         transport = args.transport or "stdio"
         if transport == "http":
-            transport = "streamable-http"  # Default to streamable-http for HTTP transport
+            transport = (
+                "streamable-http"  # Default to streamable-http for HTTP transport
+            )
         mcp.run(transport=transport)
 
 

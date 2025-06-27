@@ -31,20 +31,22 @@ def print_status(message: str, status: bool) -> None:
 def check_os() -> Tuple[str, bool]:
     """Check current operating system"""
     os_name = platform.system()
-    os_mapping = {
-        "Darwin": "macOS",
-        "Windows": "Windows",
-        "Linux": "Linux"
-    }
+    os_mapping = {"Darwin": "macOS", "Windows": "Windows", "Linux": "Linux"}
     detected_os = os_mapping.get(os_name, "unknown")
-    is_supported = detected_os in ["macOS", "Windows", "Linux"]  # All three are now supported
+    is_supported = detected_os in [
+        "macOS",
+        "Windows",
+        "Linux",
+    ]  # All three are now supported
 
     return detected_os, is_supported
 
 
 def check_python_version() -> Tuple[str, bool]:
     """Check if the Python version is compatible"""
-    current_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    current_version = (
+        f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    )
     is_compatible = sys.version_info.major == 3 and sys.version_info.minor >= 11
 
     return current_version, is_compatible
@@ -65,7 +67,7 @@ def test_stata_execution(stata_cli_path: str) -> bool:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                shell=True
+                shell=True,
             )
             # Send a simple command and exit
             commands = """
@@ -135,6 +137,7 @@ def check_mcp_installation() -> bool:
     """Check if MCP library is installed"""
     try:
         import mcp.server.fastmcp
+
         return True
     except ImportError:
         return False
@@ -160,7 +163,9 @@ def usable():
     detected_os, os_supported = check_os()
     print_status(f"Operating system (Current: {detected_os})", os_supported)
     if not os_supported:
-        print("  Warning: Your operating system may not be fully supported by Stata-MCP.")
+        print(
+            "  Warning: Your operating system may not be fully supported by Stata-MCP."
+        )
 
     # Check Python version
     python_version, python_compatible = check_python_version()
@@ -190,7 +195,9 @@ def usable():
         print_status("Stata execution test", stata_works)
         if not stata_works:
             print("  Warning: Stata was found but could not be executed properly.")
-            print("  You may need to specify the path manually in config.py or as an environment variable.")
+            print(
+                "  You may need to specify the path manually in config.py or as an environment variable."
+            )
 
     # Check and create necessary directories
     print("\nChecking required directories...")
@@ -205,18 +212,31 @@ def usable():
 
     # Overall summary
     print("\n===== Summary =====")
-    all_passed = os_supported and python_compatible and mcp_installed and stata_found and stata_works and all_dirs_ok
+    all_passed = (
+        os_supported
+        and python_compatible
+        and mcp_installed
+        and stata_found
+        and stata_works
+        and all_dirs_ok
+    )
 
     if all_passed:
         print("\n✅ Success! Your Stata-MCP setup is ready to use.")
-        print("You can now use Stata-MCP with your preferred MCP client (Claude, Cherry Studio, etc.)")
+        print(
+            "You can now use Stata-MCP with your preferred MCP client (Claude, Cherry Studio, etc.)"
+        )
     else:
-        print("\n⚠️ Some checks failed. Please address the issues above to use Stata-MCP.")
+        print(
+            "\n⚠️ Some checks failed. Please address the issues above to use Stata-MCP."
+        )
         if not stata_found or not stata_works:
-            print("\nTo manually specify your Stata path, add this to your MCP configuration:")
+            print(
+                "\nTo manually specify your Stata path, add this to your MCP configuration:"
+            )
             print('  "env": {')
             print('    "stata_cli": "/path/to/your/stata/executable"')
-            print('  }')
+            print("  }")
 
     return 0 if all_passed else 1
 

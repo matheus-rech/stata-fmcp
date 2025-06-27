@@ -3,6 +3,7 @@ import tomllib
 
 # TODO: make the class could be use
 
+
 class Config:
     # default config file path, and could not be changed
     CONFIG_FILE_PATH = os.path.expanduser("~/.stata-mcp/config.toml")

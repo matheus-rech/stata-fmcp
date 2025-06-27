@@ -41,12 +41,12 @@ class StataController:
 
         # Use a set of patterns to match various prompt scenarios
         patterns = [
-            r"\r\n\. ",         # Standard prompt
-            r"\r\n: ",           # Continuation prompt
-            r"\r\n--more--",     # More content prompt
-            r"r\(\d+\);",       # Error prompt
-            pexpect.TIMEOUT,        # Timeout
-            pexpect.EOF             # End of program
+            r"\r\n\. ",  # Standard prompt
+            r"\r\n: ",  # Continuation prompt
+            r"\r\n--more--",  # More content prompt
+            r"r\(\d+\);",  # Error prompt
+            pexpect.TIMEOUT,  # Timeout
+            pexpect.EOF,  # End of program
         ]
 
         index = self.child.expect(patterns, timeout=timeout)
@@ -147,7 +147,9 @@ class StataController:
         """
         Start the Stata session.
         """
-        self.child = pexpect.spawn(self.stata_cli_path, encoding='utf-8', timeout=self.timeout)
+        self.child = pexpect.spawn(
+            self.stata_cli_path, encoding="utf-8", timeout=self.timeout
+        )
         self._expect_prompt()
 
     def restart(self):
@@ -189,10 +191,7 @@ if __name__ == "__main__":
             # For commands that may require more time, specify a longer timeout
             summarize = temp_stata_session.run(f"summarize {var_str}", timeout=120)
             describe = temp_stata_session.run(f"describe {var_str}")
-            result = {
-                "summarize": summarize,
-                "describe": describe
-            }
+            result = {"summarize": summarize, "describe": describe}
             print(result.get("summarize"))
     except Exception as e:
         print(f"Error: {e}")
