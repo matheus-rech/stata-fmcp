@@ -35,5 +35,3 @@ src_private/
 
 source/paper
 
-# Native bash file
-.before_git.bash
