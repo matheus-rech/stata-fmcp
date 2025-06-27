@@ -184,7 +184,7 @@ def usable():
     # Find Stata CLI
     print("Locating Stata CLI...")
     animate_loading(2)  # Show loading animation for 2 seconds
-    stata_cli_path = StataFinder.find_stata(is_env=True)
+    stata_cli_path = StataFinder().find_stata(is_env=True)
 
     stata_found = bool(stata_cli_path and os.path.exists(stata_cli_path))
     print_status(
