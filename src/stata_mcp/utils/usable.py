@@ -169,7 +169,9 @@ def usable():
 
     # Check Python version
     python_version, python_compatible = check_python_version()
-    print_status(f"Python version (Current: {python_version})", python_compatible)
+    print_status(
+        f"Python version (Current: {python_version})",
+        python_compatible)
     if not python_compatible:
         print("  Warning: Python 3.11+ is recommended for Stata-MCP.")
 
@@ -185,7 +187,9 @@ def usable():
     stata_cli_path = StataFinder.find_stata(is_env=True)
 
     stata_found = bool(stata_cli_path and os.path.exists(stata_cli_path))
-    print_status(f"Stata CLI (Path: {stata_cli_path or 'Not found'})", stata_found)
+    print_status(
+        f"Stata CLI (Path: {stata_cli_path or 'Not found'})",
+        stata_found)
 
     # Test Stata execution if found
     stata_works = False

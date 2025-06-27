@@ -7,9 +7,10 @@
 # @Email  : sepinetam@gmail.com
 # @File   : controller.py
 
-import pexpect
 import re
 import time
+
+import pexpect
 
 
 class StataController:
@@ -66,7 +67,8 @@ class StataController:
             # Try sending a newline to trigger the prompt
             self.child.sendline("")
             try:
-                return self.child.expect([r"\r\n\. ", pexpect.TIMEOUT], timeout=5)
+                return self.child.expect(
+                    [r"\r\n\. ", pexpect.TIMEOUT], timeout=5)
             except pexpect.TIMEOUT:
                 return index
 
@@ -107,7 +109,8 @@ class StataController:
         elif result == 4:  # Timeout
             raise RuntimeError(f"Command timed out (> {timeout}s): {command}")
         elif result == 5:  # EOF
-            raise RuntimeError(f"Stata session terminated unexpectedly: {output}")
+            raise RuntimeError(
+                f"Stata session terminated unexpectedly: {output}")
 
         return output
 
@@ -141,7 +144,8 @@ class StataController:
                 time.sleep(1)  # Brief pause before retry
 
         # All retries failed
-        raise RuntimeError(f"Command failed after {max_retries} attempts: {last_error}")
+        raise RuntimeError(
+            f"Command failed after {max_retries} attempts: {last_error}")
 
     def start(self):
         """
@@ -167,8 +171,9 @@ class StataController:
             try:
                 self.child.sendline("exit, clear")
                 self.child.expect(pexpect.EOF, timeout=5)
-            except:
-                pass
+            except Exception as e:
+                print(
+                    f"Warning: Could not close Stata session with error: {e}")
             finally:
                 self.child.close()
 
@@ -189,7 +194,8 @@ if __name__ == "__main__":
             print("Stata data not found. Please check the path.")
         else:
             # For commands that may require more time, specify a longer timeout
-            summarize = temp_stata_session.run(f"summarize {var_str}", timeout=120)
+            summarize = temp_stata_session.run(
+                f"summarize {var_str}", timeout=120)
             describe = temp_stata_session.run(f"describe {var_str}")
             result = {"summarize": summarize, "describe": describe}
             print(result.get("summarize"))

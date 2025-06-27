@@ -1,23 +1,21 @@
 import argparse
-from datetime import datetime
 import os
 import platform
 import subprocess
 import sys
+from datetime import datetime
+from importlib.metadata import version
 from typing import List, Optional
 
 import dotenv
 import pandas as pd
-
 from mcp.server.fastmcp import FastMCP
-from importlib.metadata import version
 
-from .utils.usable import usable
+from .core.stata.StataController.controller import StataController
+from .core.stata.StataFinder.finder import StataFinder
 from .utils.Installer import Installer
 from .utils.Prompt import pmp
-
-from .core.stata.StataFinder.finder import StataFinder
-from .core.stata.StataController.controller import StataController
+from .utils.usable import usable
 
 __version__ = version("stata-mcp")
 
@@ -29,7 +27,9 @@ sys_os = platform.system()
 
 # Set the base output path for Stata files
 if sys_os == "Darwin" or sys_os == "Linux":
-    documents_path = os.getenv("documents_path", os.path.expanduser("~/Documents"))
+    documents_path = os.getenv(
+        "documents_path",
+        os.path.expanduser("~/Documents"))
 elif sys_os == "Windows":
     documents_path = os.getenv(
         "documents_path", os.path.join(os.environ["USERPROFILE"], "Documents")
@@ -47,10 +47,9 @@ try:
         exit_msg = (
             "Missing Stata.exe, you could config your Stata.exe abspath in your env\ne.g\n"
             r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
-            r"/usr/local/bin/stata-mp"
-        )
+            r"/usr/local/bin/stata-mp")
         sys.exit(exit_msg)
-except:
+except BaseException:
     stata_cli = None
 
 # Create a series of folder
@@ -170,12 +169,11 @@ def read_log(log_path: str) -> str:
     return log
 
 
-@mcp.tool(
-    name="get_data_info", description="Get descriptive statistics for the data file"
-)
-def get_data_info(
-    data_path: str, vars_list: Optional[List[str]] = None, encoding: str = "utf-8"
-) -> str:
+@mcp.tool(name="get_data_info",
+          description="Get descriptive statistics for the data file")
+def get_data_info(data_path: str,
+                  vars_list: Optional[List[str]] = None,
+                  encoding: str = "utf-8") -> str:
     """
     Analyze the data file and return descriptive statistics. Supports various file formats,
     including Stata data files (.dta), CSV files (.csv), and Excel files (.xlsx, .xls).
@@ -285,18 +283,25 @@ def get_data_info(
     output.append(f"Observations: {df.shape[0]}")
 
     if vars_list is not None:
-        output.append(f"Variables: {len(vars_list)} (selected from original variables)")
+        output.append(
+            f"Variables: {len(vars_list)} (selected from original variables)")
     else:
         output.append(f"Variables: {df.shape[1]}")
 
     # 2. Variable type statistics
-    num_numeric = sum(pd.api.types.is_numeric_dtype(df[col]) for col in df.columns)
+    num_numeric = sum(
+        pd.api.types.is_numeric_dtype(
+            df[col]) for col in df.columns)
     num_categorical = sum(
         pd.api.types.is_categorical_dtype(df[col]) or df[col].dtype == "object"
         for col in df.columns
     )
-    num_datetime = sum(pd.api.types.is_datetime64_dtype(df[col]) for col in df.columns)
-    num_boolean = sum(pd.api.types.is_bool_dtype(df[col]) for col in df.columns)
+    num_datetime = sum(
+        pd.api.types.is_datetime64_dtype(
+            df[col]) for col in df.columns)
+    num_boolean = sum(
+        pd.api.types.is_bool_dtype(
+            df[col]) for col in df.columns)
 
     output.append("\nVariable Type Statistics:")
     output.append(f"Numeric variables: {num_numeric}")
@@ -321,9 +326,11 @@ def get_data_info(
             missing_count = df[col].isna().sum()
             missing_percent = (missing_count / df.shape[0]) * 100
             if missing_count > 0:
-                output.append(f"  {col}: {missing_count} ({missing_percent:.2f}%)")
+                output.append(
+                    f"  {col}: {missing_count} ({missing_percent:.2f}%)")
     else:
-        # If there are too many variables, only show the top 10 with missing values
+        # If there are too many variables, only show the top 10 with missing
+        # values
         missing_cols = df.isna().sum().sort_values(ascending=False)
         missing_cols = missing_cols[missing_cols > 0]
         if len(missing_cols) > 0:
@@ -344,7 +351,8 @@ def get_data_info(
         # Add additional statistics
         if df.shape[0] > 0:  # Ensure there is data
             desc_stats["Missing"] = df[numeric_cols].isna().sum()
-            desc_stats["Missing Ratio"] = df[numeric_cols].isna().sum() / df.shape[0]
+            desc_stats["Missing Ratio"] = df[numeric_cols].isna().sum() / \
+                df.shape[0]
 
             # Optional: Add more statistics
             desc_stats["Skewness"] = df[numeric_cols].skew()
@@ -357,15 +365,19 @@ def get_data_info(
             output.append(f"    Mean: {desc_stats.loc[col, 'mean']:.4f}")
             output.append(f"    Std Dev: {desc_stats.loc[col, 'std']:.4f}")
             output.append(f"    Min: {desc_stats.loc[col, 'min']:.4f}")
-            output.append(f"    25th Percentile: {desc_stats.loc[col, '25%']:.4f}")
+            output.append(
+                f"    25th Percentile: {desc_stats.loc[col, '25%']:.4f}")
             output.append(f"    Median: {desc_stats.loc[col, '50%']:.4f}")
-            output.append(f"    75th Percentile: {desc_stats.loc[col, '75%']:.4f}")
+            output.append(
+                f"    75th Percentile: {desc_stats.loc[col, '75%']:.4f}")
             output.append(f"    Max: {desc_stats.loc[col, 'max']:.4f}")
             output.append(
                 f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})"
             )
-            output.append(f"    Skewness: {desc_stats.loc[col, 'Skewness']:.4f}")
-            output.append(f"    Kurtosis: {desc_stats.loc[col, 'Kurtosis']:.4f}")
+            output.append(
+                f"    Skewness: {desc_stats.loc[col, 'Skewness']:.4f}")
+            output.append(
+                f"    Kurtosis: {desc_stats.loc[col, 'Kurtosis']:.4f}")
 
     # 5. Frequency distribution of categorical variables
     categorical_cols = df.select_dtypes(include=["object", "category"]).columns
@@ -380,10 +392,12 @@ def get_data_info(
             output.append(f"\n  {col}:")
             output.append(f"    Unique values: {unique_count}")
 
-            # If number of unique values is reasonable (not more than 10), show frequency distribution
+            # If number of unique values is reasonable (not more than 10), show
+            # frequency distribution
             if unique_count <= 10 and unique_count > 0:
                 value_counts = df[col].value_counts().head(10)
-                value_percent = df[col].value_counts(normalize=True).head(10) * 100
+                value_percent = df[col].value_counts(
+                    normalize=True).head(10) * 100
 
                 for i, (value, count) in enumerate(value_counts.items()):
                     percent = value_percent[i]
@@ -392,7 +406,8 @@ def get_data_info(
                 # If too many unique values, only show top 5
                 output.append("    Top 5 most common values:")
                 value_counts = df[col].value_counts().head(5)
-                value_percent = df[col].value_counts(normalize=True).head(5) * 100
+                value_percent = df[col].value_counts(
+                    normalize=True).head(5) * 100
 
                 for i, (value, count) in enumerate(value_counts.items()):
                     percent = value_percent[i]
@@ -417,18 +432,22 @@ def get_data_info(
         or "day" in str(col).lower()
     ]
 
-    # If there are potential ID columns and time columns, try to analyze panel structure
+    # If there are potential ID columns and time columns, try to analyze panel
+    # structure
     if potential_id_cols and potential_time_cols:
         for id_col in potential_id_cols[:1]:  # Only try the first ID column
-            for time_col in potential_time_cols[:1]:  # Only try the first time column
+            # Only try the first time column
+            for time_col in potential_time_cols[:1]:
                 # Calculate panel structure
                 try:
                     n_ids = df[id_col].nunique()
                     n_times = df[time_col].nunique()
                     n_obs = df.shape[0]
 
-                    output.append("\nPotential Panel Data Structure Detection:")
-                    output.append(f"  ID variable: {id_col} (unique values: {n_ids})")
+                    output.append(
+                        "\nPotential Panel Data Structure Detection:")
+                    output.append(
+                        f"  ID variable: {id_col} (unique values: {n_ids})")
                     output.append(
                         f"  Time variable: {time_col} (unique values: {n_times})"
                     )
@@ -462,7 +481,7 @@ def get_data_info(
                         min_time = df[time_col].min()
                         max_time = df[time_col].max()
                         output.append(f"  Time span: {min_time} to {max_time}")
-                except:
+                except BaseException:
                     # If calculation fails, skip panel analysis
                     pass
 
@@ -493,11 +512,11 @@ def results_doc_path() -> str:
         - In specific Stata code, you can set the file output path at the beginning.
     """
     os.makedirs(
-        (
-            path := os.path.join(
-                result_doc_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
-            )
-        ),
+        (path := os.path.join(
+            result_doc_path,
+            datetime.strftime(
+                datetime.now(),
+                "%Y%m%d%H%M%S"))),
         exist_ok=True,
     )
     return path
@@ -528,8 +547,11 @@ def write_dofile(content: str) -> str:
 
     """
     file_path = os.path.join(
-        dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
-    )
+        dofile_base_path,
+        datetime.strftime(
+            datetime.now(),
+            "%Y%m%d%H%M%S") +
+        ".do")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
     return file_path
@@ -566,8 +588,8 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
     """
     # Create a new file path for the output
     new_file_path = os.path.join(
-        dofile_base_path, datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
-    )
+        dofile_base_path, datetime.strftime(
+            datetime.now(), "%Y%m%d%H%M%S") + ".do")
 
     # Check if original file exists and is valid
     original_exists = False
@@ -581,7 +603,8 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
             # If there's any error reading the file, we'll create a new one
             original_exists = False
 
-    # Write to the new file (either copying original content + new content, or just new content)
+    # Write to the new file (either copying original content + new content, or
+    # just new content)
     with open(new_file_path, "w", encoding="utf-8") as f:
         if original_exists:
             f.write(original_content)
@@ -661,8 +684,9 @@ def stata_do(dofile_path: str) -> str:
 def main() -> None:
     """Entry point for the command line interface."""
     parser = argparse.ArgumentParser(
-        prog="stata-mcp", description="Stata-MCP command line interface", add_help=True
-    )
+        prog="stata-mcp",
+        description="Stata-MCP command line interface",
+        add_help=True)
     parser.add_argument(
         "-v",
         "--version",
@@ -676,8 +700,9 @@ def main() -> None:
         help="check whether Stata-MCP could be used on this computer",
     )
     parser.add_argument(
-        "--install", action="store_true", help="install Stata-MCP to Claude Desktop"
-    )
+        "--install",
+        action="store_true",
+        help="install Stata-MCP to Claude Desktop")
 
     # mcp.run
     parser.add_argument(

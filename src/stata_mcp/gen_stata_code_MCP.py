@@ -7,8 +7,9 @@
 # @Email  : sepinetam@gmail.com
 # @File   : gen_stata_code_MCP.py
 
+from typing import Any, Dict, List, Optional, Union
+
 from mcp.server.fastmcp import FastMCP
-from typing import Optional, List, Dict, Any, Union
 
 mcp = FastMCP(name="StataCommandGenerator")
 
@@ -240,7 +241,8 @@ class StataCommandGenerator:
         """
         # Validate incompatible options
         if detail and meanonly:
-            raise ValueError("detail and meanonly options cannot be used together")
+            raise ValueError(
+                "detail and meanonly options cannot be used together")
         if weight and "iweights" in weight and detail:
             raise ValueError("iweights may not be used with the detail option")
 
@@ -312,10 +314,9 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(
-        name="regress",
-        description="Generate and return Stata's 'regress' command (linear regression)",
-    )
+    @mcp.tool(name="regress",
+              description="Generate and return Stata's 'regress' command (linear regression)",
+              )
     def regress(
         depvar: str,
         indepvars: Optional[List[str]] = None,
@@ -384,12 +385,14 @@ class StataCommandGenerator:
         if not isinstance(depvar, str) or not depvar:
             raise ValueError("depvar must be a non-empty string")
 
-        if indepvars is not None and not all(isinstance(v, str) for v in indepvars):
+        if indepvars is not None and not all(
+                isinstance(v, str) for v in indepvars):
             raise ValueError("indepvars must contain only strings")
 
         # Validate incompatible options
         if noconstant and hascons:
-            raise ValueError("noconstant and hascons options cannot be used together")
+            raise ValueError(
+                "noconstant and hascons options cannot be used together")
 
         if beta and vce and "cluster" in vce:
             raise ValueError("beta may not be used with vce(cluster)")
@@ -429,8 +432,15 @@ class StataCommandGenerator:
 
         # SE/Robust options
         if vce:
-            valid_vce = ["ols", "robust", "bootstrap", "jackknife", "hc2", "hc3"]
-            # For cluster, we check if it starts with "cluster " to allow for the cluster variable
+            valid_vce = [
+                "ols",
+                "robust",
+                "bootstrap",
+                "jackknife",
+                "hc2",
+                "hc3"]
+            # For cluster, we check if it starts with "cluster " to allow for
+            # the cluster variable
             if not (vce in valid_vce or vce.startswith("cluster ")):
                 raise ValueError(
                     f"vce must be one of {valid_vce} or 'cluster clustvar'"
@@ -499,10 +509,9 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(
-        name="generate",
-        description="Generate and return Stata's 'generate' command (create or change variable contents)",
-    )
+    @mcp.tool(name="generate",
+              description="Generate and return Stata's 'generate' command (create or change variable contents)",
+              )
     def generate(
         newvar: str,
         exp: str,
@@ -567,7 +576,8 @@ class StataCommandGenerator:
 
         # Validate incompatible options
         if before and after:
-            raise ValueError("before and after options cannot be used together")
+            raise ValueError(
+                "before and after options cannot be used together")
 
         # Start building the command
         cmd_parts = ["generate"]
@@ -609,10 +619,9 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(
-        name="replace",
-        description="Generate and return Stata's 'replace' command (replace contents of existing variable)",
-    )
+    @mcp.tool(name="replace",
+              description="Generate and return Stata's 'replace' command (replace contents of existing variable)",
+              )
     def replace(
         oldvar: str,
         exp: str,
@@ -675,10 +684,9 @@ class StataCommandGenerator:
         return " ".join(cmd_parts)
 
     @staticmethod
-    @mcp.tool(
-        name="egen",
-        description="Generate and return Stata's 'egen' command (extensions to generate)",
-    )
+    @mcp.tool(name="egen",
+              description="Generate and return Stata's 'egen' command (extensions to generate)",
+              )
     def egen(
         newvar: str,
         fcn: str,
@@ -1209,7 +1217,8 @@ class StataCommandGenerator:
         if not isinstance(depvar, str) or not depvar:
             raise ValueError("depvar must be a non-empty string")
 
-        if indepvars is not None and not all(isinstance(v, str) for v in indepvars):
+        if indepvars is not None and not all(
+                isinstance(v, str) for v in indepvars):
             raise ValueError("indepvars must contain only strings")
 
         valid_model_types = {"re", "be", "fe", "mle", "pa"}
@@ -1236,7 +1245,8 @@ class StataCommandGenerator:
             )
 
         if maximize_options and model_type != "mle":
-            raise ValueError("maximize_options are only valid with mle model type")
+            raise ValueError(
+                "maximize_options are only valid with mle model type")
 
         if noconstant and model_type not in {"mle", "pa"}:
             raise ValueError(
@@ -1571,11 +1581,13 @@ class StataCommandGenerator:
         # Process using_files
         if isinstance(using_files, list):
             if not all(isinstance(f, str) for f in using_files):
-                raise ValueError("All file paths in using_files must be strings")
+                raise ValueError(
+                    "All file paths in using_files must be strings")
             using_files_str = " ".join(using_files)
         else:
             if not isinstance(using_files, str):
-                raise ValueError("using_files must be a string or list of strings")
+                raise ValueError(
+                    "using_files must be a string or list of strings")
             using_files_str = using_files
 
         # Start building the command
@@ -1662,13 +1674,15 @@ class StataCommandGenerator:
         """
         # Input validation
         if all and (varlist or if_exp or in_range):
-            raise ValueError("When all=True, no other parameters should be provided")
+            raise ValueError(
+                "When all=True, no other parameters should be provided")
 
         if not any([varlist, if_exp, in_range, all]):
             raise ValueError("At least one parameter must be provided")
 
         if varlist and if_exp and not in_range:
-            raise ValueError("Cannot combine varlist and if_exp without in_range")
+            raise ValueError(
+                "Cannot combine varlist and if_exp without in_range")
 
         # Start building the command
         cmd_parts = ["drop"]
@@ -1745,7 +1759,8 @@ class StataCommandGenerator:
             raise ValueError("At least one parameter must be provided")
 
         if varlist and if_exp and not in_range:
-            raise ValueError("Cannot combine varlist and if_exp without in_range")
+            raise ValueError(
+                "Cannot combine varlist and if_exp without in_range")
 
         # Start building the command
         cmd_parts = ["keep"]
@@ -1889,7 +1904,8 @@ class StataCommandGenerator:
         # Process keepusing option
         if keepusing:
             if not all(isinstance(v, str) for v in keepusing):
-                raise ValueError("All variable names in keepusing must be strings")
+                raise ValueError(
+                    "All variable names in keepusing must be strings")
             options.append(f"keepusing({' '.join(keepusing)})")
 
         # Process other options
@@ -2265,7 +2281,8 @@ class StataCommandGenerator:
             raise ValueError("lblname must be provided")
 
         if not values_labels:
-            raise ValueError("values_labels must contain at least one value-label pair")
+            raise ValueError(
+                "values_labels must contain at least one value-label pair")
 
         # Start building the command
         cmd_parts = [f"label define {lblname}"]
@@ -2276,7 +2293,8 @@ class StataCommandGenerator:
             # Handle extended missing values
             if isinstance(value, str) and value.startswith("."):
                 value_str = (
-                    value  # Keep as is for extended missing values like .a, .b, etc.
+                    # Keep as is for extended missing values like .a, .b, etc.
+                    value
                 )
             else:
                 value_str = str(value)
@@ -2431,7 +2449,10 @@ class StataCommandGenerator:
         name="label_copy",
         description="生成并返回 Stata 的 'label copy' 命令（复制值标签）",
     )
-    def label_copy(lblname_from: str, lblname_to: str, replace: bool = False) -> str:
+    def label_copy(
+            lblname_from: str,
+            lblname_to: str,
+            replace: bool = False) -> str:
         """
         Generate Stata's label copy command to copy value labels.
 
@@ -2457,7 +2478,8 @@ class StataCommandGenerator:
             'label copy sexlbl gender, replace'
         """
         if not lblname_from or not lblname_to:
-            raise ValueError("Both lblname_from and lblname_to must be provided")
+            raise ValueError(
+                "Both lblname_from and lblname_to must be provided")
 
         cmd = f"label copy {lblname_from} {lblname_to}"
 

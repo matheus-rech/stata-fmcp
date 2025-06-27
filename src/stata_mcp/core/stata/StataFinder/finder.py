@@ -7,11 +7,12 @@
 # @Email  : sepinetam@gmail.com
 # @File   : finder.py
 
-import os
 import glob
-import dotenv
+import os
 import platform
-from typing import Dict, Callable, Any, Optional
+from typing import Any, Callable, Dict, Optional
+
+import dotenv
 
 from .windows import *
 

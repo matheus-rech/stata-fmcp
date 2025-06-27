@@ -7,8 +7,8 @@
 # @Email  : sepinetam@gmail.com
 # @File   : installer.py
 
-import os
 import json
+import os
 
 from ...core.stata.StataFinder.finder import StataFinder
 
@@ -27,7 +27,8 @@ class Installer:
                 "There is not a Linux version of Claude yet, please use the Windows or macOS version."
             )
         elif sys_os == "Windows":
-            appdata = os.getenv("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
+            appdata = os.getenv(
+                "APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
             self.config_file_path = os.path.join(
                 appdata, "Claude", "claude_desktop_config.json"
             )
@@ -37,7 +38,8 @@ class Installer:
         # Create an empty file if it does not already exist
         if not os.path.exists(self.config_file_path):
             with open(self.config_file_path, "w", encoding="utf-8") as f:
-                f.write('{"mcpServers": {}}')  # Or write the default configuration
+                # Or write the default configuration
+                f.write('{"mcpServers": {}}')
 
         stata_cli = find_stata(os_name=sys_os, is_env=False)
         self.stata_mcp_config = {
@@ -59,7 +61,8 @@ class Installer:
         print(f"Configuration file to modify:\n  {self.config_file_path}\n")
 
         # Ask the user for confirmation
-        choice = input("Do you want to proceed and add this configuration? [y/N]: ")
+        choice = input(
+            "Do you want to proceed and add this configuration? [y/N]: ")
         if choice.strip().lower() != "y":
             print("Installation aborted.")
             return

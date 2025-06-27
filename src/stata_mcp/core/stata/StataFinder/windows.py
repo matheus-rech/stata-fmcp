@@ -8,9 +8,8 @@
 # @File   : windows.py
 
 import os
-import string
-
 import re
+import string
 
 
 def get_available_drives():
