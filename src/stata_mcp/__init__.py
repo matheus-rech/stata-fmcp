@@ -27,7 +27,10 @@ sys_os = platform.system()
 
 # Determine documents path
 if sys_os in ["Darwin", "Linux"]:
-    documents_path = os.getenv("documents_path", os.path.expanduser("~/Documents"))
+    documents_path = os.getenv(
+        "documents_path",
+        os.path.expanduser("~/Documents")
+    )
 elif sys_os == "Windows":
     documents_path = os.getenv(
         "documents_path",

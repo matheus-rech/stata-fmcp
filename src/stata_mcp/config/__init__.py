@@ -1,5 +1,6 @@
 import os
 import platform
+
 import tomllib
 
 
@@ -21,7 +22,8 @@ class Config:
         if sys_os in ["Darwin", "Linux"]:
             documents_path = os.path.expanduser("~/Documents")
         elif sys_os == "Windows":
-            documents_path = os.path.join(os.environ.get("USERPROFILE", "~"), "Documents")
+            documents_path = os.path.join(
+                os.environ.get("USERPROFILE", "~"), "Documents")
         else:
             documents_path = os.path.expanduser("~/Documents")
         return {

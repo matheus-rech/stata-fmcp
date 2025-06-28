@@ -10,6 +10,7 @@ config_mgr = Config()
 def home():
     return render_template('index.html')
 
+
 @app.route('/config', methods=['GET', 'POST'])
 def config():
     saved = request.args.get('saved') == '1'
