@@ -21,7 +21,6 @@ __version__ = version("stata-mcp")
 dotenv.load_dotenv()
 mcp = FastMCP(name="stata-mcp")
 config_mgr = Config()
-cfg = config_mgr.config
 
 # Initialize optional parameters
 sys_os = platform.system()
@@ -38,7 +37,7 @@ else:
     sys.exit("Unknown System")
 
 # Use configured output path if available
-output_base_path = cfg.get("output_base_path") or os.path.join(
+output_base_path = config_mgr.get("stata-mcp.output_base_path") or os.path.join(
     documents_path, "stata-mcp-folder"
 )
 os.makedirs(output_base_path, exist_ok=True)
@@ -47,7 +46,9 @@ try:
     # stata_cli
     finder = StataFinder()
     default_cli = finder.find_stata()
-    stata_cli = cfg.get("stata_cli") or os.getenv("stata_cli", default_cli)
+    stata_cli = config_mgr.get("stata.stata_cli") or os.getenv(
+        "stata_cli", default_cli
+    )
     if stata_cli is None:
         exit_msg = (
             "Missing Stata.exe, "

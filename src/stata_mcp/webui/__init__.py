@@ -16,14 +16,14 @@ def config():
     if request.method == 'POST':
         stata_cli = request.form['stata_cli']
         output_base_path = request.form['output_base_path']
-        config_mgr.set('stata_cli', stata_cli)
-        config_mgr.set('output_base_path', output_base_path)
+        config_mgr.set('stata.stata_cli', stata_cli)
+        config_mgr.set('stata-mcp.output_base_path', output_base_path)
         return redirect(url_for('config', saved='1'))
 
     return render_template(
         'config.html',
-        stata_cli=config_mgr.get('stata_cli', ''),
-        output_base_path=config_mgr.get('output_base_path', ''),
+        stata_cli=config_mgr.get('stata.stata_cli', ''),
+        output_base_path=config_mgr.get('stata-mcp.output_base_path', ''),
         saved=saved
     )
 
