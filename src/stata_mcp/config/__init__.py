@@ -4,7 +4,7 @@ import tomllib
 
 
 class Config:
-    """Simple configuration manager for Stata-MCP."""
+    """Configuration manager supporting nested TOML sections."""
 
     CONFIG_FILE_PATH = os.path.expanduser("~/.stata-mcp/config.toml")
 
@@ -25,29 +25,75 @@ class Config:
         else:
             documents_path = os.path.expanduser("~/Documents")
         return {
-            "stata_cli": "",
-            "output_base_path": os.path.join(documents_path, "stata-mcp-folder"),
+            "stata": {"stata_cli": ""},
+            "stata-mcp": {
+                "output_base_path": os.path.join(
+                    documents_path, "stata-mcp-folder"
+                )
+            },
+            "llm": {
+                "LLM_TYPE": "ollama",
+                "ollama": {
+                    "MODEL": "qwen2.5-coder:7b",
+                    "BASE_URL": "http://localhost:11434",
+                },
+                "openai": {
+                    "MODEL": "gpt-3.5-turbo",
+                    "BASE_URL": "https://api.openai.com/v1",
+                    "API_KEY": "<YOUR_OPENAI_API_KEY>",
+                },
+            },
         }
+
+    def _write_dict(self, f, data: dict, prefix: str = "") -> None:
+        for key, value in data.items():
+            if isinstance(value, dict):
+                section = f"{prefix}.{key}" if prefix else key
+                f.write(f"\n[{section}]\n")
+                self._write_dict(f, value, section)
+            else:
+                escaped = str(value).replace('"', '\\"')
+                f.write(f"{key} = \"{escaped}\"\n")
 
     def _save(self) -> None:
         """Write the current config to the TOML file."""
         with open(self.CONFIG_FILE_PATH, "w", encoding="utf-8") as f:
-            for key, value in self.config.items():
-                escaped = str(value).replace('"', '\\"')
-                f.write(f"{key} = \"{escaped}\"\n")
+            self._write_dict(f, self.config)
 
     def load_config(self) -> dict:
         with open(self.CONFIG_FILE_PATH, "rb") as f:
             return tomllib.load(f)
 
+    def _get_nested(self, data: dict, keys: list[str], default=None):
+        for k in keys:
+            if isinstance(data, dict) and k in data:
+                data = data[k]
+            else:
+                return default
+        return data
+
     def get(self, key: str, default: str | None = None):
-        return self.config.get(key, default)
+        keys = key.split(".")
+        return self._get_nested(self.config, keys, default)
+
+    def _set_nested(self, data: dict, keys: list[str], value):
+        for k in keys[:-1]:
+            data = data.setdefault(k, {})
+        data[keys[-1]] = value
 
     def set(self, key: str, value: str) -> None:
-        self.config[key] = value
+        keys = key.split(".")
+        self._set_nested(self.config, keys, value)
         self._save()
 
+    def _delete_nested(self, data: dict, keys: list[str]):
+        for k in keys[:-1]:
+            data = data.get(k)
+            if not isinstance(data, dict):
+                return
+        data.pop(keys[-1], None)
+
     def delete(self, key: str) -> None:
-        if key in self.config:
-            del self.config[key]
-            self._save()
+        keys = key.split(".")
+        self._delete_nested(self.config, keys)
+        self._save()

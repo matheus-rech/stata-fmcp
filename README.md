@@ -43,7 +43,9 @@ The standard config json as follows, you can DIY your config via add envs.
 }
 ```
 
-For more detailed usage information, visit the [Usage guide](source/docs/Usages/Usage.md). 
+For more detailed usage information, visit the [Usage guide](source/docs/Usages/Usage.md).
+
+Configuration values are stored in `~/.stata-mcp/config.toml`. See the [Configuration guide](source/docs/Usages/Configuration.md) for details.
 
 And some advanced usage, visit the [Advanced guide](source/docs/Usages/Advanced.md)
 
@@ -84,6 +86,7 @@ uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # here is the wheel file 
 
 ## 📝 Documentation
 - For more detailed usage information, visit the [Usage guide](source/docs/Usages/Usage.md).
+- See how to edit the config file in the [Configuration guide](source/docs/Usages/Configuration.md).
 - Advanced Usage, visit the [Advanced](source/docs/Usages/Advanced.md)
 - Some questions, visit the [Questions](source/docs/Usages/Questions.md)
 - Difference with [Stata-MCP@hanlulong](https://github.com/hanlulong/stata-mcp), visit the [Difference](source/docs/Difference.md)

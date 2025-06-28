@@ -44,6 +44,7 @@ El archivo json de configuración estándar es el siguiente; puedes personalizar
 ```
 
 Para información más detallada sobre el uso, visita la [guía de Uso](../../Usages/Usage.md).
+Los valores de configuración se almacenan en `~/.stata-mcp/config.toml`. Consulta la [guía de Configuración](../../Usages/Configuration.md) para más detalles.
 
 Y para un uso más avanzado, visita la [Guía avanzada](../../Usages/Advanced.md)
 
@@ -84,6 +85,7 @@ uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # cambia el nombre del ar
 
 ## 📝 Documentación
 - Para información más detallada sobre el uso, visita la [guía de Uso](../../Usages/Usage.md).
+- Consulta la [guía de Configuración](../../Usages/Configuration.md) para editar el archivo de configuración.
 - Uso avanzado, visita la [Guía avanzada](../../Usages/Advanced.md)
 - Algunas preguntas, visita las [Preguntas](../../Usages/Questions.md)
 - Diferencia con [Stata-MCP@hanlulong](https://github.com/hanlulong/stata-mcp), visita las [Diferencias](../../Difference.md)
