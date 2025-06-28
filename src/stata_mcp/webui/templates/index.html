@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flask App</title>
+    <title>Stata-MCP Web UI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Hello, Flask!</h1>
+    <div class="container">
+        <h1>Stata-MCP Web UI</h1>
+        <p>Welcome to the configuration interface.</p>
+        <p><a class="btn" href="{{ url_for('config') }}">Open Configuration</a></p>
+    </div>
 </body>
 </html>
