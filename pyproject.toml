@@ -14,7 +14,6 @@ dependencies = [
 
 [project.scripts]
 stata-mcp = "stata_mcp:main"
-stata-mcp-webui = "stata_mcp.webui:main"
 
 [build-system]
 requires = ["hatchling"]

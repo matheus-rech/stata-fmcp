@@ -707,6 +707,11 @@ def main() -> None:
         "--install",
         action="store_true",
         help="install Stata-MCP to Claude Desktop")
+    parser.add_argument(
+        "--webui",
+        action="store_true",
+        help="launch the configuration web UI",
+    )
 
     # mcp.run
     parser.add_argument(
@@ -722,6 +727,9 @@ def main() -> None:
         sys.exit(usable())
     elif args.install:
         Installer(sys_os=sys.platform).install()
+    elif args.webui:
+        from .webui import main as webui_main
+        webui_main()
     else:
         print("Starting Stata-MCP...")
 
