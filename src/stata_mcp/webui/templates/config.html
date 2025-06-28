@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Configuration Page</h1>
+
+    <form method="post">
+        <label for="stata_path">Stata Path:</label>
+        <input type="text" id="stata_path" name="stata_path" required><br><br>
+
+        <label for="model_category">Model Category:</label>
+        <select id="model_category" name="model_category" required>
+            <option value="ollama">OLLAMA</option>
+            <option value="OpenAI">OPENAI</option>
+        </select><br><br>
+
+        <button type="submit">Save Configuration</button>
+    </form>
+
+    {% if stata_path and model_category %}
+        <h2>Selected Values:</h2>
+        <p>Stata Path: {{ stata_path }}</p>
+        <p>Model Category: {{ model_category }}</p>
+        {% if result == "A" %}
+            <p>A</p>
+        {% elif result == "B" %}
+            <p>B</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
