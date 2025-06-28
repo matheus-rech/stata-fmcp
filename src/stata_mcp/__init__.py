@@ -10,6 +10,7 @@ import dotenv
 import pandas as pd
 from mcp.server.fastmcp import FastMCP
 
+from .config import Config
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Installer import Installer
 from .utils.Prompt import pmp
@@ -19,28 +20,34 @@ __version__ = version("stata-mcp")
 
 dotenv.load_dotenv()
 mcp = FastMCP(name="stata-mcp")
+config_mgr = Config()
+cfg = config_mgr.config
 
 # Initialize optional parameters
 sys_os = platform.system()
 
-# Set the base output path for Stata files
-if sys_os == "Darwin" or sys_os == "Linux":
-    documents_path = os.getenv(
-        "documents_path",
-        os.path.expanduser("~/Documents"))
+# Determine documents path
+if sys_os in ["Darwin", "Linux"]:
+    documents_path = os.getenv("documents_path", os.path.expanduser("~/Documents"))
 elif sys_os == "Windows":
     documents_path = os.getenv(
-        "documents_path", os.path.join(os.environ["USERPROFILE"], "Documents")
+        "documents_path",
+        os.path.join(os.environ.get("USERPROFILE", "~"), "Documents"),
     )
 else:
     sys.exit("Unknown System")
-output_base_path = os.path.join(documents_path, "stata-mcp-folder")
+
+# Use configured output path if available
+output_base_path = cfg.get("output_base_path") or os.path.join(
+    documents_path, "stata-mcp-folder"
+)
 os.makedirs(output_base_path, exist_ok=True)
 
 try:
     # stata_cli
     finder = StataFinder()
-    stata_cli = os.getenv("stata_cli", finder.find_stata())
+    default_cli = finder.find_stata()
+    stata_cli = cfg.get("stata_cli") or os.getenv("stata_cli", default_cli)
     if stata_cli is None:
         exit_msg = (
             "Missing Stata.exe, "

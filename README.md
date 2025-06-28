@@ -58,6 +58,7 @@ For the new version, you don't need to install the `stata-mcp` package again, yo
 ```bash
 uvx stata-mcp --usable
 uvx stata-mcp --version
+uvx stata-mcp-webui  # launch the configuration web UI
 ```
 
 If you want to use it locally, you can install it via pip or download the source code.

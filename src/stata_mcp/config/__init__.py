@@ -1,32 +1,53 @@
 import os
-
+import platform
 import tomllib
-
-# TODO: make the class could be use
 
 
 class Config:
-    # default config file path, and could not be changed
+    """Simple configuration manager for Stata-MCP."""
+
     CONFIG_FILE_PATH = os.path.expanduser("~/.stata-mcp/config.toml")
 
-    def __init__(self):
-        self.state = os.path.exists(self.CONFIG_FILE_PATH)
+    def __init__(self) -> None:
+        os.makedirs(os.path.dirname(self.CONFIG_FILE_PATH), exist_ok=True)
+        if not os.path.exists(self.CONFIG_FILE_PATH):
+            self.config: dict = self._default_config()
+            self._save()
+        else:
+            self.config = self.load_config()
+
+    def _default_config(self) -> dict:
+        sys_os = platform.system()
+        if sys_os in ["Darwin", "Linux"]:
+            documents_path = os.path.expanduser("~/Documents")
+        elif sys_os == "Windows":
+            documents_path = os.path.join(os.environ.get("USERPROFILE", "~"), "Documents")
+        else:
+            documents_path = os.path.expanduser("~/Documents")
+        return {
+            "stata_cli": "",
+            "output_base_path": os.path.join(documents_path, "stata-mcp-folder"),
+        }
+
+    def _save(self) -> None:
+        """Write the current config to the TOML file."""
+        with open(self.CONFIG_FILE_PATH, "w", encoding="utf-8") as f:
+            for key, value in self.config.items():
+                escaped = str(value).replace('"', '\\"')
+                f.write(f"{key} = \"{escaped}\"\n")
 
     def load_config(self) -> dict:
-        if not self.state:
-            return {}
         with open(self.CONFIG_FILE_PATH, "rb") as f:
-            config = tomllib.load(f)
-        return config
+            return tomllib.load(f)
 
-    def add_config(self, key: str, value: str):
-        pass
+    def get(self, key: str, default: str | None = None):
+        return self.config.get(key, default)
 
-    def delete_config(self, key: str):
-        """ask whether to delete the config item"""
+    def set(self, key: str, value: str) -> None:
+        self.config[key] = value
+        self._save()
 
-    def update_config(self, key: str, value: str):
-        """ask whether to update the config item"""
-
-    def get_config(self, key: str) -> str:
-        pass
+    def delete(self, key: str) -> None:
+        if key in self.config:
+            del self.config[key]
+            self._save()
