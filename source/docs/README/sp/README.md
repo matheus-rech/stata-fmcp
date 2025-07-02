@@ -21,7 +21,7 @@
 > ¿Buscando otras integraciones de Stata u otras opciones?
 >
 > - Una integración para VScode o Cursor [aquí](https://github.com/hanlulong/stata-mcp). ¿Confundido? 💡 [Diferencias](../../Difference.md)
-> - Uso en Jupyter Lab (Importante: Stata 17+) [aquí](https://github.com/sepinetam/Jupyter-Stata)
+> - Uso en Jupyter Lab (Importante: Stata 17+) [aquí](https://github.com/hanlulong/stata-mcp/blob/main/docs/jupyter-stata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en construcción
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)

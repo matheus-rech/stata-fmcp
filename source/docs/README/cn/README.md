@@ -21,7 +21,7 @@
 > 正在寻找其他 Stata 集成？
 >
 > - VScode 或 Cursor 集成 [此处](https://github.com/hanlulong/stata-mcp)。搞不清楚？️💡 [区别](../../Difference.md)
-> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](https://github.com/sepinetam/Jupyter-Stata)
+> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](https://github.com/hanlulong/stata-mcp/blob/main/docs/jupyter-stata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 建造之下
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)

@@ -21,7 +21,7 @@
 > Vous cherchez d'autres intégrations Stata?
 >
 > - Une intégration VScode ou Cursor [ici](https://github.com/hanlulong/stata-mcp). Vous êtes perdu? 💡 [Différence](../../Difference.md)
-> - Utilisation de Jupyter Lab (Important: Stata 17+) [ici](https://github.com/sepinetam/Jupyter-Stata)
+> - Utilisation de Jupyter Lab (Important: Stata 17+) [ici](https://github.com/hanlulong/stata-mcp/blob/main/docs/jupyter-stata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en cours de construction
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
