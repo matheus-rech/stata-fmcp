@@ -15,6 +15,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
 [![Issue](https://img.shields.io/badge/Issue-report-green.svg)](https://github.com/sepinetam/stata-mcp/issues/new)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/Stata-MCP)
 
 ---
 
