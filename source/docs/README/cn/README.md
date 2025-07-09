@@ -25,6 +25,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 建造之下
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
+> - [TexIV](https://github.com/sepinetam/TexIV)
 
 
 ## 💡 快速开始

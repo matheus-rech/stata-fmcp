@@ -25,6 +25,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en construcción
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
+> - [TexIV](https://github.com/sepinetam/TexIV)
 
 ## 💡 Inicio Rápido
 > La configuración estándar requiere que Stata esté instalado en la ruta predeterminada y que exista la interfaz de línea de comandos de Stata (para macOS y Linux).
