@@ -15,17 +15,18 @@
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
 [![Issue](https://img.shields.io/badge/Issue-report-green.svg)](https://github.com/sepinetam/stata-mcp/issues/new)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/Stata-MCP)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
 
 > 正在寻找其他 Stata 集成？
 >
 > - VScode 或 Cursor 集成 [此处](https://github.com/hanlulong/stata-mcp)。搞不清楚？️💡 [区别](../../Difference.md)
-> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](https://github.com/hanlulong/stata-mcp/blob/main/docs/jupyter-stata.md)
+> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](https://github.com/sepinetam/Jupyter-Stata)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 建造之下
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
+> - [TexIV](https://github.com/sepinetam/TexIV)
 
 
 ## 💡 快速开始
@@ -47,8 +48,6 @@
 
 有关更详细的使用信息，请访问[使用指南](../../Usages/Usage.md)。
 
-配置文件位于 `~/.stata-mcp/config.toml`，详见[配置指南](../../Usages/Configuration.md)。
-
 一些高级的功能，访问[高级指南](../../Usages/Advanced.md)
 
 ### 前提条件
@@ -62,7 +61,6 @@
 ```bash
 uvx stata-mcp --usable
 uvx stata-mcp --version
-uvx stata-mcp --webui
 ```
 
 如果您希望在本地使用，也可以通过 pip 安装或下载源代码并编译。
@@ -83,12 +81,11 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.5.3-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
 - 有关更详细的使用信息，请访问[使用指南](../../Usages/Usage.md)。
-- 了解如何编辑配置文件，请阅读[配置指南](../../Usages/Configuration.md)。
 - 高级用法，请访问[高级指南](../../Usages/Advanced.md)
 - 一些问题，请访问[问题](../../Usages/Questions.md)
 - 与[Stata-MCP@hanlulong](https://github.com/hanlulong/stata-mcp)的区别，请访问[区别](../../Difference.md)
@@ -126,18 +123,18 @@ uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.0}
+  version = {1.5.3}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.6.0) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.5.3) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.6.0. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.5.3. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 联系方式
