@@ -26,7 +26,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en construcción
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV)
+> - [TexIV](https://github.com/sepinetam/TexIV) - Un marco impulsado por aprendizaje automático que transforma datos de texto en variables utilizables para investigación empírica utilizando técnicas avanzadas de NLP y ML
 
 ## 💡 Inicio Rápido
 > La configuración estándar requiere que Stata esté instalado en la ruta predeterminada y que exista la interfaz de línea de comandos de Stata (para macOS y Linux).

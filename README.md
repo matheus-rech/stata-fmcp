@@ -26,7 +26,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 under construction
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV)
+> - [TexIV](https://github.com/sepinetam/TexIV) - A machine learning-driven framework that transforms text data into usable variables for empirical research using advanced NLP and ML techniques
 
 ## 💡 Quick Start
 > Standard config requires: please make sure the stata is installed at the default path, and the stata cli (for macOS and Linux) exists.

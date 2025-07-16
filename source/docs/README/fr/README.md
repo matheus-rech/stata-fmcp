@@ -26,7 +26,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en cours de construction
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV)
+> - [TexIV](https://github.com/sepinetam/TexIV) - Un cadre de transformation de texte en variables basé sur l'apprentissage automatique qui convertit les données textuelles en variables utilisables pour la recherche empirique en utilisant des techniques avancées de NLP et de ML
 
 ## 💡 Démarrage Rapide
 > La configuration standard nécessite que Stata soit installé sur le chemin par défaut et que l'interface en ligne de commande de Stata (pour macOS et Linux) soit disponible.

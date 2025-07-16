@@ -26,7 +26,7 @@
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 建造之下
 > - [AER-MCP](https://github.com/sepinetam/AER-MCP)
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV)
+> - [TexIV](https://github.com/sepinetam/TexIV) - 基于机器学习的文本转变量框架，利用先进的NLP和机器学习技术将文本数据转化为可用于实证研究的变量
 
 
 ## 💡 快速开始
