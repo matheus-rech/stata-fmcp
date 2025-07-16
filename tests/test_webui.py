@@ -13,7 +13,7 @@ import unittest
 from pathlib import Path
 
 # Add src to path
-sys.path.insert(0, 'src')
+sys.path.insert(0, '../src')
 
 from stata_mcp.webui.utils.config_validator import (
     validate_stata_cli_path,

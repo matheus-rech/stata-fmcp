@@ -24,7 +24,6 @@ config.py
 
 # test
 test/
-tests/
 
 # Logs
 logs/
