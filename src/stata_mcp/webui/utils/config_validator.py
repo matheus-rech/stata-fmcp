@@ -5,7 +5,6 @@ This module provides validation functions for all configuration fields
 from the complete example.toml structure.
 """
 
-import time  # For backup timestamp
 import os
 import platform
 import re
@@ -72,7 +71,7 @@ def validate_output_base_path(path: str) -> Tuple[bool, str, Optional[str]]:
 
             # Check write permissions
             if not os.access(path, os.W_OK):
-                return False, f"Directory is not writable: {path}", f"Check directory permissions"
+                return False, f"Directory is not writable: {path}", "Check directory permissions"
         else:
             # Try to create the directory
             try:
@@ -82,7 +81,7 @@ def validate_output_base_path(path: str) -> Tuple[bool, str, Optional[str]]:
                 with open(test_file, "w") as f:
                     f.write("test")
                 os.remove(test_file)
-            except (OSError, IOError) as e:
+            except OSError as e:
                 return False, f"Cannot create or write to directory: {path}", str(
                     e)
 
@@ -285,25 +284,6 @@ def validate_configuration(
 def create_configuration_backup(config_path: str) -> str:
     """Create a backup of the current configuration file."""
     import time
-    if not os.path.exists(config_path):
-        return ""
-
-    timestamp = int(time.time())
-    backup_path = f"{config_path}.backup.{timestamp}"
-    shutil.copy2(config_path, backup_path)
-    return backup_path
-
-
-def create_configuration_backup(config_path: str) -> str:
-    """
-    Create a backup of the current configuration file.
-
-    Args:
-        config_path: Path to the configuration file
-
-    Returns:
-        Path to the backup file
-    """
     if not os.path.exists(config_path):
         return ""
 

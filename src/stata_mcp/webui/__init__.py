@@ -110,18 +110,19 @@ def config():
 
         if all_valid:
             # Create backup before saving
-            backup_path = _create_backup()
+            _create_backup()
 
             try:
                 # Save all configuration sections
-                for section, fields in new_config.items():
-                    for field, value in fields.items():
+                for section_name, fields in new_config.items():
+                    for field_name, value in fields.items():
                         if isinstance(value, dict):
-                            for sub_field, sub_value in value.items():
+                            for sub_field_name, sub_value in value.items():
                                 config_mgr.set(
-                                    f'{section}.{field}.{sub_field}', str(sub_value))
+                                    f'{section_name}.{field_name}.{sub_field_name}', str(sub_value))
                         else:
-                            config_mgr.set(f'{section}.{field}', str(value))
+                            config_mgr.set(
+                                f'{section_name}.{field_name}', str(value))
 
                 return redirect(url_for('config', saved='1'))
             except Exception as e:
@@ -200,10 +201,10 @@ def import_config():
 
         # Check if all validations pass
         all_valid = True
-        for section, fields in validation_results.items():
-            for field, result in fields.items():
+        for _section_name, fields in validation_results.items():
+            for _field_name, result in fields.items():
                 if isinstance(result, dict):
-                    for sub_field, sub_result in result.items():
+                    for _sub_field_name, sub_result in result.items():
                         if not sub_result['valid']:
                             all_valid = False
                             break
