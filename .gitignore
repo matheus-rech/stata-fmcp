@@ -34,3 +34,5 @@ src_private/
 
 source/paper
 
+# local file
+*.local.*
