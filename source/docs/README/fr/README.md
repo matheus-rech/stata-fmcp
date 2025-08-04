@@ -20,14 +20,14 @@
 
 ---
 
-> Vous cherchez d'autres intégrations Stata?
+> Vous cherchez d'autres?
 >
-> - Une intégration VScode ou Cursor [ici](https://github.com/hanlulong/stata-mcp). Vous êtes perdu? 💡 [Différence](../../Difference.md)
+> - [Trace DID](https://github.com/asjadnaqvi/DiD) : Si vous voulez récupérer les informations les plus récentes sur DID (Difference-in-Difference), cliquez [ici](https://asjadnaqvi.github.io/DiD/). Il y a maintenant une traduction française par [Sepine Tam](https://github.com/sepine) et [StataMCP-Team](https://github.com/statamcp-team) 🎉
 > - Utilisation de Jupyter Lab (Important: Stata 17+) [ici](https://github.com/sepinetam/Jupyter-Stata)
-> - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en cours de construction
-> - [AER-MCP](https://github.com/sepinetam/AER-MCP)
+> - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 en cours de construction
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV) - Un cadre de transformation de texte en variables basé sur l'apprentissage automatique qui convertit les données textuelles en variables utilisables pour la recherche empirique en utilisant des techniques avancées de NLP et de ML
+> - [TexIV](https://github.com/sepinetam/TexIV) : Un cadre basé sur l'apprentissage automatique qui transforme les données textuelles en variables utilisables pour la recherche empirique en utilisant des techniques avancées de NLP et de ML
+> - Une intégration VScode ou Cursor [ici](https://github.com/hanlulong/stata-mcp). Vous êtes perdu? 💡 [Différence](../../Difference.md)
 
 ## 💡 Démarrage Rapide
 > La configuration standard nécessite que Stata soit installé sur le chemin par défaut et que l'interface en ligne de commande de Stata (pour macOS et Linux) soit disponible.

@@ -20,14 +20,14 @@
 
 ---
 
-> ¿Buscando otras integraciones de Stata u otras opciones?
+> ¿Buscando otros?
 >
-> - Una integración para VScode o Cursor [aquí](https://github.com/hanlulong/stata-mcp). ¿Confundido? 💡 [Diferencias](../../Difference.md)
+> - [Trace DID](https://github.com/asjadnaqvi/DiD): Si quieres obtener la información más reciente sobre DID (Difference-in-Difference), haz clic [aquí](https://asjadnaqvi.github.io/DiD/). Ahora hay una traducción española por [Sepine Tam](https://github.com/sepine) y [StataMCP-Team](https://github.com/statamcp-team) 🎉
 > - Uso en Jupyter Lab (Importante: Stata 17+) [aquí](https://github.com/sepinetam/Jupyter-Stata)
-> - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) 🔧 en construcción
-> - [AER-MCP](https://github.com/sepinetam/AER-MCP)
+> - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 en construcción
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV) - Un marco impulsado por aprendizaje automático que transforma datos de texto en variables utilizables para investigación empírica utilizando técnicas avanzadas de NLP y ML
+> - [TexIV](https://github.com/sepinetam/TexIV): Un marco impulsado por aprendizaje automático que transforma datos de texto en variables utilizables para investigación empírica utilizando técnicas avanzadas de NLP y ML
+> - Una integración para VScode o Cursor [aquí](https://github.com/hanlulong/stata-mcp). ¿Confundido? 💡 [Diferencias](../../Difference.md)
 
 ## 💡 Inicio Rápido
 > La configuración estándar requiere que Stata esté instalado en la ruta predeterminada y que exista la interfaz de línea de comandos de Stata (para macOS y Linux).
