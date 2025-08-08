@@ -14,7 +14,7 @@
 [![sp](https://img.shields.io/badge/Idioma-Español-green.svg)](../sp/README.md)
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![PyPI Downloads](https://static.pepy.tech/badge/stata-mcp)](https://pepy.tech/projects/stata-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../../../../LICENSE)
 [![Issue](https://img.shields.io/badge/Issue-report-green.svg)](https://github.com/sepinetam/stata-mcp/issues/new)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
@@ -112,7 +112,7 @@ uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # 这里的文件名可�
 如果您遇到任何错误或有功能请求，请[提交问题](https://github.com/sepinetam/stata-mcp/issues/new)。
 
 ## 📄 许可证
-[MIT许可证](../../../../LICENSE)和扩展
+[Apache License 2.0](../../../../LICENSE)
 
 ## 📚 引用
 如果您在研究中使用 Stata-MCP，请使用以下格式之一引用此存储库：
