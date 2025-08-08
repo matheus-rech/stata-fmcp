@@ -36,3 +36,6 @@ source/paper
 
 # local file
 *.local.*
+
+# temp files
+tmp/
