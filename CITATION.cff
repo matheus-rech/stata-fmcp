@@ -9,4 +9,4 @@ version: 1.6.1
 date-released: 2025-08-09
 url: "https://github.com/sepinetam/stata-mcp"
 repository-code: "https://github.com/sepinetam/stata-mcp"
-license: MIT
+license: Apache-2.0

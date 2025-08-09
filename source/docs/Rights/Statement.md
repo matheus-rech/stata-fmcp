@@ -8,7 +8,7 @@ Multi-language: [中文](#中文版本)、[English](#english-version)、[França
 各个语言版本可能存在冲突，一切以中文版本为准。
 
 ### 项目说明
-Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归分析的开源工具。本项目采用MIT许可证，仅用于研究和教育目的。
+Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归分析的开源工具。本项目采用Apache License 2.0，仅用于研究和教育目的。
 
 ### 免责声明
 1. **使用风险**：使用本软件的风险由用户自行承担。开发者不对因使用本软件而可能导致的任何直接或间接损失负责，包括但不限于数据丢失、系统故障或其他形式的损害。
@@ -22,7 +22,7 @@ Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归
 5. **功能限制**：本软件目前仅支持macOS系统，其他操作系统的支持正在开发中。软件可能存在未知的错误或限制，开发者不保证软件的完整性、可靠性或适用性。
 
 ### 版权和许可
-1. 本项目采用MIT许可证，允许用户在遵守许可条款的前提下自由使用、修改和分发。
+1. 本项目采用Apache License 2.0，允许用户在遵守许可条款的前提下自由使用、修改和分发。
 
 2. 本项目中使用的第三方库和组件受其各自许可证的约束，用户在使用时应当遵守这些许可要求。
 
@@ -46,7 +46,7 @@ Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归
 There may be conflicts between different language versions. The Chinese version shall prevail.
 
 ### Project Description
-Stata-MCP is an open-source tool designed to help users complete Stata regression analysis through Large Language Models (LLMs). This project is licensed under the MIT License and is intended for research and educational purposes only.
+Stata-MCP is an open-source tool designed to help users complete Stata regression analysis through Large Language Models (LLMs). This project is licensed under the Apache License 2.0 and is intended for research and educational purposes only.
 
 ### Disclaimer
 1. **Usage Risk**: Use of this software is at your own risk. The developer is not responsible for any direct or indirect losses that may result from using this software, including but not limited to data loss, system failures, or other forms of damage.
@@ -60,7 +60,7 @@ Stata-MCP is an open-source tool designed to help users complete Stata regressio
 5. **Functional Limitations**: This software currently only supports macOS systems, with support for other operating systems under development. The software may contain unknown errors or limitations, and the developer does not guarantee its completeness, reliability, or suitability.
 
 ### Copyright and License
-1. This project is licensed under the MIT License, allowing users to freely use, modify, and distribute it in compliance with the license terms.
+1. This project is licensed under the Apache License 2.0, allowing users to freely use, modify, and distribute it in compliance with the license terms.
 
 2. Third-party libraries and components used in this project are subject to their respective licenses, which users should respect when using the software.
 
@@ -84,7 +84,7 @@ Stata-MCP is an open-source tool designed to help users complete Stata regressio
 Il peut y avoir des conflits entre différentes versions linguistiques. La version chinoise prévaudra.
 
 ### Description du Projet
-Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réaliser des analyses de régression avec Stata grâce aux Grands Modèles de Langage (LLM). Ce projet est sous licence MIT et est destiné uniquement à des fins de recherche et d'éducation.
+Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réaliser des analyses de régression avec Stata grâce aux Grands Modèles de Langage (LLM). Ce projet est sous licence Apache 2.0 et est destiné uniquement à des fins de recherche et d'éducation.
 
 ### Avertissement
 1. **Risque d'Utilisation** : L'utilisation de ce logiciel se fait à vos propres risques. Le développeur n'est pas responsable des pertes directes ou indirectes qui pourraient résulter de l'utilisation de ce logiciel, y compris, mais sans s'y limiter, la perte de données, les défaillances du système ou d'autres formes de dommages.
@@ -98,7 +98,7 @@ Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réalis
 5. **Limitations Fonctionnelles** : Ce logiciel ne prend actuellement en charge que les systèmes macOS, le support pour d'autres systèmes d'exploitation étant en cours de développement. Le logiciel peut contenir des erreurs ou des limitations inconnues, et le développeur ne garantit pas son exhaustivité, sa fiabilité ou son adéquation.
 
 ### Droits d'Auteur et Licence
-1. Ce projet est sous licence MIT, permettant aux utilisateurs de l'utiliser, de le modifier et de le distribuer librement conformément aux conditions de la licence.
+1. Ce projet est sous licence Apache 2.0, permettant aux utilisateurs de l'utiliser, de le modifier et de le distribuer librement conformément aux conditions de la licence.
 
 2. Les bibliothèques et composants tiers utilisés dans ce projet sont soumis à leurs licences respectives, que les utilisateurs doivent respecter lors de l'utilisation du logiciel.
 
