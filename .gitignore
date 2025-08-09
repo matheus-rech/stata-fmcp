@@ -39,3 +39,6 @@ source/paper
 
 # temp files
 tmp/
+
+# releases
+releases/
