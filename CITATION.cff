@@ -5,8 +5,8 @@ authors:
     given-names: "Song"
     email: "sepinetam@gmail.com"
 title: "Stata-MCP: Let LLM help you achieve your regression analysis with Stata"
-version: 1.6.0-dev
+version: 2.0.0
 date-released: 2025-06-28
-url: "https://github.com/sepinetam/stata-mcp"
+url: "https://www.statamcp.com"
 repository-code: "https://github.com/sepinetam/stata-mcp"
 license: Apache-2.0

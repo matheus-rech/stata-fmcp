@@ -37,5 +37,8 @@ source/paper
 # local file
 *.local.*
 
-# temp file
+# temp files
 tmp/
+
+# releases
+releases/
