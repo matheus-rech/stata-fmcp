@@ -1,4 +1,3 @@
-import argparse
 import os
 import platform
 import sys
@@ -12,9 +11,7 @@ from mcp.server.fastmcp import FastMCP
 
 from .config import Config
 from .core.stata import StataController, StataDo, StataFinder
-from .utils.Installer import Installer
 from .utils.Prompt import pmp
-from .utils.usable import usable
 
 __version__ = version("stata-mcp")
 
@@ -268,7 +265,8 @@ def get_data_info(data_path: str,
             )
     else:
         raise ValueError(
-            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls"
+            f"Unsupported file format: {file_extension}. "
+            "Supported formats include .dta, .csv, .xlsx, and .xls"
         )
 
     # If variable list is provided, only keep these variables
@@ -277,7 +275,8 @@ def get_data_info(data_path: str,
         missing_vars = [var for var in vars_list if var not in df.columns]
         if missing_vars:
             raise ValueError(
-                f"The following variables do not exist in the dataset: {', '.join(missing_vars)}"
+                "The following variables do not exist in the dataset: "
+                f"{', '.join(missing_vars)}"
             )
 
         # Select specified variables
@@ -459,8 +458,7 @@ def get_data_info(data_path: str,
                     output.append(
                         f"  ID variable: {id_col} (unique values: {n_ids})")
                     output.append(
-                        f"  Time variable: {time_col} (unique values: {n_times})"
-                    )
+                        f"  Time variable: {time_col} (unique values: {n_times})")
                     output.append(f"  Total observations: {n_obs}")
 
                     # Check if panel is balanced

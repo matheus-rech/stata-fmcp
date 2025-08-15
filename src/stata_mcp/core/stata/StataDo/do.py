@@ -146,7 +146,8 @@ class StataDo:
                         f"Temporary batch file removed: {batch_file}")
                 except Exception as e:
                     logging.warning(
-                        f"Failed to remove temporary batch file {batch_file}: {str(e)}")
+                        f"Failed to remove temporary batch file "
+                        f"{batch_file}: {str(e)}")
 
     def read_log(self, log_file_path):
         with open(log_file_path, "r") as file:

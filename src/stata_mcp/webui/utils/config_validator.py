@@ -95,7 +95,9 @@ def validate_llm_type(llm_type: str) -> Tuple[bool, str, Optional[str]]:
     """Validate LLM type."""
     valid_types = ["ollama", "openai"]
     if llm_type.lower() not in valid_types:
-        return False, f"Invalid LLM type: {llm_type}", f"Must be one of: {', '.join(valid_types)}"
+        return (False,
+                f"Invalid LLM type: {llm_type}",
+                f"Must be one of: {', '.join(valid_types)}")
     return True, "", None
 
 
