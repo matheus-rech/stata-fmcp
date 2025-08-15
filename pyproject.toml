@@ -1,6 +1,6 @@
 [project]
 name = "stata-mcp"
-version = "1.6.1"
+version = "1.6.2"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-stata-mcp = "stata_mcp:main"
+stata-mcp = "stata_mcp.cli:main"
 webui = "stata_mcp.webui:main"
 
 [build-system]
