@@ -82,7 +82,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.6.1-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -124,7 +124,7 @@ uvx /path/to/your/whl/stata_mcp-1.6.0-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.0}
+  version = {1.6.1}
 }
 ```
 
