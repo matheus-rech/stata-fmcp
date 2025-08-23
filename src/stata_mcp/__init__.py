@@ -1,22 +1,17 @@
-import argparse
 import os
 import platform
 import sys
 from datetime import datetime
-from importlib.metadata import version
 from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
 from mcp.server.fastmcp import FastMCP
 
+from .__version__ import __version__
 from .config import Config
 from .core.stata import StataController, StataDo, StataFinder
-from .utils.Installer import Installer
 from .utils.Prompt import pmp
-from .utils.usable import usable
-
-__version__ = version("stata-mcp")
 
 dotenv.load_dotenv()
 mcp = FastMCP(name="stata-mcp")

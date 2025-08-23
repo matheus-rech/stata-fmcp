@@ -10,7 +10,10 @@
 import argparse
 import sys
 
-from .. import Installer, __version__, mcp, usable
+from .. import mcp
+from ..__version__ import __version__
+from ..utils.Installer import Installer
+from ..utils.usable import usable
 
 
 def main() -> None:
