@@ -23,7 +23,7 @@
 > ¿Buscando otros?
 >
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): Si quieres obtener la información más reciente sobre DID (Difference-in-Difference), haz clic [aquí](https://asjadnaqvi.github.io/DiD/). Ahora hay una traducción española por [Sepine Tam](https://github.com/sepine) y [StataMCP-Team](https://github.com/statamcp-team) 🎉
-> - Uso en Jupyter Lab (Importante: Stata 17+) [aquí](https://github.com/sepinetam/Jupyter-Stata)
+> - Uso en Jupyter Lab (Importante: Stata 17+) [aquí](../../JupyterStata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 en construcción
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
 > - [TexIV](https://github.com/sepinetam/TexIV): Un marco impulsado por aprendizaje automático que transforma datos de texto en variables utilizables para investigación empírica utilizando técnicas avanzadas de NLP y ML
