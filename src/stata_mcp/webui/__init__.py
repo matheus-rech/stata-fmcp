@@ -3,8 +3,7 @@ import json
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 from ..config import Config
-from .utils.config_validator import (create_configuration_backup,
-                                     validate_configuration)
+from .utils.config_validator import create_configuration_backup, validate_configuration
 
 app = Flask(__name__, static_folder="templates")
 config_mgr = Config()

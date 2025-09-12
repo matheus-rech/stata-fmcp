@@ -2,18 +2,16 @@ import os
 import platform
 import sys
 from datetime import datetime
-from importlib.metadata import version
 from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
 from mcp.server.fastmcp import FastMCP
 
+from .__version__ import __version__
 from .config import Config
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
-
-__version__ = version("stata-mcp")
 
 dotenv.load_dotenv()
 mcp = FastMCP(name="stata-mcp")
@@ -134,6 +132,12 @@ def stata_analysis_strategy(lang: str = None) -> str:
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
 
+# As AI-Client does not support Resource at a board yet, we still keep the prompt
+@mcp.resource(
+    uri="help://stata/{cmd}",
+    name="help",
+    description="Get help for a Stata command"
+)
 @mcp.prompt(name="help", description="Get help for a Stata command")
 def help(cmd: str) -> str:
     """
@@ -265,8 +269,7 @@ def get_data_info(data_path: str,
             )
     else:
         raise ValueError(
-            f"Unsupported file format: {file_extension}. "
-            "Supported formats include .dta, .csv, .xlsx, and .xls"
+            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls"
         )
 
     # If variable list is provided, only keep these variables
@@ -275,8 +278,7 @@ def get_data_info(data_path: str,
         missing_vars = [var for var in vars_list if var not in df.columns]
         if missing_vars:
             raise ValueError(
-                "The following variables do not exist in the dataset: "
-                f"{', '.join(missing_vars)}"
+                f"The following variables do not exist in the dataset: {', '.join(missing_vars)}"
             )
 
         # Select specified variables
@@ -458,7 +460,8 @@ def get_data_info(data_path: str,
                     output.append(
                         f"  ID variable: {id_col} (unique values: {n_ids})")
                     output.append(
-                        f"  Time variable: {time_col} (unique values: {n_times})")
+                        f"  Time variable: {time_col} (unique values: {n_times})"
+                    )
                     output.append(f"  Total observations: {n_obs}")
 
                     # Check if panel is balanced

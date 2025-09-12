@@ -23,7 +23,7 @@
 > Looking for others?
 >
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): If you want to fetch the newest information about DID (Difference-in-Difference), click [here](https://asjadnaqvi.github.io/DiD/). Now there is a Chinese translation by [Sepine Tam](https://github.com/sepine) and [StataMCP-Team](https://github.com/statamcp-team) 🎉
-> - Jupyter Lab Usage (Important: Stata 17+) [here](https://github.com/sepinetam/Jupyter-Stata)
+> - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 under construction
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
 > - [TexIV](https://github.com/sepinetam/TexIV): A machine learning-driven framework that transforms text data into usable variables for empirical research using advanced NLP and ML techniques
@@ -81,7 +81,7 @@ Then you can find the compiled `stata-mcp` binary in the `dist` directory. You c
 
 For example:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.2-py3-non-any.whl  # here is the wheel file name, you can change it to your version
+uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # here is the wheel file name, you can change it to your version
 ```
 
 ## 📝 Documentation
@@ -123,7 +123,7 @@ If you use Stata-MCP in your research, please cite this repository using one of 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.2}
+  version = {1.6.3}
 }
 ```
 

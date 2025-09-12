@@ -23,7 +23,7 @@
 > Vous cherchez d'autres?
 >
 > - [Trace DID](https://github.com/asjadnaqvi/DiD) : Si vous voulez récupérer les informations les plus récentes sur DID (Difference-in-Difference), cliquez [ici](https://asjadnaqvi.github.io/DiD/). Il y a maintenant une traduction française par [Sepine Tam](https://github.com/sepine) et [StataMCP-Team](https://github.com/statamcp-team) 🎉
-> - Utilisation de Jupyter Lab (Important: Stata 17+) [ici](https://github.com/sepinetam/Jupyter-Stata)
+> - Utilisation de Jupyter Lab (Important: Stata 17+) [ici](../../JupyterStata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 en cours de construction
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
 > - [TexIV](https://github.com/sepinetam/TexIV) : Un cadre basé sur l'apprentissage automatique qui transforme les données textuelles en variables utilisables pour la recherche empirique en utilisant des techniques avancées de NLP et de ML
@@ -81,7 +81,7 @@ Vous trouverez ensuite le binaire `stata-mcp` compilé dans le répertoire `dist
 
 Par exemple:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.2-py3-non-any.whl  # modifiez le nom du fichier selon votre version
+uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # modifiez le nom du fichier selon votre version
 ```
 
 ## 📝 Documentation
@@ -123,7 +123,7 @@ Si vous utilisez Stata-MCP dans vos recherches, veuillez citer ce référentiel 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.2}
+  version = {1.6.3}
 }
 ```
 

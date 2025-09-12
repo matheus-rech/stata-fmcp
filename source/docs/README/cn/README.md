@@ -23,7 +23,7 @@
 > 正在寻找其他？
 >
 > - [追踪 DID](https://github.com/asjadnaqvi/DiD)：如果您想获取关于DID（双重差分法）的最新信息，请点击[此处](https://asjadnaqvi.github.io/DiD/)。现在有[Sepine Tam](https://github.com/sepine)和[StataMCP-Team](https://github.com/statamcp-team)的中文翻译 🎉
-> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](https://github.com/sepinetam/Jupyter-Stata)
+> - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](../../JupyterStata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 建造之下
 > - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
 > - [TexIV](https://github.com/sepinetam/TexIV)：一个基于机器学习的框架，利用先进的NLP和机器学习技术将文本数据转化为可用于实证研究的变量
@@ -82,7 +82,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.2-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -124,7 +124,7 @@ uvx /path/to/your/whl/stata_mcp-1.6.2-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.2}
+  version = {1.6.3}
 }
 ```
 
