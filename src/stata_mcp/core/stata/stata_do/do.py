@@ -11,7 +11,7 @@ import logging
 import os
 import subprocess
 
-from stata_mcp.utils import get_nowtime
+from ....utils import get_nowtime
 
 
 class StataDo:
@@ -20,7 +20,7 @@ class StataDo:
             stata_cli: str,
             log_file_path: str,
             dofile_base_path: str,
-            sys_os: str):
+            sys_os: str = None):
         """
         Initialize Stata executor
 
@@ -33,7 +33,11 @@ class StataDo:
         self.stata_cli = stata_cli
         self.log_file_path = log_file_path
         self.dofile_base_path = dofile_base_path
-        self.sys_os = sys_os
+        if sys_os:
+            self.sys_os = sys_os
+        else:
+            from ....utils import get_os
+            self.sys_os = get_os()
 
     def execute_dofile(self, dofile_path: str) -> str:
         """

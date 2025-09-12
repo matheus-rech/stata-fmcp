@@ -1,3 +1,4 @@
+import platform
 from datetime import datetime
 
 
@@ -9,3 +10,7 @@ def set_config(key, value):
 
 def get_nowtime():
     return datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
+
+
+def get_os():
+    return platform.system()

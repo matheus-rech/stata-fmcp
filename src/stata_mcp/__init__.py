@@ -627,6 +627,30 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
     return new_file_path
 
 
+@mcp.tool(name="ssc_install", description="Install a package from SSC")
+def ssc_install(command: str, is_replace: bool = True) -> str:
+    """
+    Install a package from SSC
+
+    Args:
+        command (str): The name of the package to be installed from SSC.
+        is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+
+    Returns:
+        str: The execution log returned by Stata after running the installation.
+
+    Notes:
+        Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
+        and may not be required if the package is already present.
+    """
+    if is_replace:
+        dofile_path = write_dofile(f"ssc install {command}, replace")
+    else:
+        dofile_path = write_dofile(f"ssc install {command}")
+    log_file_path, log_file_content = stata_do(dofile_path)
+    return log_file_content
+
+
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
              is_read_log: bool = True) -> Dict[str, Union[str, None]]:
