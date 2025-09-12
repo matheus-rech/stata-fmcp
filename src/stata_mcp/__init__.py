@@ -132,6 +132,12 @@ def stata_analysis_strategy(lang: str = None) -> str:
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
 
+# As AI-Client does not support Resource at a board yet, we still keep the prompt
+@mcp.resource(
+    uri="help://stata/{cmd}",
+    name="help",
+    description="Get help for a Stata command"
+)
 @mcp.prompt(name="help", description="Get help for a Stata command")
 def help(cmd: str) -> str:
     """
