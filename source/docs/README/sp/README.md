@@ -81,7 +81,7 @@ A continuación, encontrarás el binario `stata-mcp` compilado en el directorio 
 
 Por ejemplo:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.2-py3-non-any.whl  # cambia el nombre del archivo según tu versión
+uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # cambia el nombre del archivo según tu versión
 ```
 
 ## 📝 Documentación
@@ -123,7 +123,7 @@ Si utilizas Stata-MCP en tu investigación, por favor cita este repositorio util
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.2}
+  version = {1.6.3}
 }
 ```
 
