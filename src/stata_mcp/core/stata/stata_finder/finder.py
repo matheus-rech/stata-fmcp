@@ -15,6 +15,7 @@ from typing import Optional
 
 import dotenv
 
+from .macos import FinderMacOS
 from .windows import get_available_drives, windows_stata_match
 
 dotenv.load_dotenv()
@@ -22,8 +23,14 @@ dotenv.load_dotenv()
 """
 find_stata
 """
+
+
 class StataFinder:
     """A class to find Stata CLI installations across different operating systems."""
+
+    finder_mapping = {
+        "Darwin": FinderMacOS
+    }
 
     def __init__(self):
         """Initialize the StataFinder."""
@@ -33,6 +40,7 @@ class StataFinder:
             "Windows": self._find_stata_windows,
             "Linux": self._find_stata_linux,
         }
+        self.finder = self.finder_mapping.get(self.current_os)
 
     def _stata_version_windows(self, driver: str = "C:\\") -> list:
         """Find Stata installations on Windows."""
@@ -68,22 +76,7 @@ class StataFinder:
         return stata_paths
 
     def _find_stata_macos(self) -> Optional[str]:
-        """Locate the Stata CLI on macOS systems.
-
-        This implementation searches ``/usr/local/bin`` for common Stata binary
-        names in order of preference.
-        """
-        search_dir = "/usr/local/bin"
-        variants = ["stata-mp", "stata-se", "stata-be"]
-
-        found_cli = None
-        for variant in variants:
-            candidate = os.path.join(search_dir, variant)
-            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-                found_cli = candidate
-                break
-
-        return found_cli
+        return self.finder.find_stata()
 
     def _default_stata_cli_path_windows(self) -> Optional[str]:
         """Get default Stata CLI path on Windows."""

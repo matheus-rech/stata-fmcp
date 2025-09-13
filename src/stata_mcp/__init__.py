@@ -43,19 +43,14 @@ os.makedirs(output_base_path, exist_ok=True)
 try:
     # stata_cli
     finder = StataFinder()
-    default_cli = finder.find_stata()
     stata_cli = config_mgr.get("stata.stata_cli") or os.getenv(
-        "stata_cli", default_cli
+        "stata_cli"
     )
+    print(stata_cli)
     if stata_cli is None:
-        exit_msg = (
-            "Missing Stata.exe, "
-            "you could config your Stata.exe abspath in your env\ne.g\n"
-            r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
-            r"/usr/local/bin/stata-mp")
-        sys.exit(exit_msg)
-except Exception:
-    stata_cli = None
+        stata_cli = finder.find_stata()
+except FileNotFoundError as e:
+    sys.exit(e)
 
 # Create a series of folder
 log_base_path = os.path.join(output_base_path, "stata-mcp-log")
@@ -665,6 +660,7 @@ def load_figure(figure_path: str) -> Image:
     if not os.path.exists(figure_path):
         raise FileNotFoundError(f"{figure_path} not found")
     return Image(figure_path)
+
 
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
