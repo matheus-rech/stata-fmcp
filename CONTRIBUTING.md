@@ -2,7 +2,7 @@
 Thank you for your interest in contributing to this project! We welcome contributions from everyone. Please follow the guidelines below to ensure a smooth process.
 
 ## Git
-If you are not familiar with git, please read the [git_std_rule](Rules/git_std_rule.md) file. 
+If you are not familiar with git, please read the [git_std_rule](source/docs/Rules/git_std_rule.md) file. 
 Alternative, you can ask Claude Code to help your commit, just like: `help me commit my change to git`,
 although it is powerful, please concentrate on its message and what it do, it may be a mistake from it.
 
