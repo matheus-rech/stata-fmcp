@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP, Image
 
 from .__version__ import __version__
 from .config import Config
@@ -650,6 +650,21 @@ def ssc_install(command: str, is_replace: bool = True) -> str:
     log_file_path, log_file_content = stata_do(dofile_path)
     return log_file_content
 
+
+@mcp.tool(name="load_figure")
+def load_figure(figure_path: str) -> Image:
+    """
+    Load figure from device
+
+    Args:
+        figure_path (str): the figure file path, only support png and jpg format
+
+    Returns:
+        Image: the figure thumbnail
+    """
+    if not os.path.exists(figure_path):
+        raise FileNotFoundError(f"{figure_path} not found")
+    return Image(figure_path)
 
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
