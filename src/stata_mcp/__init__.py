@@ -180,8 +180,8 @@ def read_log(log_path: str) -> str:
     return log
 
 
-@mcp.tool(name="get_data_info",
-          description="Get descriptive statistics for the data file")
+# @mcp.tool(name="get_data_info",
+#           description="Get descriptive statistics for the data file")
 def get_data_info(data_path: str,
                   vars_list: Optional[List[str]] = None,
                   encoding: str = "utf-8") -> str:
