@@ -10,7 +10,7 @@
 import json
 import os
 
-from ...core.stata.StataFinder.finder import StataFinder
+from ...core.stata import StataFinder
 
 find_stata = StataFinder().find_stata
 
