@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
-from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import FastMCP, Image
 
 from .__version__ import __version__
 from .config import Config
@@ -43,19 +43,14 @@ os.makedirs(output_base_path, exist_ok=True)
 try:
     # stata_cli
     finder = StataFinder()
-    default_cli = finder.find_stata()
     stata_cli = config_mgr.get("stata.stata_cli") or os.getenv(
-        "stata_cli", default_cli
+        "stata_cli"
     )
+    print(stata_cli)
     if stata_cli is None:
-        exit_msg = (
-            "Missing Stata.exe, "
-            "you could config your Stata.exe abspath in your env\ne.g\n"
-            r'stata_cli="C:\\Program Files\\Stata19\StataMP.exe"'
-            r"/usr/local/bin/stata-mp")
-        sys.exit(exit_msg)
-except Exception:
-    stata_cli = None
+        stata_cli = finder.find_stata()
+except FileNotFoundError as e:
+    sys.exit(e)
 
 # Create a series of folder
 log_base_path = os.path.join(output_base_path, "stata-mcp-log")
@@ -180,8 +175,8 @@ def read_log(log_path: str) -> str:
     return log
 
 
-@mcp.tool(name="get_data_info",
-          description="Get descriptive statistics for the data file")
+# @mcp.tool(name="get_data_info",
+#           description="Get descriptive statistics for the data file")
 def get_data_info(data_path: str,
                   vars_list: Optional[List[str]] = None,
                   encoding: str = "utf-8") -> str:
@@ -625,6 +620,46 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
         f.write(content)
 
     return new_file_path
+
+
+@mcp.tool(name="ssc_install", description="Install a package from SSC")
+def ssc_install(command: str, is_replace: bool = True) -> str:
+    """
+    Install a package from SSC
+
+    Args:
+        command (str): The name of the package to be installed from SSC.
+        is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+
+    Returns:
+        str: The execution log returned by Stata after running the installation.
+
+    Notes:
+        Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
+        and may not be required if the package is already present.
+    """
+    if is_replace:
+        dofile_path = write_dofile(f"ssc install {command}, replace")
+    else:
+        dofile_path = write_dofile(f"ssc install {command}")
+    log_file_path, log_file_content = stata_do(dofile_path)
+    return log_file_content
+
+
+@mcp.tool(name="load_figure")
+def load_figure(figure_path: str) -> Image:
+    """
+    Load figure from device
+
+    Args:
+        figure_path (str): the figure file path, only support png and jpg format
+
+    Returns:
+        Image: the figure thumbnail
+    """
+    if not os.path.exists(figure_path):
+        raise FileNotFoundError(f"{figure_path} not found")
+    return Image(figure_path)
 
 
 @mcp.tool(name="stata_do", description="Run a stata-code via Stata")

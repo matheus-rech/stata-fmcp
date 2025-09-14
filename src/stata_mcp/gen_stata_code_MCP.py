@@ -797,8 +797,8 @@ class StataCommandGenerator:
 
         if fcn not in valid_fcns:
             raise ValueError(
-                f"fcn must be one of the valid egen functions: {', '.join(valid_fcns)}"
-            )
+                f"fcn must be one of the valid egen functions: "
+                f"{', '.join(valid_fcns)}")
 
         # Validate storage type if provided
         valid_types = {"byte", "int", "long", "float", "double", "str"}
