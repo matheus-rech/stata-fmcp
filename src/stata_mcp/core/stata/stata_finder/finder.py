@@ -40,7 +40,7 @@ class StataFinder:
             "Windows": self._find_stata_windows,
             "Linux": self._find_stata_linux,
         }
-        self.finder = self.finder_mapping.get(self.current_os)
+        self.finder = self.finder_mapping.get(self.current_os)()
 
     def _stata_version_windows(self, driver: str = "C:\\") -> list:
         """Find Stata installations on Windows."""
