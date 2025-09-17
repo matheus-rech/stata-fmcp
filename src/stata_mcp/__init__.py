@@ -14,7 +14,7 @@ from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
 dotenv.load_dotenv()
-mcp = FastMCP(name="stata-mcp")
+stata_mcp = FastMCP(name="stata-mcp")
 config_mgr = Config()
 
 # Initialize optional parameters
@@ -66,7 +66,7 @@ if lang not in ["en", "cn"]:
 pmp.set_lang(lang)
 
 
-@mcp.prompt()
+@stata_mcp.prompt()
 def stata_assistant_role(lang: str = None) -> str:
     """
     Return the Stata assistant role prompt content.
@@ -96,7 +96,7 @@ def stata_assistant_role(lang: str = None) -> str:
     return pmp.get_prompt(prompt_id="stata_assistant_role", lang=lang)
 
 
-@mcp.prompt()
+@stata_mcp.prompt()
 def stata_analysis_strategy(lang: str = None) -> str:
     """
     Return the Stata analysis strategy prompt content.
@@ -128,12 +128,12 @@ def stata_analysis_strategy(lang: str = None) -> str:
 
 
 # As AI-Client does not support Resource at a board yet, we still keep the prompt
-@mcp.resource(
+@stata_mcp.resource(
     uri="help://stata/{cmd}",
     name="help",
     description="Get help for a Stata command"
 )
-@mcp.prompt(name="help", description="Get help for a Stata command")
+@stata_mcp.prompt(name="help", description="Get help for a Stata command")
 def help(cmd: str) -> str:
     """
     Execute the Stata 'help' command and return its output.
@@ -159,7 +159,7 @@ def help(cmd: str) -> str:
         return "No help found for the command: " + cmd
 
 
-@mcp.tool()
+@stata_mcp.tool()
 def read_log(log_path: str) -> str:
     """
     Read the log file and return its content.
@@ -175,7 +175,7 @@ def read_log(log_path: str) -> str:
     return log
 
 
-# @mcp.tool(name="get_data_info",
+# @stata_mcp.tool(name="get_data_info",
 #           description="Get descriptive statistics for the data file")
 def get_data_info(data_path: str,
                   vars_list: Optional[List[str]] = None,
@@ -495,7 +495,7 @@ def get_data_info(data_path: str,
     return "\n".join(output)
 
 
-@mcp.prompt()
+@stata_mcp.prompt()
 def results_doc_path() -> str:
     """
     Generate and return a result document storage path based on the current timestamp.
@@ -528,7 +528,7 @@ def results_doc_path() -> str:
     return path
 
 
-@mcp.tool(name="write_dofile", description="write the stata-code to dofile")
+@stata_mcp.tool(name="write_dofile", description="write the stata-code to dofile")
 def write_dofile(content: str) -> str:
     """
     Write stata code to a dofile.
@@ -563,7 +563,7 @@ def write_dofile(content: str) -> str:
     return file_path
 
 
-@mcp.tool(
+@stata_mcp.tool(
     name="append_dofile",
     description="append stata-code to an existing dofile or create a new one",
 )
@@ -622,7 +622,7 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
     return new_file_path
 
 
-@mcp.tool(name="ssc_install", description="Install a package from SSC")
+@stata_mcp.tool(name="ssc_install", description="Install a package from SSC")
 def ssc_install(command: str, is_replace: bool = True) -> str:
     """
     Install a package from SSC
@@ -646,7 +646,7 @@ def ssc_install(command: str, is_replace: bool = True) -> str:
     return log_file_content
 
 
-@mcp.tool(name="load_figure")
+@stata_mcp.tool(name="load_figure")
 def load_figure(figure_path: str) -> Image:
     """
     Load figure from device
@@ -662,7 +662,7 @@ def load_figure(figure_path: str) -> Image:
     return Image(figure_path)
 
 
-@mcp.tool(name="stata_do", description="Run a stata-code via Stata")
+@stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
              is_read_log: bool = True) -> Dict[str, Union[str, None]]:
     """
