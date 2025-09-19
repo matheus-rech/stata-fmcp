@@ -662,6 +662,22 @@ def load_figure(figure_path: str) -> Image:
     return Image(figure_path)
 
 
+@stata_mcp.tool(name="mk_dir")
+def mk_dir(path: str) -> bool:
+    """
+    While there is missing some dir, use this function to create the directory.
+
+    Args:
+        path (str): the path you want to create
+
+    Returns:
+        bool: the state of the new path,
+              if True -> the path exists now;
+              else -> not success
+    """
+    os.makedirs(path, exist_ok=True)
+    return os.path.exists(path)
+
 @stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
              is_read_log: bool = True) -> Dict[str, Union[str, None]]:
