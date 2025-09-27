@@ -19,6 +19,8 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
+Novedad: Ahora puedes usar Stata-MCP en modo agente, más información [aquí](../../../../agent_examples/README.md).
+
 
 > ¿Buscando otros?
 >
@@ -30,6 +32,19 @@
 > - Una integración para VScode o Cursor [aquí](https://github.com/hanlulong/stata-mcp). ¿Confundido? 💡 [Diferencias](../../Difference.md)
 
 ## 💡 Inicio Rápido
+### Modo Agente
+Los detalles del modo agente se encuentran [aquí](../../../../agent_examples/README.md).
+
+```bash
+git clone https://github.com/sepinetam/stata-mcp.git
+cd stata-mcp
+uv sync
+uv run agent_examples/openai/main.py
+```
+
+Puedes editar la tarea en `agent_examples/openai/main.py` para las variables `model_instructions` y `task_message`, [haz clic aquí](../../../../agent_examples/openai/main.py) #L37 y #L68
+
+### Modo Cliente Chat-Bot IA
 > La configuración estándar requiere que Stata esté instalado en la ruta predeterminada y que exista la interfaz de línea de comandos de Stata (para macOS y Linux).
 
 El archivo json de configuración estándar es el siguiente; puedes personalizar tu configuración añadiendo variables de entorno.
@@ -85,7 +100,7 @@ A continuación, encontrarás el binario `stata-mcp` compilado en el directorio 
 
 Por ejemplo:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # cambia el nombre del archivo según tu versión
+uvx /path/to/your/whl/stata_mcp-2.0.0-py3-non-any.whl  # cambia el nombre del archivo según tu versión
 ```
 
 ## 📝 Documentación
@@ -127,18 +142,18 @@ Si utilizas Stata-MCP en tu investigación, por favor cita este repositorio util
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.3}
+  version = {2.0.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.6.0) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 2.0.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.6.0. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 2.0.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contacto

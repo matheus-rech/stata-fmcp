@@ -19,6 +19,8 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
+新闻：现在您可以使用Stata-MCP的代理模式，更多信息请查看[此处](../../../../agent_examples/README.md)。
+
 
 > 正在寻找其他？
 >
@@ -31,6 +33,19 @@
 
 
 ## 💡 快速开始
+### 代理模式
+代理模式的详细信息请查看[此处](../../../../agent_examples/README.md)。
+
+```bash
+git clone https://github.com/sepinetam/stata-mcp.git
+cd stata-mcp
+uv sync
+uv run agent_examples/openai/main.py
+```
+
+您可以在 `agent_examples/openai/main.py` 中编辑 `model_instructions` 和 `task_message` 变量来修改任务，[点击此处](../../../../agent_examples/openai/main.py) #L37 和 #L68
+
+### AI 聊天机器人客户端模式
 > 标准配置要求：请确保 Stata 安装在默认路径，并且在 macOS 或 Linux 上存在 Stata CLI。
 
 标准配置 json 如下，您可以通过添加环境变量来自定义配置。
@@ -86,7 +101,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-2.0.0-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -128,18 +143,18 @@ uvx /path/to/your/whl/stata_mcp-1.6.3-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.6.3}
+  version = {2.0.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.6.0) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 2.0.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.6.0. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 2.0.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 联系方式
