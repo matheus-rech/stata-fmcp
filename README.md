@@ -56,6 +56,10 @@ And some advanced usage, visit the [Advanced guide](source/docs/Usages/Advanced.
 - Stata License
 - Your API-KEY from LLM
 
+> Notes:
+> 1. If you are located in China, a short uv usage document you can find [here](source/docs/ChinaUsers/uv.md).
+> 2. Claude is the best choice for Stata-MCP, for Chinese, I recommend to use DeepSeek as your model provider as it is cheap and powerful, also the score is highest in China provider, if you are increased in it, visit the report [How to use StataMCP improve your social science research](https://reports.statamcp.com/202509/how_to_use_statamcp_improve_your_social_science_research).
+
 ### Installation
 For the new version, you don't need to install the `stata-mcp` package again, you can just use the following command to check whether your computer can use stata-mcp.
 ```bash

@@ -57,6 +57,10 @@
 - Stata许可证
 - 您的LLM API密钥
 
+> 注：
+> 1. 如果您位于中国，可以在此处找到简短的uv使用文档[此处](../../ChinaUsers/uv.md)。
+> 2. Claude是Stata-MCP的最佳选择，对于中文用户，我推荐使用DeepSeek作为您的模型提供商，因为它价格便宜且功能强大，在中国提供商中得分最高，如果您对此感兴趣，请访问报告[How to use StataMCP improve your social science research](https://reports.statamcp.com/202509/how_to_use_statamcp_improve_your_social_science_research)。
+
 ### 安装
 对于新版本，您无需再次安装 `stata-mcp` 包，只需使用以下命令检查您的计算机是否可以使用 stata-mcp。
 ```bash
