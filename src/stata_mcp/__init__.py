@@ -21,9 +21,9 @@ stata_mcp = FastMCP(
     website_url="https://www.statamcp.com",
     icons=[
         Icon(
-            src="https://r2.statamcp.com/favicon-32x32.png",
+            src="https://r2.statamcp.com/android-chrome-512x512.png",
             mimeType="image/png",
-            sizes="32x32"
+            sizes="512x512"
         )
     ]
 )
