@@ -45,7 +45,7 @@ agent = Agent(
     model=OpenAIChatCompletionsModel(  # If you have set environment of OPENAI_API_KEY, you can ignore arg `model`.
         model="deepseek-chat",  # As I am located in China, I use DeepSeek as model provider, you can change to OpenAI.
         openai_client=AsyncOpenAI(
-            base_url=os.getenv("OPENAI_BASE_URLkkk", "https://api.deepseek.com/v1"),  # "https://api.openai.com/v1"
+            base_url=os.getenv("OPENAI_BASE_URL", "https://api.deepseek.com/v1"),  # "https://api.openai.com/v1"
             api_key=os.getenv("OPENAI_API_KEY")  # Suggest saving your API KEY in environment variables. IMPORTANT!
         )
     ),
