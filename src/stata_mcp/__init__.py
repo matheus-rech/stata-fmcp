@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 
 import dotenv
 import pandas as pd
-from mcp.server.fastmcp import FastMCP, Image
+from mcp.server.fastmcp import FastMCP, Icon, Image
 
 from .__version__ import __version__
 from .config import Config
@@ -14,7 +14,19 @@ from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
 dotenv.load_dotenv()
-stata_mcp = FastMCP(name="stata-mcp")
+
+stata_mcp = FastMCP(
+    name="stata-mcp",
+    instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+    website_url="https://www.statamcp.com",
+    icons=[
+        Icon(
+            src="https://r2.statamcp.com/favicon-32x32.png",
+            mimeType="image/png",
+            sizes="32x32"
+        )
+    ]
+)
 config_mgr = Config()
 
 # Initialize optional parameters
@@ -46,11 +58,10 @@ try:
     stata_cli = config_mgr.get("stata.stata_cli") or os.getenv(
         "stata_cli"
     )
-    print(stata_cli)
     if stata_cli is None:
         stata_cli = finder.find_stata()
 except FileNotFoundError as e:
-    sys.exit(e)
+    sys.exit(str(e))
 
 # Create a series of folder
 log_base_path = os.path.join(output_base_path, "stata-mcp-log")
@@ -677,6 +688,7 @@ def mk_dir(path: str) -> bool:
     """
     os.makedirs(path, exist_ok=True)
     return os.path.exists(path)
+
 
 @stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
