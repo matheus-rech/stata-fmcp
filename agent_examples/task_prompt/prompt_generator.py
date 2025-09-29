@@ -241,7 +241,7 @@ class PromptGenerator:
         os.makedirs(abs_path, exist_ok=True)
         return abs_path
 
-    def instructions(self, root: str,  **kwargs) -> str:
+    def instructions(self, root: str = None,  **kwargs) -> str:
         return self.generator.instructions_generate(
             default_root=self.ensure_path(root),
             **kwargs
