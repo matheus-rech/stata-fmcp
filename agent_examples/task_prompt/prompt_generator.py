@@ -169,7 +169,6 @@ class _ReAct_PromptGenerator(PromptGeneratorBase):
         {additional}
         """
         tasks_prompt = textwrap.dedent(tasks_prompt).strip()
-        print(tasks_prompt)
         return tasks_prompt
 
 class _CoT_PromptGenerator(PromptGeneratorBase):
