@@ -11,12 +11,15 @@ Data analysis is central to social science research, yet technical barriers stil
 
 ## Citation
 ```bibtex
-@article{tan2025stataMCP,
+@techreport{tan2025stataMCP,
   author = {Tan, Song and Feng, Muyao},
   title = {Stata-MCP: A research report on AI-assisted empirical research},
   year = {2025},
   month = {September},
   day = {21},
+  language = {English},
+  address = {Shanghai, China},
+  institution = {Shanghai Bayes Views Information Technology Co., Ltd.},
   url = {https://reports.statamcp.com/202509/stata_mcp_a_research_report_on_ai_assisted_empirical_research.pdf}
 }
 ```
