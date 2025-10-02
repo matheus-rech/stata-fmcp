@@ -19,8 +19,9 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
-News: Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
+**News**: Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
 
+Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
 > Looking for others?
 >
