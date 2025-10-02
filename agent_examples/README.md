@@ -1,8 +1,11 @@
 # Agent Examples
 Here is some examples of how to use Stata-MCP in agents.
 
+> If you are finding how to make the agent perform better, read file: [How to write a task prompt](task_prompt/README.md)
+
 ## Catalog
 - [OpenAI-Agent](#openai-agent)
+- [Langchain-ReAct-Agent](#langchain-react-agent)
 
 ## OpenAI-Agent
 The OpenAI-Agent is the most traditional agent here (I think), it's also the most simple one.  
