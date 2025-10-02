@@ -12,7 +12,7 @@ Data analysis is central to social science research, yet technical barriers stil
 ## Citation
 ```bibtex
 @article{tan2025stataMCP,
-  author = {Tan, Song. and Feng, Muyao.},
+  author = {Tan, Song and Feng, Muyao},
   title = {Stata-MCP: A research report on AI-assisted empirical research},
   year = {2025},
   month = {September},
