@@ -20,6 +20,6 @@ Data analysis is central to social science research, yet technical barriers stil
   language = {English},
   address = {Shanghai, China},
   institution = {Shanghai Bayes Views Information Technology Co., Ltd.},
-  url = {https://reports.statamcp.com/202509/stata_mcp_a_research_report_on_ai_assisted_empirical_research.pdf}
+  url = {https://www.statamcp.com/reports/2025/09/21/stata_mcp_a_research_report_on_ai_assisted_empirical_research}
 }
 ```
