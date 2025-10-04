@@ -673,9 +673,10 @@ def load_figure(figure_path: str) -> Image:
     return Image(figure_path)
 
 
-@stata_mcp.tool(name="mk_dir")
+# @stata_mcp.tool(name="mk_dir")
 def mk_dir(path: str) -> bool:
     """
+    TODO: make the tool more safety
     While there is missing some dir, use this function to create the directory.
 
     Args:
