@@ -30,6 +30,11 @@ def main() -> None:
         help="show version information",
     )
     parser.add_argument(
+        "-a", "--agent",
+        action="store_true",
+        help="run Stata-MCP as agent mode",
+    )
+    parser.add_argument(
         "--usable",
         action="store_true",
         help="check whether Stata-MCP could be used on this computer",
@@ -61,6 +66,9 @@ def main() -> None:
     elif args.webui:
         from ..webui import main as webui_main
         webui_main()
+    elif args.agent:
+        from ..mode import run_agent_mode
+        run_agent_mode()
     else:
         print("Starting Stata-MCP...")
 

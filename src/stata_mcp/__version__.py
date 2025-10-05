@@ -10,3 +10,11 @@
 from importlib.metadata import version
 
 __version__ = version("stata-mcp")
+
+
+def main():
+    print(f"Stata-MCP: v{__version__}")
+
+
+if __name__ == "__main__":
+    main()

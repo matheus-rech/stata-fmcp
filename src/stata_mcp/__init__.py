@@ -690,7 +690,7 @@ def mk_dir(path: str) -> bool:
         ValueError: if path is invalid or contains unsafe components
         PermissionError: if insufficient permissions to create directory
     """
-    from pathvalidate import sanitize_filepath, ValidationError
+    from pathvalidate import ValidationError, sanitize_filepath
 
     # Input validation
     if not path or not isinstance(path, str):
