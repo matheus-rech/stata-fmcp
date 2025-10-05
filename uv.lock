@@ -2486,7 +2486,7 @@ sdist = { url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b9/b1/2d
 
 [[package]]
 name = "stata-mcp"
-version = "1.7.0"
+version = "1.7.1"
 source = { editable = "." }
 dependencies = [
     { name = "flask" },

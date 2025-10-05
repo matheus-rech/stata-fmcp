@@ -673,7 +673,7 @@ def load_figure(figure_path: str) -> Image:
     return Image(figure_path)
 
 
-# @stata_mcp.tool(name="mk_dir")
+@stata_mcp.tool(name="mk_dir")
 def mk_dir(path: str) -> bool:
     """
     Safely create a directory using pathvalidate for security validation.
