@@ -676,8 +676,7 @@ def load_figure(figure_path: str) -> Image:
 # @stata_mcp.tool(name="mk_dir")
 def mk_dir(path: str) -> bool:
     """
-    TODO: make the tool more safety
-    While there is missing some dir, use this function to create the directory.
+    Safely create a directory using pathvalidate for security validation.
 
     Args:
         path (str): the path you want to create
@@ -686,9 +685,36 @@ def mk_dir(path: str) -> bool:
         bool: the state of the new path,
               if True -> the path exists now;
               else -> not success
+
+    Raises:
+        ValueError: if path is invalid or contains unsafe components
+        PermissionError: if insufficient permissions to create directory
     """
-    os.makedirs(path, exist_ok=True)
-    return os.path.exists(path)
+    from pathvalidate import sanitize_filepath, ValidationError
+
+    # Input validation
+    if not path or not isinstance(path, str):
+        raise ValueError("Path must be a non-empty string")
+
+    try:
+        # Use pathvalidate to sanitize and validate path
+        safe_path = sanitize_filepath(path, platform="auto")
+
+        # Get absolute path for further validation
+        absolute_path = os.path.abspath(safe_path)
+
+        # Create directory with reasonable permissions
+        os.makedirs(absolute_path, exist_ok=True, mode=0o755)
+
+        # Verify successful creation
+        return os.path.exists(absolute_path) and os.path.isdir(absolute_path)
+
+    except ValidationError as e:
+        raise ValueError(f"Invalid path detected: {e}")
+    except PermissionError:
+        raise PermissionError(f"Insufficient permissions to create directory: {path}")
+    except OSError as e:
+        raise OSError(f"Failed to create directory {path}: {str(e)}")
 
 
 @stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
