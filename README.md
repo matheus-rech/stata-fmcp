@@ -39,8 +39,18 @@ The details of agent mode find [here](agent_examples/README.md).
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git
 cd stata-mcp
+
 uv sync
-uv run agent_examples/openai/main.py
+uv pip install -e .
+
+stata-mcp --version  # for test whether stata-mcp is installed successfully.
+stata-mcp --agent  # now you have enjoy your stata-mcp agent mode.
+```
+
+or you can directly use it with `uvx`:
+```bash
+uvx stata-mcp --version  # for test whether it could be used on your computer.
+uvx stata-mcp --agent
 ```
 
 You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](agent_examples/openai/main.py) #L37 and #L68
@@ -101,7 +111,7 @@ Then you can find the compiled `stata-mcp` binary in the `dist` directory. You c
 
 For example:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.7.1-py3-non-any.whl  # here is the wheel file name, you can change it to your version
+uvx /path/to/your/whl/stata_mcp-1.7.2-py3-non-any.whl  # here is the wheel file name, you can change it to your version
 ```
 
 ## 📝 Documentation
@@ -143,18 +153,18 @@ If you use Stata-MCP in your research, please cite this repository using one of 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.7.1}
+  version = {1.7.2}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.1) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.2) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.1. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.2. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contact

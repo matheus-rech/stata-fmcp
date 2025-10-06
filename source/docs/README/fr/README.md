@@ -19,6 +19,8 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
+**Note :** Après la sortie de la v2.0.0, ce document ne sera plus mis à jour. Pour plus de contenu, veuillez consulter le README en anglais [ici](../../../../README.md).
+
 Nouveauté : Vous pouvez maintenant utiliser Stata-MCP en mode agent, plus d'informations [ici](../../../../agent_examples/README.md).
 
 
@@ -38,11 +40,19 @@ Les détails du mode agent se trouvent [ici](../../../../agent_examples/README.m
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git
 cd stata-mcp
+
 uv sync
-uv run agent_examples/openai/main.py
+uv pip install -e .
+
+stata-mcp --version  # pour tester si stata-mcp est installé avec succès.
+stata-mcp --agent  # maintenant vous pouvez profiter du mode agent stata-mcp.
 ```
 
-Vous pouvez modifier la tâche dans `agent_examples/openai/main.py` pour les variables `model_instructions` et `task_message`, [cliquez ici](../../../../agent_examples/openai/main.py) #L37 et #L68
+ou vous pouvez l'utiliser directement avec `uvx` :
+```bash
+uvx stata-mcp --version  # pour tester s'il peut être utilisé sur votre ordinateur.
+uvx stata-mcp --agent
+```
 
 ### Mode Client Chat-Bot IA
 > La configuration standard nécessite que Stata soit installé sur le chemin par défaut et que l'interface en ligne de commande de Stata (pour macOS et Linux) soit disponible.
@@ -100,7 +110,7 @@ Vous trouverez ensuite le binaire `stata-mcp` compilé dans le répertoire `dist
 
 Par exemple:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.7.1-py3-non-any.whl  # modifiez le nom du fichier selon votre version
+uvx /path/to/your/whl/stata_mcp-1.7.2-py3-non-any.whl  # modifiez le nom du fichier selon votre version
 ```
 
 ## 📝 Documentation
@@ -142,18 +152,18 @@ Si vous utilisez Stata-MCP dans vos recherches, veuillez citer ce référentiel 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.7.1}
+  version = {1.7.2}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.1) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.2) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.1. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.2. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contact

@@ -39,11 +39,19 @@
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git
 cd stata-mcp
+
 uv sync
-uv run agent_examples/openai/main.py
+uv pip install -e .
+
+stata-mcp --version  # 测试stata-mcp是否安装成功。
+stata-mcp --agent  # 现在您可以享受stata-mcp代理模式。
 ```
 
-您可以在 `agent_examples/openai/main.py` 中编辑 `model_instructions` 和 `task_message` 变量来修改任务，[点击此处](../../../../agent_examples/openai/main.py) #L37 和 #L68
+或者您可以直接使用 `uvx`：
+```bash
+uvx stata-mcp --version  # 测试它是否可以在您的计算机上使用。
+uvx stata-mcp --agent
+```
 
 ### AI 聊天机器人客户端模式
 > 标准配置要求：请确保 Stata 安装在默认路径，并且在 macOS 或 Linux 上存在 Stata CLI。
@@ -101,7 +109,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.7.1-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.7.2-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -143,18 +151,18 @@ uvx /path/to/your/whl/stata_mcp-1.7.1-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.7.1}
+  version = {1.7.2}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.1) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.7.2) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.1. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.7.2. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 联系方式

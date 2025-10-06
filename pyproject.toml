@@ -1,6 +1,6 @@
 [project]
 name = "stata-mcp"
-version = "1.7.1"
+version = "1.7.2"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
@@ -14,11 +14,11 @@ dependencies = [
     "pandas>=2.3.0",
     "pexpect>=4.9.0",
     "flask>=2.3.0",
-    "jupyter-client>=8.6.3",
-    "stata-kernel>=1.12.2",
+#    "jupyter-client>=8.6.3",
+#    "stata-kernel>=1.12.2",
     "openpyxl>=3.1.5",
-    "notebook>=7.4.5",
-    "jupyter>=1.1.1",
+#    "notebook>=7.4.5",
+#    "jupyter>=1.1.1",
     "pystata>=0.0.1",
     "langchain>=0.3.27",
     "openai-agents>=0.3.2",
