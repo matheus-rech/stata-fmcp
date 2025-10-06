@@ -540,12 +540,13 @@ def results_doc_path() -> str:
 
 
 @stata_mcp.tool(name="write_dofile", description="write the stata-code to dofile")
-def write_dofile(content: str) -> str:
+def write_dofile(content: str, encoding: str = None) -> str:
     """
     Write stata code to a dofile.
 
     Args:
-        content: The stata code content which will be writen to the designated do-file.
+        content (str): The stata code content which will be writen to the designated do-file.
+        encoding (str): The encoding method for the dofile, default -> 'utf-8'
 
     Returns:
         the do-file path
@@ -569,7 +570,8 @@ def write_dofile(content: str) -> str:
             datetime.now(),
             "%Y%m%d%H%M%S") +
         ".do")
-    with open(file_path, "w", encoding="utf-8") as f:
+    encoding = encoding or "utf-8"
+    with open(file_path, "w", encoding=encoding) as f:
         f.write(content)
     return file_path
 
@@ -578,13 +580,15 @@ def write_dofile(content: str) -> str:
     name="append_dofile",
     description="append stata-code to an existing dofile or create a new one",
 )
-def append_dofile(original_dofile_path: str, content: str) -> str:
+def append_dofile(original_dofile_path: str, content: str, encoding: str = None) -> str:
     """
     Append stata code to an existing dofile or create a new one if the original doesn't exist.
 
     Args:
-        original_dofile_path: Path to the original dofile to append to. If empty or invalid, a new file will be created.
-        content: The stata code content which will be appended to the designated do-file.
+        original_dofile_path (str): Path to the original dofile to append to.
+            If empty or invalid, a new file will be created.
+        content (str): The stata code content which will be appended to the designated do-file.
+        encoding (str): The encoding method for the dofile, default -> 'utf-8'
 
     Returns:
         The new do-file path (either the modified original or a newly created file)
@@ -603,6 +607,9 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
         `results_doc_path`, and use `local output_path path` the path is the return of the function `results_doc_path`.
         If you want to use the function `append_dofile`, please use `results_doc_path` before which is necessary.
     """
+    # Set encoding if None
+    encoding = encoding or "utf-8"
+
     # Create a new file path for the output
     new_file_path = os.path.join(
         dofile_base_path, datetime.strftime(
@@ -613,7 +620,7 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
     original_content = ""
     if original_dofile_path and os.path.exists(original_dofile_path):
         try:
-            with open(original_dofile_path, "r", encoding="utf-8") as f:
+            with open(original_dofile_path, "r", encoding=encoding) as f:
                 original_content = f.read()
             original_exists = True
         except Exception:
@@ -622,7 +629,7 @@ def append_dofile(original_dofile_path: str, content: str) -> str:
 
     # Write to the new file (either copying original content + new content, or
     # just new content)
-    with open(new_file_path, "w", encoding="utf-8") as f:
+    with open(new_file_path, "w", encoding=encoding) as f:
         if original_exists:
             f.write(original_content)
             # Add a newline if the original file doesn't end with one
