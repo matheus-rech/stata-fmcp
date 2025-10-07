@@ -7,8 +7,9 @@
 # @Email  : sepinetam@gmail.com
 # @File   : dta.py
 
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 from ._base import DataInfoBase
 
