@@ -98,7 +98,27 @@ class DataInfoBase(ABC):
                 }
             }
         """
-        ...
+        df = self.df
+        selected_vars = self.vars_list
+
+        # 基本概览信息
+        overview = {
+            "obs": len(df),
+            "var_numbers": len(selected_vars)
+        }
+
+        # 详细变量信息
+        vars_detail = {}
+
+        for var_name in selected_vars:
+            var_series = df[var_name]
+            var_info = DataInfoBase._get_variable_info(var_series)
+            vars_detail[var_name] = var_info
+
+        return {
+            "overview": overview,
+            "vars_detail": vars_detail
+        }
 
     def describe(self) -> str:
         """Provide a text description of the data."""
@@ -140,3 +160,121 @@ class DataInfoBase(ABC):
                              f"Available variables are: {all_vars}")
 
         return vars
+
+    # Helper methods for summary
+    @staticmethod
+    def _get_variable_info(var_series: pd.Series) -> Dict[str, Any]:
+        """
+        Get detailed information for a single variable.
+
+        Args:
+            var_series: pandas Series containing the variable data
+
+        Returns:
+            Dict[str, Any]: Variable information including type, observations, and summary statistics
+        """
+        # Remove NA values for analysis
+        non_na_series = var_series.dropna()
+        non_na_count = len(non_na_series)
+
+        # Determine variable type
+        var_type = DataInfoBase._determine_variable_type(non_na_series)
+
+        # Basic variable info
+        var_info = {
+            "type": var_type,
+            "obs": non_na_count
+        }
+
+        # Add type-specific information
+        if var_type == "str":
+            var_info["value_list"] = DataInfoBase._get_string_value_list(non_na_series)
+        else:  # float type
+            var_info["summary"] = DataInfoBase._get_numeric_summary(non_na_series)
+
+        return var_info
+
+    @staticmethod
+    def _determine_variable_type(series: pd.Series) -> str:
+        """
+        Determine the type of a variable.
+
+        Args:
+            series: pandas Series with NA values removed
+
+        Returns:
+            str: "str" for string variables, "float" for numeric variables
+        """
+        if len(series) == 0:
+            return "float"  # Default to float for empty series
+
+        # Check if all non-null values are numeric
+        try:
+            # Try to convert to numeric
+            pd.to_numeric(series, errors='raise')
+            return "float"
+        except (ValueError, TypeError):
+            return "str"
+
+    @staticmethod
+    def _get_string_value_list(series: pd.Series) -> List[str]:
+        """
+        Get a list of unique string values (up to 10 random values).
+
+        Args:
+            series: pandas Series with NA values removed
+
+        Returns:
+            List[str]: List of up to 10 unique string values
+        """
+        unique_values = series.unique()
+
+        if len(unique_values) <= 10:
+            return sorted(unique_values.tolist())
+        else:
+            # Randomly sample 10 values if there are more than 10
+            import random
+            sampled_values = random.sample(unique_values.tolist(), 10)
+            return sorted(sampled_values)
+
+    @staticmethod
+    def _get_numeric_summary(series: pd.Series) -> Dict[str, float]:
+        """
+        Calculate summary statistics for numeric variables.
+
+        Args:
+            series: pandas Series with NA values removed
+
+        Returns:
+            Dict[str, float]: Summary statistics including mean, se, min, max
+        """
+        if len(series) == 0:
+            return {
+                "mean": np.nan,
+                "se": np.nan,
+                "min": np.nan,
+                "max": np.nan
+            }
+
+        # Convert to numeric to handle any remaining type issues
+        numeric_series = pd.to_numeric(series, errors='coerce').dropna()
+
+        if len(numeric_series) == 0:
+            return {
+                "mean": np.nan,
+                "se": np.nan,
+                "min": np.nan,
+                "max": np.nan
+            }
+
+        mean_val = float(numeric_series.mean())
+        std_val = float(numeric_series.std())
+        n = len(numeric_series)
+        se_val = std_val / np.sqrt(n) if n > 0 else np.nan
+
+        return {
+            "mean": mean_val,
+            "se": se_val,
+            "min": float(numeric_series.min()),
+            "max": float(numeric_series.max())
+        }
