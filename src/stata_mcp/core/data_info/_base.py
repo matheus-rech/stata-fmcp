@@ -20,10 +20,14 @@ class DataInfoBase(ABC):
                  data_path: str | Path,
                  vars_list: List[str] | str = None,
                  *,
-                 encoding: str = "utf-8",):
+                 encoding: str = "utf-8",
+                 cache_info: bool = True,
+                 cache_dir: str | Path = None):
         self.data_path = data_path
         self.encoding = encoding
         self._pre_vars_list = vars_list
+        self.cache_info = cache_info
+        self.cache_dir = Path(cache_dir) if cache_dir else None
 
     # Properties
     @property
@@ -41,7 +45,6 @@ class DataInfoBase(ABC):
         """Get comprehensive information about the data."""
         return {
             "summary": self.summary(),
-            "describe": self.describe(),
         }
 
     # Abstract methods (must be implemented by subclasses)
@@ -119,10 +122,6 @@ class DataInfoBase(ABC):
             "overview": overview,
             "vars_detail": vars_detail
         }
-
-    def describe(self) -> str:
-        """Provide a text description of the data."""
-        ...
 
     # Private helper methods
     def _get_selected_vars(self, vars: List[str] | str = None) -> List[str]:

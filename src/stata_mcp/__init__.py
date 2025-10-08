@@ -2,31 +2,38 @@ import os
 import platform
 import sys
 from datetime import datetime
-from typing import Dict, List, Optional, Union
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Union
 
 import dotenv
-import pandas as pd
 from mcp.server.fastmcp import FastMCP, Icon, Image
+from pydantic_core._pydantic_core import ValidationError
 
 from .__version__ import __version__
 from .config import Config
+from .core.data_info import DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
 dotenv.load_dotenv()
 
-stata_mcp = FastMCP(
-    name="stata-mcp",
-    instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-    website_url="https://www.statamcp.com",
-    icons=[
-        Icon(
-            src="https://r2.statamcp.com/android-chrome-512x512.png",
-            mimeType="image/png",
-            sizes="512x512"
-        )
-    ]
-)
+try:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+        website_url="https://www.statamcp.com",
+        icons=[
+            Icon(
+                src="https://r2.statamcp.com/android-chrome-512x512.png",
+                mimeType="image/png",
+                sizes="512x512"
+            )
+        ]
+    )
+except ValidationError as e:
+    print(f"Warning: {e}! \nUsing lower mcp version")
+    stata_mcp = FastMCP(name="stata-mcp")
+
 config_mgr = Config()
 
 # Initialize optional parameters
@@ -186,324 +193,24 @@ def read_log(log_path: str) -> str:
     return log
 
 
-# @stata_mcp.tool(name="get_data_info",
-#           description="Get descriptive statistics for the data file")
-def get_data_info(data_path: str,
-                  vars_list: Optional[List[str]] = None,
-                  encoding: str = "utf-8") -> str:
-    """
-    Analyze the data file and return descriptive statistics. Supports various file formats,
-    including Stata data files (.dta), CSV files (.csv), and Excel files (.xlsx, .xls).
-    If the AI wants to examine the data situation, it should not use `use`, but should use
-    `get_data_info` instead.
-
-    Args:
-        data_path: Path to the data file, supporting .dta, .csv, .xlsx, and .xls formats.
-        vars_list: Optional list of variables. If provided, returns statistics only for these variables.
-                  If None, returns statistics for all variables.
-        encoding: The data file encoding method, supporting "utf-8", "gbk" and so on. (Only works when the data is csv)
-
-    Returns:
-        str: A string containing descriptive statistics of the data, including:
-             - Basic file information (format, size, number of variables, number of observations, etc.)
-             - Variable type statistics
-             - Statistical summary of numerical variables (mean, standard deviation, min, max, etc.)
-             - Frequency distribution of categorical variables
-             - Missing value analysis
-             - Panel structure information, if it is panel data
-
-    Raises:
-        ValueError: If the file format is not supported or the file does not exist
-        ImportError: If packages required for processing specific file formats are missing
-
-    Examples:
-        >>> get_data_info("example.dta")
-        'File Information:
-         Format: Stata data file (.dta)
-         File size: 1.2 MB
-         Observations: 1000
-         Variables: 15
-         ...'
-
-        >>> get_data_info("sales.csv", vars_list=["price", "quantity", "date"])
-        'File Information:
-         Format: CSV file (.csv)
-         File size: 0.5 MB
-         Observations: 500
-         Variables: 3 (selected from original variables)
-         ...'
-    """
-    # Check if the file exists
-    if not os.path.exists(data_path):
-        raise ValueError(f"File does not exist: {data_path}")
-
-    # Get file information
-    file_size = os.path.getsize(data_path) / (1024 * 1024)  # Convert to MB
-    file_extension = os.path.splitext(data_path)[1].lower()
-
-    # Read data according to file extension
-    if file_extension == ".dta":
-        try:
-            # Try to read Stata file
-            df = pd.read_stata(data_path)
-            file_type = "Stata data file (.dta)"
-        except ImportError:
-            raise ImportError(
-                "Missing package required to read Stata files. Please install pandas: pip install pandas"
-            )
-    elif file_extension == ".csv":
-        try:
-            # Try to read CSV file, handle potential encoding issues
-            try:
-                df = pd.read_csv(data_path, encoding=encoding)
-            except UnicodeDecodeError:
-                # Try different encoding
-                df = pd.read_csv(data_path, encoding="latin1")
-            file_type = "CSV file (.csv)"
-        except ImportError:
-            raise ImportError(
-                "Missing package required to read CSV files. Please install pandas: pip install pandas"
-            )
-    elif file_extension in [".xlsx", ".xls"]:
-        try:
-            # Try to read Excel file
-            df = pd.read_excel(data_path)
-            file_type = f"Excel file ({file_extension})"
-        except ImportError:
-            raise ImportError(
-                "Missing package required to read Excel files. Please install openpyxl: pip install openpyxl"
-            )
-    else:
-        raise ValueError(
-            f"Unsupported file format: {file_extension}. Supported formats include .dta, .csv, .xlsx, and .xls"
-        )
-
-    # If variable list is provided, only keep these variables
-    if vars_list is not None:
-        # Check if all requested variables exist
-        missing_vars = [var for var in vars_list if var not in df.columns]
-        if missing_vars:
-            raise ValueError(
-                f"The following variables do not exist in the dataset: {', '.join(missing_vars)}"
-            )
-
-        # Select specified variables
-        df = df[vars_list]
-
-    # Create output string
-    output: list = []
-
-    # 1. Basic file information
-    output.append("File Information:")
-    output.append(f"Format: {file_type}")
-    output.append(f"File size: {file_size:.2f} MB")
-    output.append(f"Observations: {df.shape[0]}")
-
-    if vars_list is not None:
-        output.append(
-            f"Variables: {len(vars_list)} (selected from original variables)")
-    else:
-        output.append(f"Variables: {df.shape[1]}")
-
-    # 2. Variable type statistics
-    num_numeric = sum(
-        pd.api.types.is_numeric_dtype(
-            df[col]) for col in df.columns)
-    num_categorical = sum(
-        pd.api.types.is_categorical_dtype(df[col]) or df[col].dtype == "object"
-        for col in df.columns
-    )
-    num_datetime = sum(
-        pd.api.types.is_datetime64_dtype(
-            df[col]) for col in df.columns)
-    num_boolean = sum(
-        pd.api.types.is_bool_dtype(
-            df[col]) for col in df.columns)
-
-    output.append("\nVariable Type Statistics:")
-    output.append(f"Numeric variables: {num_numeric}")
-    output.append(f"Categorical variables: {num_categorical}")
-    output.append(f"Datetime variables: {num_datetime}")
-    output.append(f"Boolean variables: {num_boolean}")
-
-    # 3. Missing value analysis
-    total_missing = df.isna().sum().sum()
-    missing_percent = (total_missing / (df.shape[0] * df.shape[1])) * 100
-
-    output.append("\nMissing Value Analysis:")
-    output.append(f"Total missing values: {total_missing}")
-    output.append(f"Missing value percentage: {missing_percent:.2f}%")
-
-    # Get missing value count and percentage for each variable
-    if (
-        df.shape[1] <= 30
-    ):  # If there aren't many variables, show missing values for each
-        output.append("\nMissing values by variable:")
-        for col in df.columns:
-            missing_count = df[col].isna().sum()
-            missing_percent = (missing_count / df.shape[0]) * 100
-            if missing_count > 0:
-                output.append(
-                    f"  {col}: {missing_count} ({missing_percent:.2f}%)")
-    else:
-        # If there are too many variables, only show the top 10 with missing
-        # values
-        missing_cols = df.isna().sum().sort_values(ascending=False)
-        missing_cols = missing_cols[missing_cols > 0]
-        if len(missing_cols) > 0:
-            output.append("\nTop 10 variables with most missing values:")
-            for col, count in missing_cols.head(10).items():
-                missing_percent = (count / df.shape[0]) * 100
-                output.append(f"  {col}: {count} ({missing_percent:.2f}%)")
-
-    # 4. Statistical summary of numerical variables
-    numeric_cols = df.select_dtypes(include=["number"]).columns
-
-    if len(numeric_cols) > 0:
-        output.append("\nNumerical Variable Statistics:")
-
-        # Calculate statistics
-        desc_stats = df[numeric_cols].describe().T
-
-        # Add additional statistics
-        if df.shape[0] > 0:  # Ensure there is data
-            desc_stats["Missing"] = df[numeric_cols].isna().sum()
-            desc_stats["Missing Ratio"] = df[numeric_cols].isna().sum() / \
-                df.shape[0]
-
-            # Optional: Add more statistics
-            desc_stats["Skewness"] = df[numeric_cols].skew()
-            desc_stats["Kurtosis"] = df[numeric_cols].kurtosis()
-
-        # Format and add to output
-        for col in desc_stats.index:
-            output.append(f"\n  {col}:")
-            output.append(f"    Count: {desc_stats.loc[col, 'count']:.0f}")
-            output.append(f"    Mean: {desc_stats.loc[col, 'mean']:.4f}")
-            output.append(f"    Std Dev: {desc_stats.loc[col, 'std']:.4f}")
-            output.append(f"    Min: {desc_stats.loc[col, 'min']:.4f}")
-            output.append(
-                f"    25th Percentile: {desc_stats.loc[col, '25%']:.4f}")
-            output.append(f"    Median: {desc_stats.loc[col, '50%']:.4f}")
-            output.append(
-                f"    75th Percentile: {desc_stats.loc[col, '75%']:.4f}")
-            output.append(f"    Max: {desc_stats.loc[col, 'max']:.4f}")
-            output.append(
-                f"    Missing Values: {desc_stats.loc[col, 'Missing']:.0f} ({desc_stats.loc[col, 'Missing Ratio']:.2%})"
-            )
-            output.append(
-                f"    Skewness: {desc_stats.loc[col, 'Skewness']:.4f}")
-            output.append(
-                f"    Kurtosis: {desc_stats.loc[col, 'Kurtosis']:.4f}")
-
-    # 5. Frequency distribution of categorical variables
-    categorical_cols = df.select_dtypes(include=["object", "category"]).columns
-
-    if len(categorical_cols) > 0:
-        output.append("\nCategorical Variable Frequency Distribution:")
-
-        for col in categorical_cols:
-            # Get number of unique values
-            unique_count = df[col].nunique()
-
-            output.append(f"\n  {col}:")
-            output.append(f"    Unique values: {unique_count}")
-
-            # If number of unique values is reasonable (not more than 10), show
-            # frequency distribution
-            if unique_count <= 10 and unique_count > 0:
-                value_counts = df[col].value_counts().head(10)
-                value_percent = df[col].value_counts(
-                    normalize=True).head(10) * 100
-
-                for i, (value, count) in enumerate(value_counts.items()):
-                    percent = value_percent[i]
-                    output.append(f"    {value}: {count} ({percent:.2f}%)")
-            elif unique_count > 10:
-                # If too many unique values, only show top 5
-                output.append("    Top 5 most common values:")
-                value_counts = df[col].value_counts().head(5)
-                value_percent = df[col].value_counts(
-                    normalize=True).head(5) * 100
-
-                for i, (value, count) in enumerate(value_counts.items()):
-                    percent = value_percent[i]
-                    output.append(f"    {value}: {count} ({percent:.2f}%)")
-
-    # 6. Detect if it's panel data and analyze panel structure
-    # Typically panel data has ID and time dimensions
-    potential_id_cols = [
-        col
-        for col in df.columns
-        if "id" in str(col).lower()
-        or "code" in str(col).lower()
-        or "key" in str(col).lower()
-    ]
-    potential_time_cols = [
-        col
-        for col in df.columns
-        if "time" in str(col).lower()
-        or "date" in str(col).lower()
-        or "year" in str(col).lower()
-        or "month" in str(col).lower()
-        or "day" in str(col).lower()
-    ]
-
-    # If there are potential ID columns and time columns, try to analyze panel
-    # structure
-    if potential_id_cols and potential_time_cols:
-        for id_col in potential_id_cols[:1]:  # Only try the first ID column
-            # Only try the first time column
-            for time_col in potential_time_cols[:1]:
-                # Calculate panel structure
-                try:
-                    n_ids = df[id_col].nunique()
-                    n_times = df[time_col].nunique()
-                    n_obs = df.shape[0]
-
-                    output.append(
-                        "\nPotential Panel Data Structure Detection:")
-                    output.append(
-                        f"  ID variable: {id_col} (unique values: {n_ids})")
-                    output.append(
-                        f"  Time variable: {time_col} (unique values: {n_times})"
-                    )
-                    output.append(f"  Total observations: {n_obs}")
-
-                    # Check if panel is balanced
-                    cross_table = pd.crosstab(df[id_col], df[time_col])
-                    is_balanced = (cross_table == 1).all().all()
-
-                    if is_balanced and n_ids * n_times == n_obs:
-                        output.append(
-                            "  Panel status: Strongly balanced panel (each ID has one observation at each time point)"
-                        )
-                    elif df.groupby(id_col)[time_col].count().var() == 0:
-                        output.append(
-                            "  Panel status: Weakly balanced panel (each ID has the same number of observations, but possibly not at the same time points)"
-                        )
-                    else:
-                        output.append(
-                            "  Panel status: Unbalanced panel (different IDs have different numbers of observations)"
-                        )
-
-                    # Calculate average observations per ID
-                    avg_obs_per_id = df.groupby(id_col).size().mean()
-                    output.append(
-                        f"  Average observations per ID: {avg_obs_per_id:.2f}"
-                    )
-
-                    # Calculate time span
-                    if pd.api.types.is_datetime64_dtype(df[time_col]):
-                        min_time = df[time_col].min()
-                        max_time = df[time_col].max()
-                        output.append(f"  Time span: {min_time} to {max_time}")
-                except Exception:
-                    # If calculation fails, skip panel analysis
-                    pass
-
-    # Return formatted output
-    return "\n".join(output)
+# @stata_mcp.tool(
+#     name="get_data_info",
+#     description="Get descriptive statistics for the data file"
+# )
+def get_data_info(data_path: str | Path,
+                  vars_list: List[str] | str = None,
+                  encoding: str = "utf-8",
+                  file_extension: Optional[str] = None) -> Dict[str, dict]:
+    EXTENSION_METHOD_MAPPING: Dict[str, Callable] = {
+        "dta": DtaDataInfo
+    }
+    if file_extension is None:
+        file_extension = Path(data_path).suffix
+    file_extension = file_extension.split(".")[-1].lower()
+    if file_extension not in EXTENSION_METHOD_MAPPING:
+        raise ValueError(f"Unsupported file extension: {file_extension}")
+    fn = EXTENSION_METHOD_MAPPING.get(file_extension)
+    return fn(data_path, vars_list, encoding=encoding).info
 
 
 @stata_mcp.prompt()
