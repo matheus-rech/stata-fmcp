@@ -23,32 +23,41 @@ mcp_version = Version(version('mcp'))
 
 try:
     # Use different logic for init MCP Server
-    if mcp_version < Version("1.15.0"):
-        stata_mcp = FastMCP(name="stata-mcp")
-    else:
-        if mcp_version == Version("1.15.0"):
-            icon = Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes="512x512"
-            )
-        else:
-            icon_i = Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes=["512x512"]
-            )
-            icon = [icon_i]
+    if mcp_version >= Version("1.16.0"):
+        # v1.16.0 requires icons-sizes as list[str]
         stata_mcp = FastMCP(
             name="stata-mcp",
             instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
             website_url="https://www.statamcp.com",
-            icons=icon
+            icons=[Icon(
+                src="https://r2.statamcp.com/android-chrome-512x512.png",
+                mimeType="image/png",
+                sizes=["512x512"]
+            )]
         )
+    elif mcp_version == Version("1.15.0"):
+        # v1.15.0 requires icons-sizes as str | None
+        stata_mcp = FastMCP(
+            name="stata-mcp",
+            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+            website_url="https://www.statamcp.com",
+            icons=[Icon(
+                src="https://r2.statamcp.com/android-chrome-512x512.png",
+                mimeType="image/png",
+                sizes="512x512"
+            )]
+        )
+    else:
+        # Before v1.15.0, there is not a option named icons, just use the minimal config.
+        print(f"Suggest upgrade your mcp version to v{mcp_version}")
+        stata_mcp = FastMCP(name="stata-mcp")
 except ValidationError as e:
-    print(f"Unknown Error: {e}")
-    print("If you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
-    sys.exit(1)
+    print(f"Unknown Error: {e}\nTry to use non-config way.")
+    try:
+        stata_mcp = FastMCP()
+    except ValidationError as e:
+        print("Still error! If you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
+        sys.exit(1)
 
 
 config_mgr = Config()
