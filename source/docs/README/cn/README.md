@@ -173,6 +173,10 @@ Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis wi
 ## ❤️ 致谢
 作者诚挚感谢Stata官方团队给予的支持和授权测试开发使用的Stata License
 
+## 📃 声明
+项目里面涉及到的Stata指的是由[StataCorp LLC](https://www.stata.com/company/)开发的商业软件Stata。本项目与 StataCorp LLC 无隶属、关联或背书关系。本项目不包含 Stata 软件或其安装包，用户须自行从 StataCorp 获取并安装有效授权的 Stata 版本。本项目按 [Apache-2.0](../../../../LICENSE) 许可发布，不对因使用本项目或与 Stata 相关操作产生的任何损失承担责任。
+
+
 ## ✨ 历史Star
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sepinetam/stata-mcp&type=Date)](https://www.star-history.com/#sepinetam/stata-mcp&Date)

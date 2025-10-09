@@ -175,6 +175,11 @@ Or contribute directly by submitting a [Pull Request](https://github.com/sepinet
 ## ❤️ Acknowledgements
 The author sincerely thanks the Stata official team for their support and the Stata License for authorizing the test development.
 
+## 📃 Statement
+The Stata referred to in this project is the commercial software Stata developed by [StataCorp LLC](https://www.stata.com/company/). This project is not affiliated with, endorsed by, or sponsored by StataCorp LLC. This project does not include the Stata software or any installation packages; users must obtain and install a validly licensed copy of Stata from StataCorp. This project is licensed under [Apache-2.0](LICENSE). The project maintainers accept no liability for any loss or damage arising from the use of this project or from actions related to Stata.
+
+More information: refer to the Chinese version at [source/docs/README/cn/README.md]; in case of any conflict, the Chinese version shall prevail.
+
 ## ✨ Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sepinetam/stata-mcp&type=Date)](https://www.star-history.com/#sepinetam/stata-mcp&Date)
