@@ -22,12 +22,14 @@ class DataInfoBase(ABC):
                  *,
                  encoding: str = "utf-8",
                  cache_info: bool = True,
-                 cache_dir: str | Path = None):
+                 cache_dir: str | Path = None,
+                 **kwargs):
         self.data_path = data_path
         self.encoding = encoding
         self._pre_vars_list = vars_list
         self.cache_info = cache_info
         self.cache_dir = Path(cache_dir) if cache_dir else None
+        self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
 
     # Properties
     @property

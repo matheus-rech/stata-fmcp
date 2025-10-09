@@ -13,7 +13,7 @@ from pydantic_core._pydantic_core import ValidationError
 
 from .__version__ import __version__
 from .config import Config
-from .core.data_info import DtaDataInfo
+from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
@@ -94,6 +94,9 @@ dofile_base_path = os.path.join(output_base_path, "stata-mcp-dofile")
 os.makedirs(dofile_base_path, exist_ok=True)
 result_doc_path = os.path.join(output_base_path, "stata-mcp-result")
 os.makedirs(result_doc_path, exist_ok=True)
+
+tmp_base_path = os.path.join(output_base_path, "stata-mcp-tmp")
+os.makedirs(tmp_base_path, exist_ok=True)
 
 lang = os.getenv("lang", "en")
 if lang not in ["en", "cn"]:
@@ -215,19 +218,59 @@ def read_log(log_path: str) -> str:
 #     description="Get descriptive statistics for the data file"
 # )
 def get_data_info(data_path: str | Path,
-                  vars_list: List[str] | str = None,
+                  vars_list: List[str] | str | None = None,
                   encoding: str = "utf-8",
-                  file_extension: Optional[str] = None) -> Dict[str, dict]:
+                  file_extension: Optional[str] = None,
+                  **kwargs) -> Dict[str, dict]:
+    f"""
+    Get data file vars information.
+
+    Args:
+        data_path (str | Path): the data file's absolutely path.
+        vars_list (List[str] | str | None): the vars you want to get info (default is None, means all vars).
+        encoding (str): data file encoding method (dta file is not supported this arg).
+        file_extension (Optional[str]): the data file's extension, default is None, then would find it automatically.
+
+        **kwargs:
+            is_save (Optional[bool]): default = rue, whether save the result to a txt file.
+            save_path (str): the data-info saved file path, 
+                             if None would be saved rooted in `{tmp_base_path}` with name same as data, 
+                             like: data_path = "/Users/username/Documents/stata-mcp-folder/stata-mcp-tmp/some_data.dta",
+                                 -> "/Users/your_name/Documents/stata-mcp-folder/stata-mcp-tmp/some_data.txt"
+            info_file_encoding (Optional[str]): default = "utf-8", the data-info saved file encoding.
+    Returns:
+        Dict[str, dict]: the data file vars information.
+
+    Examples:
+        >>> get_data_info(data_path="https://example-data.statamcp.com/01_OLS.dta")
+        >>> # the info file will be ~/Documents/stata-mcp-folder/stata-mcp-tmp/01_OLS.txt
+        >>> FileNotFoundError("Not support online data now")
+    """
     EXTENSION_METHOD_MAPPING: Dict[str, Callable] = {
-        "dta": DtaDataInfo
+        "dta": DtaDataInfo,
+        "csv": CsvDataInfo
     }
     if file_extension is None:
         file_extension = Path(data_path).suffix
     file_extension = file_extension.split(".")[-1].lower()
     if file_extension not in EXTENSION_METHOD_MAPPING:
         raise ValueError(f"Unsupported file extension: {file_extension}")
-    fn = EXTENSION_METHOD_MAPPING.get(file_extension)
-    return fn(data_path, vars_list, encoding=encoding).info
+    cls = EXTENSION_METHOD_MAPPING.get(file_extension)
+    data_info = cls(data_path=data_path, vars_list=vars_list, encoding=encoding, **kwargs).info
+
+    if kwargs.get("is_save", True):
+        save_path = kwargs.get("save_path", None)
+        if save_path is None:
+            data_name = Path(data_path).name.split(".")[0]
+            data_info_path = os.path.join(tmp_base_path, data_name, ".txt")
+        else:
+            data_info_path = save_path
+
+        os.makedirs(os.path.dirname(data_info_path), exist_ok=True)
+        with open(data_info_path, "w", encoding=kwargs.get("info_file_encoding", "utf-8")) as f:
+            f.write(data_info)
+
+    return data_info
 
 
 @stata_mcp.prompt()
