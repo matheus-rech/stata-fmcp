@@ -9,7 +9,7 @@
 
 from typing import Dict, List
 
-from .finder_base import FinderBase
+from .base import FinderBase
 
 
 class FinderMacOS(FinderBase):

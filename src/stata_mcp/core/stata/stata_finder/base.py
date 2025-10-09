@@ -5,7 +5,7 @@
 #
 # @Author : Sepine Tam (谭淞)
 # @Email  : sepinetam@gmail.com
-# @File   : finder_base.py
+# @File   : base.py
 
 import os
 from abc import ABC, abstractmethod
