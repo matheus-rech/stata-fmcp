@@ -31,6 +31,13 @@ try:
         ]
     )
 except ValidationError as e:
+    from importlib.metadata import version
+
+    from packaging.version import Version
+
+    if not Version(version('mcp')) < Version("1.15.0"):
+        print(f"Unknown Error: {e}")
+        sys.exit(1)
     print(f"Warning: {e}! \nUsing lower mcp version")
     stata_mcp = FastMCP(name="stata-mcp")
 
