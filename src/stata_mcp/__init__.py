@@ -8,6 +8,7 @@ from typing import Callable, Dict, List, Optional, Union
 import dotenv
 from mcp.server.fastmcp import FastMCP, Icon, Image
 from pydantic_core._pydantic_core import ValidationError
+from packaging.version import Version
 
 from .__version__ import __version__
 from .config import Config
@@ -17,29 +18,37 @@ from .utils.Prompt import pmp
 
 dotenv.load_dotenv()
 
+mcp_version = Version(version('mcp'))
+
 try:
-    stata_mcp = FastMCP(
-        name="stata-mcp",
-        instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-        website_url="https://www.statamcp.com",
-        icons=[
-            Icon(
+    # Use different logic for init MCP Server
+    if mcp_version < Version("1.15.0"):
+        stata_mcp = FastMCP(name="stata-mcp")
+    else:
+        if mcp_version == Version("1.15.0"):
+            icon = Icon(
                 src="https://r2.statamcp.com/android-chrome-512x512.png",
                 mimeType="image/png",
                 sizes="512x512"
             )
-        ]
-    )
+        else:
+            icon_i = Icon(
+                src="https://r2.statamcp.com/android-chrome-512x512.png",
+                mimeType="image/png",
+                sizes=["512x512"]
+            )
+            icon = [icon_i]
+        stata_mcp = FastMCP(
+            name="stata-mcp",
+            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+            website_url="https://www.statamcp.com",
+            icons=icon
+        )
 except ValidationError as e:
-    from importlib.metadata import version
+    print(f"Unknown Error: {e}")
+    print("If you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
+    sys.exit(1)
 
-    from packaging.version import Version
-
-    if not Version(version('mcp')) < Version("1.15.0"):
-        print(f"Unknown Error: {e}")
-        sys.exit(1)
-    print(f"Warning: {e}! \nUsing lower mcp version")
-    stata_mcp = FastMCP(name="stata-mcp")
 
 config_mgr = Config()
 
