@@ -2,13 +2,14 @@ import os
 import platform
 import sys
 from datetime import datetime
+from importlib.metadata import version
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Union
 
 import dotenv
 from mcp.server.fastmcp import FastMCP, Icon, Image
-from pydantic_core._pydantic_core import ValidationError
 from packaging.version import Version
+from pydantic_core._pydantic_core import ValidationError
 
 from .__version__ import __version__
 from .config import Config
