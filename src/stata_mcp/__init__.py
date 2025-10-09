@@ -56,7 +56,7 @@ except ValidationError as e:
     try:
         stata_mcp = FastMCP()
     except ValidationError as e:
-        print("Still error! If you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
+        print(f"Still error: {e}! \nIf you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
         sys.exit(1)
 
 
