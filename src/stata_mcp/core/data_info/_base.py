@@ -36,10 +36,7 @@ class DataInfoBase(ABC):
     @property
     def df(self) -> pd.DataFrame:
         """Get the data as a pandas DataFrame."""
-        if self.is_url:
-            return self._read_data_from_url()
-        else:
-            return self._read_data()
+        return self._read_data()
 
     @property
     def vars_list(self) -> List[str]:
@@ -65,11 +62,6 @@ class DataInfoBase(ABC):
     @abstractmethod
     def _read_data(self) -> pd.DataFrame:
         """Read data from the source file. Must be implemented by subclasses."""
-        ...
-
-    @abstractmethod
-    def _read_data_from_url(self) -> pd.DataFrame:
-        """Read data from URL"""
         ...
 
     # Public methods

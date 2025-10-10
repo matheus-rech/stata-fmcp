@@ -231,7 +231,7 @@ def get_data_info(data_path: str | Path,
                   encoding: str = "utf-8",
                   file_extension: Optional[str] = None,
                   **kwargs) -> Dict[str, dict]:
-    f"""
+    """
     Get data file vars information.
 
     Args:
@@ -253,7 +253,29 @@ def get_data_info(data_path: str | Path,
     Examples:
         >>> get_data_info(data_path="https://example-data.statamcp.com/01_OLS.dta")
         >>> # the info file will be ~/Documents/stata-mcp-folder/stata-mcp-tmp/01_OLS.txt
-        >>> FileNotFoundError("Not support online data now")
+        ->
+        {
+            'summary': {
+                'overview': {
+                    'obs': 10000,
+                    'var_numbers': 3
+                },
+                'vars_detail': {
+                    'height': {
+                        'type': 'float',
+                        'obs': 10000,
+                        'summary': {
+                            'mean': 170.0025177001953,
+                            'se': np.float64(0.07957535743713379),
+                            'min': 134.2535858154297,
+                            'max': 204.62001037597656
+                        }
+                    },
+                    'weight': {...},
+                    'id': {...}
+                }
+            }
+        }
     """
     EXTENSION_METHOD_MAPPING: Dict[str, Callable] = {
         "dta": DtaDataInfo,
