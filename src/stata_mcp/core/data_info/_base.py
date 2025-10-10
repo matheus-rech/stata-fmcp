@@ -10,6 +10,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List
+from urllib.parse import urlparse
 
 import numpy as np
 import pandas as pd
@@ -35,7 +36,10 @@ class DataInfoBase(ABC):
     @property
     def df(self) -> pd.DataFrame:
         """Get the data as a pandas DataFrame."""
-        return self._read_data()
+        if self.is_url:
+            return self._read_data_from_url()
+        else:
+            return self._read_data()
 
     @property
     def vars_list(self) -> List[str]:
@@ -49,10 +53,23 @@ class DataInfoBase(ABC):
             "summary": self.summary(),
         }
 
+    @property
+    def is_url(self) -> bool:
+        try:
+            result = urlparse(str(self.data_path))
+            return all([result.scheme, result.netloc])
+        except Exception:
+            return False
+
     # Abstract methods (must be implemented by subclasses)
     @abstractmethod
     def _read_data(self) -> pd.DataFrame:
         """Read data from the source file. Must be implemented by subclasses."""
+        ...
+
+    @abstractmethod
+    def _read_data_from_url(self) -> pd.DataFrame:
+        """Read data from URL"""
         ...
 
     # Public methods
