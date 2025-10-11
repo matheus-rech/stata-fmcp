@@ -9,7 +9,7 @@
 
 import os
 
-from agents import Agent, OpenAIChatCompletionsModel, set_tracing_disabled
+from agents import Agent, Model, set_tracing_disabled
 from agents.mcp import MCPServerStdio
 
 
@@ -105,7 +105,7 @@ class StataAgent:
     def __init__(self,
                  name: str = None,
                  instructions: str = None,
-                 model: OpenAIChatCompletionsModel = None,
+                 model: Model = None,
                  mcp_servers: list = None,
                  tools: list = None,
                  tool_description: str = None,

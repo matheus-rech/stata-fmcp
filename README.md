@@ -19,7 +19,9 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
-**News**: Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
+**News**: 
+- Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
+- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as_tool.md).
 
 Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
@@ -54,6 +56,39 @@ uvx stata-mcp --agent
 ```
 
 You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](agent_examples/openai/main.py) #L37 and #L68
+
+### Agent as Tool
+If you want to use a Stata-Agent in another agent, [here](source/docs/Usages/agent_as_tool.md) is a simple example:
+
+```python
+import asyncio
+
+from agents import Agent, Runner
+from stata_mcp.agent_as_tool import StataAgent
+
+# init stata agent and set as tool
+stata_agent = StataAgent()
+sa_tool = stata_agent.as_tool()
+
+# Create main Agent
+agent = Agent(
+    name="Assistant",
+    instructions="You are a helpful assistant", 
+    tools=[sa_tool],
+)
+
+# Then run the agent as usual.
+async def main(task: str, max_turns: int = 30):
+    result = await Runner.run(agent, input=task, max_turns=max_turns)
+    return result
+
+
+if __name__ == "__main__":
+    econ_task = "Use Stata default data to find out the relationship between mpg and price."
+    asyncio.run(main(econ_task))
+
+```
+
 
 ### AI Chat-Bot Client Mode
 > Standard config requires: please make sure the stata is installed at the default path, and the stata cli (for macOS and Linux) exists.
