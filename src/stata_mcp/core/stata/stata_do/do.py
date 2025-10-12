@@ -99,13 +99,10 @@ class StataDo:
         )
 
         # Execute commands sequentially in Stata
-        if is_replace:
-            replace_cmd = ", replace"
-        else:
-            replace_cmd = ""
+        replace_clause = ", replace" if is_replace else ""
 
         commands = f"""
-        log using "{log_file}"{replace_cmd}
+        log using "{log_file}"{replace_clause}
         do "{dofile_path}"
         log close
         exit, STATA
@@ -134,13 +131,10 @@ class StataDo:
         # Create a temporary batch file
         batch_file = os.path.join(self.dofile_base_path, f"{nowtime}_batch.do")
 
-        if is_replace:
-            replace_cmd = ", replace"
-        else:
-            replace_cmd = ""
+        replace_clause = ", replace" if is_replace else ""
         try:
             with open(batch_file, "w", encoding="utf-8") as f:
-                f.write(f'log using "{log_file}"{replace_cmd}\n')
+                f.write(f'log using "{log_file}"{replace_clause}\n')
                 f.write(f'do "{dofile_path}"\n')
                 f.write("log close\n")
                 f.write("exit, STATA\n")
