@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Union
 
 import dotenv
-from mcp.server.fastmcp import FastMCP, Icon, Image
+from mcp.server.fastmcp import FastMCP, Image
 from packaging.version import Version
 from pydantic_core._pydantic_core import ValidationError
 
@@ -22,6 +22,8 @@ dotenv.load_dotenv()
 mcp_version = Version(version('mcp'))
 
 try:
+    from mcp.server.fastmcp import Icon
+
     # Use different logic for init MCP Server
     if mcp_version >= Version("1.16.0"):
         # v1.16.0 requires icons-sizes as list[str]
