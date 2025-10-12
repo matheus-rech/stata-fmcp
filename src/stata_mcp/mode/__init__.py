@@ -16,8 +16,7 @@ def run_agent_mode():
 
     model = input("Please set your model, default model is gpt-5 provided by OpenAI , with typing `d` \n>>> ")
     if model.lower() == "d" or model == "":
-        # model = "gpt-5"
-        model = "deepseek-chat"
+        model = "gpt-5"
     agent = StataAgent(model=model, work_dir=work_dir)
 
     print("========== Notes ==========")

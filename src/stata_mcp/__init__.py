@@ -12,7 +12,6 @@ from packaging.version import Version
 from pydantic_core._pydantic_core import ValidationError
 
 from .__version__ import __version__
-from .config import Config
 from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
@@ -62,39 +61,32 @@ except ValidationError as e:
         sys.exit(1)
 
 
-config_mgr = Config()
-
 # Initialize optional parameters
-sys_os = platform.system()
+SYSTEM_OS = platform.system()
 
 # Determine documents path
-if sys_os in ["Darwin", "Linux"]:
+if SYSTEM_OS in ["Darwin", "Linux"]:
     documents_path = os.getenv(
         "documents_path",
         os.path.expanduser("~/Documents")
     )
-elif sys_os == "Windows":
+elif SYSTEM_OS == "Windows":
     documents_path = os.getenv(
         "documents_path",
-        os.path.join(os.environ.get("USERPROFILE", "~"), "Documents"),
+        os.path.join(os.getenv("USERPROFILE", "~"), "Documents"),
     )
 else:
+    # Here, if unknown system -> exit.
     sys.exit("Unknown System")
 
 # Use configured output path if available
-output_base_path = config_mgr.get("stata-mcp.output_base_path") or os.path.join(
-    documents_path, "stata-mcp-folder"
-)
-os.makedirs(output_base_path, exist_ok=True)
+output_base_path = os.path.join(documents_path, "stata-mcp-folder")
+os.makedirs(output_base_path, exist_ok=True)  # make sure this folder exists
 
 try:
-    # stata_cli
+    # find stata_cli, env first, then default path
     finder = StataFinder()
-    stata_cli = config_mgr.get("stata.stata_cli") or os.getenv(
-        "stata_cli"
-    )
-    if stata_cli is None:
-        stata_cli = finder.find_stata()
+    STATA_CLI = finder.find_stata(os_name=SYSTEM_OS, is_env=True)
 except FileNotFoundError as e:
     sys.exit(str(e))
 
@@ -183,6 +175,7 @@ def stata_analysis_strategy(lang: str = None) -> str:
     description="Get help for a Stata command"
 )
 @stata_mcp.prompt(name="help", description="Get help for a Stata command")
+@stata_mcp.tool(name="help", description="Get help for a Stata command")
 def help(cmd: str) -> str:
     """
     Execute the Stata 'help' command and return its output.
@@ -194,7 +187,7 @@ def help(cmd: str) -> str:
         str: The help text returned by Stata for the specified command,
              or a message indicating that no help was found.
     """
-    controller = StataController(stata_cli)
+    controller = StataController(STATA_CLI)
     std_error_msg = (
         f"help {cmd}\r\n"
         f"help for {cmd} not found\r\n"
@@ -208,20 +201,30 @@ def help(cmd: str) -> str:
         return "No help found for the command: " + cmd
 
 
-@stata_mcp.tool()
-def read_log(log_path: str) -> str:
+@stata_mcp.tool(
+    name="read_file",
+    description="Reads a file and returns its content as a string"
+)
+def read_file(file_path: str, encoding: str = "utf-8") -> str:
     """
-    Read the log file and return its content.
+    Reads the content of a file and returns it as a string.
 
     Args:
-        log_path (str): The path to the log file.
+        file_path (str): The full path to the file to be read.
+        encoding (str, optional): The encoding used to decode the file. Defaults to "utf-8".
 
     Returns:
-        str: The content of the log file.
+        str: The content of the file as a string.
     """
-    with open(log_path, "r") as file:
-        log = file.read()
-    return log
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+
+    try:
+        with open(file_path, "r", encoding=encoding) as file:
+            log_content = file.read()
+        return log_content
+    except IOError as e:
+        raise IOError(f"An error occurred while reading the file: {e}")
 
 
 @stata_mcp.tool(
@@ -339,10 +342,13 @@ def results_doc_path() -> str:
     return path
 
 
-@stata_mcp.tool(name="write_dofile", description="write the stata-code to dofile")
+@stata_mcp.tool(
+    name="write_dofile",
+    description="write the stata-code to dofile"
+)
 def write_dofile(content: str, encoding: str = None) -> str:
     """
-    Write stata code to a dofile.
+    Write stata code to a dofile and return the do-file path.
 
     Args:
         content (str): The stata code content which will be writen to the designated do-file.
@@ -366,10 +372,8 @@ def write_dofile(content: str, encoding: str = None) -> str:
     """
     file_path = os.path.join(
         dofile_base_path,
-        datetime.strftime(
-            datetime.now(),
-            "%Y%m%d%H%M%S") +
-        ".do")
+        datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
+    )
     encoding = encoding or "utf-8"
     with open(file_path, "w", encoding=encoding) as f:
         f.write(content)
@@ -549,6 +553,7 @@ def stata_do(dofile_path: str,
         PermissionError: If there are insufficient permissions to execute Stata or write log files
 
     Example:
+        >>> do_file_path: str | Path = ...
         >>> result = stata_do(do_file_path, is_read_log=True)
         >>> print(result[log_file_path])
         /path/to/logs/analysis.log
@@ -562,10 +567,10 @@ def stata_do(dofile_path: str,
     """
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
-        stata_cli=stata_cli,  # Path to Stata executable
+        stata_cli=STATA_CLI,  # Path to Stata executable
         log_file_path=log_base_path,  # Directory for log files
         dofile_base_path=dofile_base_path,  # Base directory for do-files
-        sys_os=sys_os  # Operating system identifier
+        sys_os=SYSTEM_OS  # Operating system identifier
     )
 
     # Execute the do-file and get log file path

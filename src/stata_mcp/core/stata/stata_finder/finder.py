@@ -131,7 +131,7 @@ class StataFinder:
             RuntimeError: If the operating system is not supported.
         """
         if is_env:
-            stata_cli = os.getenv("stata_cli", None)
+            stata_cli = os.getenv("stata_cli", None) or os.getenv("STATA_CLI", None)
             if stata_cli:
                 return stata_cli
 
