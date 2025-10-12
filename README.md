@@ -164,8 +164,8 @@ uvx /path/to/your/whl/stata_mcp-1.9.0-py3-non-any.whl  # here is the wheel file 
 ## 🚀 Roadmap
 - [x] macOS support
 - [x] Windows support
-- [ ] Additional LLM integrations
-- [ ] Performance optimizations
+- [ ] Additional LLM integrations (With a new webUI)
+- [ ] Performance optimizations (Via prompt and context engineering)
 
 ## ⚠️ Disclaimer
 This project is for research purposes only. I am not responsible for any damage caused by this project. Please ensure you have proper licensing to use Stata.
