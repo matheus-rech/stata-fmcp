@@ -27,6 +27,10 @@ class StataController:
         self.timeout = timeout
         self.start()
 
+    @property
+    def STATA_CLI(self):
+        return self.stata_cli_path
+
     def _expect_prompt(self, timeout=None):
         """
         Wait for the Stata prompt, indicating command completion.
@@ -152,7 +156,7 @@ class StataController:
         Start the Stata session.
         """
         self.child = pexpect.spawn(
-            self.stata_cli_path, encoding="utf-8", timeout=self.timeout
+            self.STATA_CLI, encoding="utf-8", timeout=self.timeout
         )
         self._expect_prompt()
 

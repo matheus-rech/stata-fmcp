@@ -15,12 +15,11 @@ from ....utils import get_nowtime
 
 
 class StataDo:
-    def __init__(
-            self,
-            stata_cli: str,
-            log_file_path: str,
-            dofile_base_path: str,
-            sys_os: str = None):
+    def __init__(self,
+                 stata_cli: str,
+                 log_file_path: str,
+                 dofile_base_path: str,
+                 sys_os: str = None):
         """
         Initialize Stata executor
 
@@ -39,12 +38,24 @@ class StataDo:
             from ....utils import get_os
             self.sys_os = get_os()
 
-    def execute_dofile(self, dofile_path: str) -> str:
+    def set_cli(self, cli_path):
+        self.stata_cli = cli_path
+
+    @property
+    def STATA_CLI(self):
+        return self.stata_cli
+
+    def execute_dofile(self,
+                       dofile_path: str,
+                       log_file_name: str = None,
+                       is_replace: bool = True) -> str:
         """
         Execute Stata do file and return log file path
 
         Args:
-            dofile_path: Path to do file
+            dofile_path (str): Path to do file
+            log_file_name (str, optional): File name of log
+            is_replace (bool): Whether replace the log file if exists before. Default is True
 
         Returns:
             str: Path to generated log file
@@ -54,30 +65,32 @@ class StataDo:
             RuntimeError: Stata execution error
         """
         nowtime = get_nowtime()
-        log_file = os.path.join(self.log_file_path, f"{nowtime}.log")
+        log_name = log_file_name or nowtime
+        log_file = os.path.join(self.log_file_path, f"{log_name}.log")
 
         if self.sys_os == "Darwin" or self.sys_os == "Linux":
-            self._execute_unix_like(dofile_path, log_file)
+            self._execute_unix_like(dofile_path, log_file, is_replace)
         elif self.sys_os == "Windows":
-            self._execute_windows(dofile_path, log_file, nowtime)
+            self._execute_windows(dofile_path, log_file, nowtime, is_replace)
         else:
             raise ValueError(f"Unsupported operating system: {self.sys_os}")
 
         return log_file
 
-    def _execute_unix_like(self, dofile_path: str, log_file: str):
+    def _execute_unix_like(self, dofile_path: str, log_file: str, is_replace: bool = True):
         """
         Execute Stata on macOS/Linux systems
 
         Args:
             dofile_path: Path to do file
             log_file: Path to log file
+            is_replace: Whether replace the log file if exists.
 
         Raises:
             RuntimeError: Stata execution error
         """
         proc = subprocess.Popen(
-            [self.stata_cli],  # Launch the Stata CLI
+            [self.STATA_CLI],  # Launch the Stata CLI
             stdin=subprocess.PIPE,  # Prepare to send commands
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -86,8 +99,13 @@ class StataDo:
         )
 
         # Execute commands sequentially in Stata
+        if is_replace:
+            replace_cmd = ", replace"
+        else:
+            replace_cmd = ""
+
         commands = f"""
-        log using "{log_file}", replace
+        log using "{log_file}"{replace_cmd}
         do "{dofile_path}"
         log close
         exit, STATA
@@ -103,7 +121,7 @@ class StataDo:
             logging.info(
                 f"Stata execution completed successfully. Log file: {log_file}")
 
-    def _execute_windows(self, dofile_path: str, log_file: str, nowtime: str):
+    def _execute_windows(self, dofile_path: str, log_file: str, nowtime: str, is_replace: bool = True):
         """
         Execute Stata on Windows systems
 
@@ -116,16 +134,20 @@ class StataDo:
         # Create a temporary batch file
         batch_file = os.path.join(self.dofile_base_path, f"{nowtime}_batch.do")
 
+        if is_replace:
+            replace_cmd = ", replace"
+        else:
+            replace_cmd = ""
         try:
             with open(batch_file, "w", encoding="utf-8") as f:
-                f.write(f'log using "{log_file}", replace\n')
+                f.write(f'log using "{log_file}"{replace_cmd}\n')
                 f.write(f'do "{dofile_path}"\n')
                 f.write("log close\n")
                 f.write("exit, STATA\n")
 
             # Run Stata on Windows using /e to execute the batch file
             # Use double quotes to handle spaces in the path
-            cmd = f'"{self.stata_cli}" /e do "{batch_file}"'
+            cmd = f'"{self.STATA_CLI}" /e do "{batch_file}"'
             result = subprocess.run(
                 cmd, shell=True, capture_output=True, text=True)
 
@@ -153,7 +175,8 @@ class StataDo:
                         f"Failed to remove temporary batch file "
                         f"{batch_file}: {str(e)}")
 
-    def read_log(self, log_file_path):
-        with open(log_file_path, "r") as file:
+    @staticmethod
+    def read_log(log_file_path, mode="r", encoding="utf-8") -> str:
+        with open(log_file_path, mode, encoding=encoding) as file:
             log_content = file.read()
         return log_content

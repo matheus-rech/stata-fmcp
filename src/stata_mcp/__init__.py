@@ -530,6 +530,7 @@ def mk_dir(path: str) -> bool:
 
 @stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
+             log_file_name: str = None,
              is_read_log: bool = True) -> Dict[str, Union[str, None]]:
     """
     Execute a Stata do-file and return the log file path with optional log content.
@@ -539,6 +540,7 @@ def stata_do(dofile_path: str,
 
     Args:
         dofile_path (str): Absolute or relative path to the Stata do-file (.do) to execute.
+        log_file_name (str, optional): Set log file name without a time-string. If None, using nowtime as filename
         is_read_log (bool, optional): Whether to read and return the log file content.
                                     Defaults to True.
 
@@ -560,6 +562,10 @@ def stata_do(dofile_path: str,
         >>> print(result[log_content])
         Stata log content...
 
+        >>> result = stata_do(do_file_path, log_file_name="experience")
+        >>> print(result[log_file_path])
+        /log/file/base/experience.log
+
     Note:
         - The log file is automatically created in the configured log_file_path directory
         - Supports multiple operating systems through the StataDo executor
@@ -574,7 +580,7 @@ def stata_do(dofile_path: str,
     )
 
     # Execute the do-file and get log file path
-    log_file_path = stata_executor.execute_dofile(dofile_path)
+    log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
 
     # Return log content based on user preference
     if is_read_log:
