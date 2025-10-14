@@ -16,6 +16,8 @@ from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
+__author__ = "Song Tan <sepine@statamcp.com>"
+
 dotenv.load_dotenv()
 
 mcp_version = Version(version('mcp'))

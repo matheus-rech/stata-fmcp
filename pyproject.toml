@@ -4,7 +4,7 @@ version = "1.9.1"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
-    { name = "SongTan", email = "sepinetam@gmail.com" }
+    { name = "Song Tan", email = "sepine@statamcp.com" }
 ]
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
