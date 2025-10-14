@@ -11,11 +11,11 @@ from mcp.server.fastmcp import FastMCP, Image
 from packaging.version import Version
 from pydantic_core._pydantic_core import ValidationError
 
-from .__version__ import __version__
 from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
 
+__version__ = version("stata-mcp")
 __author__ = "Song Tan <sepine@statamcp.com>"
 
 dotenv.load_dotenv()

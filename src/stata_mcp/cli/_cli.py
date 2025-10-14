@@ -11,7 +11,7 @@ import argparse
 import sys
 
 from .. import stata_mcp as mcp
-from ..__version__ import __version__
+from .. import __version__
 from ..utils.Installer import Installer
 from ..utils.usable import usable
 
