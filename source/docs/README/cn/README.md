@@ -22,7 +22,7 @@
 **新闻**：
 - 现在您可以使用Stata-MCP的代理模式，更多信息请查看[此处](../../../../agent_examples/README.md)。
 - 尝试将代理模式用作工具？现在更容易支持了，请查看[此处](../../Usages/agent_as_tool.md)。
-- 想要评估您的LLM？请查看[此处](../../Usages/Evaluation.md)
+- 想要评估您的LLM？请查看[此处](../../Usages/Evaluation.md)。
 
 
 > 正在寻找其他？

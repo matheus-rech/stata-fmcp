@@ -22,7 +22,7 @@
 **News**: 
 - Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
 - Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as_tool.md).
-- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md)
+- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
 
 Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
