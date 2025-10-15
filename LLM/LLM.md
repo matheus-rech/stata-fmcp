@@ -14,6 +14,8 @@ stata-mcp/
 ├── src/stata_mcp/
 │   ├── __init__.py              # Main module entry, MCP server configuration
 │   ├── core/                    # Core functionality modules
+│   │   ├── data_info/           # Data file analysis (CSV, DTA)
+│   │   ├── rag/                 # RAG (Retrieval-Augmented Generation) system
 │   │   └── stata/               # Stata-related core functionality
 │   │       ├── stata_controller/ # Stata controller
 │   │       ├── stata_do/        # Stata executor
@@ -22,12 +24,19 @@ stata-mcp/
 │   │   ├── Installer/          # Installer
 │   │   ├── Prompt/             # Prompt management
 │   │   └── usable.py           # Usability check
-│   ├── config/                 # Configuration management
 │   ├── cli/                    # Command line interface
-│   ├── webui/                  # Web user interface
+│   ├── mode/                   # Different operation modes
+│   │   ├── langchain_agent.py  # LangChain-based agent mode
+│   │   └── pmp/                # Prompt-based mode
+│   ├── agent_as_tool/          # Agent as tool integration
+│   ├── evaluate/               # LLM evaluation module
 │   └── sandbox/                # Sandbox environment
 │       ├── core/               # Sandbox core
 │       └── jupyter_manager/    # Jupyter kernel management
+├── agent_examples/             # Agent mode examples
+│   ├── openai/                 # OpenAI agent examples
+│   ├── langchain/              # LangChain agent examples
+│   └── task_prompt/            # Task prompt examples
 ├── main.py                     # Application entry
 └── pyproject.toml             # Project configuration
 ```
@@ -53,6 +62,26 @@ stata-mcp/
    - Multi-language support (English/Chinese)
    - Role definition and strategy prompts
    - Dynamic prompt generation
+
+5. **Agent Mode** (`src/stata_mcp/mode/`): Autonomous analysis agents
+   - `langchain_agent.py`: LangChain-based agent framework
+   - `pmp/`: Prompt-based agent mode
+   - Multi-turn conversation support
+
+6. **Agent as Tool** (`src/stata_mcp/agent_as_tool/`): Tool integration
+   - `StataAgent`: Embeddable Stata agent
+   - Integration with other agent frameworks
+   - Custom model configuration
+
+7. **Evaluation Module** (`src/stata_mcp/evaluate/`): LLM performance evaluation
+   - Automated scoring system
+   - Quality assessment tools
+   - Benchmark evaluation framework
+
+8. **RAG System** (`src/stata_mcp/core/rag/`): Knowledge retrieval
+   - Document indexing and search
+   - Context-aware response generation
+   - Statistical knowledge base
 
 ## 🛠️ How to Use
 
@@ -82,6 +111,55 @@ AI can interact with Stata through the following tools:
 6. **`help(cmd)`** - Get Stata command help
 7. **`mk_dir(path)`** - Create directory
 8. **`load_figure(figure_path)`** - Load figure
+9. **`read_file(file_path, encoding="utf-8")`** - Read file contents
+
+### Agent Mode Usage
+
+#### Interactive Agent Mode
+```bash
+# Run agent mode with interactive interface
+stata-mcp --agent
+
+# Or use uvx
+uvx stata-mcp --agent
+```
+
+#### Agent as Tool Integration
+```python
+from agents import Agent, Runner
+from stata_mcp.agent_as_tool import StataAgent
+
+# Initialize Stata agent
+stata_agent = StataAgent()
+sa_tool = stata_agent.as_tool()
+
+# Create main agent with Stata tool
+agent = Agent(
+    name="Assistant",
+    instructions="You are a helpful assistant",
+    tools=[sa_tool],
+)
+
+# Run the agent
+async def main(task: str):
+    result = await Runner.run(agent, input=task)
+    return result
+```
+
+### Evaluation System
+
+The project includes a comprehensive LLM evaluation system:
+- **Automated Scoring**: Rate analysis quality and accuracy
+- **Benchmark Testing**: Standardized evaluation datasets
+- **Performance Metrics**: Response time, accuracy, completeness
+- **Comparative Analysis**: Model performance comparison
+
+### RAG Integration
+
+Knowledge retrieval capabilities:
+- **Document Search**: Find relevant statistical literature
+- **Context Awareness**: Provide domain-specific context
+- **Knowledge Base**: Curated statistical methods and examples
 
 ### Prompt System
 
@@ -149,10 +227,13 @@ uv run pytest tests/
 
 - **Python 3.11+**: Core programming language
 - **MCP Protocol**: AI interaction protocol
+- **LangChain**: Agent framework and tool integration
+- **OpenAI Agents**: Advanced agent orchestration
 - **pandas**: Data processing and analysis
 - **pexpect**: Cross-platform process control
-- **Flask**: Web interface support
-- **Jupyter**: Sandbox environment support
+- **pathvalidate**: Security validation for file paths
+- **dotenv**: Environment configuration management
+- **FastMCP**: High-performance MCP server framework
 
 ## 🚀 Quick Start Example
 
