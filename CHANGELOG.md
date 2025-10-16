@@ -2,6 +2,79 @@
 
 
 <details>
+<summary>Click to expand v1.10.1 details</summary>
+
+## [1.10.1] - 2025-10-16
+
+### Added
+- **AgentRunner Class**: New comprehensive agent management system for simplified LLM evaluation workflows
+  - OpenAI-compatible API integration with support for multiple providers (OpenAI, DeepSeek, etc.)
+  - `get_processer()` static method for automatic conversation history extraction from agent results
+  - `get_final_result()` static method for extracting final answers from agent outputs
+  - Built-in error handling and graceful fallback mechanisms for robust operation
+  - Full type annotations and comprehensive documentation with practical examples
+
+- **Comprehensive Testing Framework**: Complete test suite for AgentRunner functionality validation
+  - Mock-based testing system for reliable validation without API dependencies
+  - Real API testing with automatic fallback to mock tests when credentials unavailable
+  - Comprehensive error handling validation and conversation structure verification
+  - Integrity checks for method outputs and data format validation
+  - Complete test coverage in `tar.py` with both mock and real API scenarios
+
+- **Enhanced Documentation**: Updated evaluation guide with AgentRunner integration examples
+  - Step-by-step AgentRunner usage instructions with practical Stata analysis examples
+  - Complete code examples for real-world evaluation scenarios including auto dataset analysis
+  - Batch evaluation workflows for processing multiple tasks efficiently
+  - Custom evaluation criteria and metrics implementation examples
+  - Environment setup guides for different API providers (OpenAI, DeepSeek)
+
+### Changed
+- **Module Organization**: Enhanced evaluate module structure with better component integration
+  - AgentRunner now properly exported in `evaluate.__init__.py` for direct imports
+  - Cleaner module structure with improved separation of concerns
+  - Better discoverability of evaluation components and enhanced import experience
+  - Updated `Evaluation.md` documentation with comprehensive AgentRunner usage examples
+
+- **Developer Experience**: Streamlined evaluation workflow with simplified task execution
+  - One-click conversation extraction and result processing through AgentRunner methods
+  - Reduced boilerplate code for common evaluation scenarios and use cases
+  - Better error messages and debugging information for improved development experience
+  - Enhanced integration between agents and evaluation tools
+
+- **Evaluation Framework**: Improved evaluation workflow with better tool integration
+  - Seamless integration between AgentRunner and existing ScoreModel functionality
+  - Enhanced support for OpenAI Agents result processing and extraction
+  - Better handling of complex conversation structures with multi-turn interactions
+  - Improved role detection and content extraction for diverse agent response formats
+
+### Fixed
+- **Conversation Processing**: Enhanced handling of complex conversation structures in agent outputs
+  - Better support for multi-turn conversations with tool interactions and role switching
+  - Enhanced role detection and content extraction from various agent response formats
+  - More robust parsing of agent response data with improved error resilience
+  - Better handling of edge cases in conversation structure processing
+
+- **Testing Reliability**: Enhanced test stability and comprehensive error handling
+  - Improved mock data structure for more realistic testing scenarios
+  - Better exception handling in test environments with detailed error reporting
+  - More comprehensive validation of method outputs and data integrity
+  - Enhanced test reliability through better error recovery mechanisms
+
+### Technical
+- **Dependencies**: No new dependencies added for AgentRunner functionality
+  - AgentRunner uses existing project dependencies (openai-agents, openai, langchain)
+  - Lightweight implementation with minimal performance impact
+  - Backward compatibility maintained for all existing features and workflows
+
+- **Code Architecture**: Enhanced evaluation module with improved component integration
+  - Clean separation between agent execution and result processing logic
+  - Modular design allows for easy extension and customization
+  - Standardized evaluation criteria based on professional statistical standards
+  - Improved error handling and fallback mechanisms throughout the framework
+
+</details>
+
+<details>
 <summary>Click to expand v1.10.0 details</summary>
 
 ## [1.10.0] - 2025-10-14
