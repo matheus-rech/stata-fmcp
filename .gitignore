@@ -24,6 +24,8 @@ config.py
 
 # test
 test/
+tests/
+*.test.*
 
 # Logs
 logs/
@@ -39,6 +41,8 @@ source/paper
 
 # temp files
 tmp/
+*.tmp
+*.tmp.*
 
 # releases
 releases/
