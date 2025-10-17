@@ -2,6 +2,53 @@
 
 
 <details>
+<summary>Click to expand v1.10.2 details</summary>
+
+## [1.10.2] - 2025-10-17
+
+### Added
+- **AgentRunner Evaluation Method**: Complete evaluation workflow implementation in AgentRunner class
+  - New `evaluate()` method for seamless ScoreModel integration with automatic task execution and scoring
+  - Type conversion handling for processer data (List[Dict] to String format) for ScoreModel compatibility
+  - Optional result display with `is_display` parameter for immediate feedback and debugging
+  - Automatic conversation history extraction and formatting for evaluation purposes
+  - Direct parameter passing and type-safe integration between AgentRunner and ScoreModel
+
+- **Enhanced Evaluation Integration**: Streamlined ScoreModel connection with agent execution
+  - Automatic task execution and result processing in a single method call
+  - Built-in error handling and validation throughout the evaluation pipeline
+  - Comprehensive fallback mechanisms for robust evaluation operations
+  - Simplified evaluation workflow with reduced boilerplate code
+
+### Changed
+- **Developer Experience**: Improved evaluation workflow simplicity and usability
+  - Single `evaluate()` call replaces multi-step evaluation process
+  - Automatic handling of type conversions between AgentRunner and ScoreModel components
+  - Optional display functionality for real-time monitoring and debugging
+  - Enhanced error reporting and validation for evaluation scenarios
+
+- **Type Compatibility**: Enhanced data flow between evaluation components
+  - Robust integration between different data structures (List[Dict] to String conversion)
+  - Preserved conversation structure and context during type conversion
+  - Maintained data integrity throughout the evaluation pipeline
+  - Type-safe parameter handling for reliable evaluation workflows
+
+### Technical
+- **Code Architecture**: Enhanced AgentRunner with complete evaluation capabilities
+  - Clean separation between task execution and evaluation logic
+  - Modular design allowing for easy customization and extension
+  - Comprehensive type annotations and documentation for evaluation methods
+  - Improved error handling and validation throughout the evaluation framework
+
+- **Backward Compatibility**: Maintained full compatibility with existing evaluation workflows
+  - All existing AgentRunner functionality remains unchanged
+  - New evaluate() method is additive without disrupting existing code
+  - Seamless integration with existing ScoreModel evaluation framework
+  - Zero impact on current evaluation processes and tools
+
+</details>
+
+<details>
 <summary>Click to expand v1.10.1 details</summary>
 
 ## [1.10.1] - 2025-10-16
