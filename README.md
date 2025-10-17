@@ -168,9 +168,6 @@ uvx /path/to/your/whl/stata_mcp-1.10.1-py3-non-any.whl  # here is the wheel file
 - [ ] Additional LLM integrations (With a new webUI)
 - [ ] Performance optimizations (Via prompt and context engineering)
 
-## ⚠️ Disclaimer
-This project is for research purposes only. I am not responsible for any damage caused by this project. Please ensure you have proper licensing to use Stata.
-
 For more information, refer to the [Statement](source/docs/Rights/Statement.md).
 
 ## 🐛 Report Issues

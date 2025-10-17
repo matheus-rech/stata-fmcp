@@ -13,13 +13,17 @@ Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归
 ### 免责声明
 1. **使用风险**：使用本软件的风险由用户自行承担。开发者不对因使用本软件而可能导致的任何直接或间接损失负责，包括但不限于数据丢失、系统故障或其他形式的损害。
 
-2. **Stata许可**：本工具仅作为Stata的辅助工具，用户必须拥有合法有效的Stata许可证才能使用本软件。本项目与Stata官方无关，不提供任何Stata软件授权。
+2. **研究目的**：本项目仅用于研究目的。不对因使用本项目造成的任何损害承担责任。
 
-3. **API密钥**：使用本软件可能需要第三方LLM服务的API密钥，用户应当遵守相关服务提供商的使用条款和隐私政策。开发者不对用户使用第三方服务可能产生的费用或问题负责。
+3. **Stata许可**：本工具仅作为Stata的辅助工具，用户必须拥有合法有效的Stata许可证才能使用本软件。本项目与Stata官方无关，不提供任何Stata软件授权。请确保您拥有使用Stata的适当许可证。
 
-4. **数据安全**：本软件可能会处理用户提供的数据。用户应当确保拥有处理这些数据的合法权利，并了解将数据传输给第三方LLM服务可能带来的风险。开发者不对数据的安全性或隐私泄露负责。
+4. **API密钥**：使用本软件可能需要第三方LLM服务的API密钥，用户应当遵守相关服务提供商的使用条款和隐私政策。开发者不对用户使用第三方服务可能产生的费用或问题负责。
 
-5. **功能限制**：本软件目前仅支持macOS系统，其他操作系统的支持正在开发中。软件可能存在未知的错误或限制，开发者不保证软件的完整性、可靠性或适用性。
+5. **数据安全**：本软件可能会处理用户提供的数据。用户应当确保拥有处理这些数据的合法权利，并了解将数据传输给第三方LLM服务可能带来的风险。开发者不对数据的安全性或隐私泄露负责。
+
+6. **功能限制**：本软件目前仅支持macOS系统，其他操作系统的支持正在开发中。软件可能存在未知的错误或限制，开发者不保证软件的完整性、可靠性或适用性。
+
+7. **无关联关系**：本项目涉及的Stata指的是由StataCorp LLC开发的商业软件Stata。本项目与StataCorp LLC无隶属、关联或背书关系。本项目不包含Stata软件或其安装包，用户须自行从StataCorp获取并安装有效授权的Stata版本。
 
 ### 版权和许可
 1. 本项目采用Apache License 2.0，允许用户在遵守许可条款的前提下自由使用、修改和分发。
@@ -51,13 +55,17 @@ Stata-MCP is an open-source tool designed to help users complete Stata regressio
 ### Disclaimer
 1. **Usage Risk**: Use of this software is at your own risk. The developer is not responsible for any direct or indirect losses that may result from using this software, including but not limited to data loss, system failures, or other forms of damage.
 
-2. **Stata License**: This tool is only intended as an auxiliary tool for Stata. Users must have a valid and legal Stata license to use this software. This project is not affiliated with Stata and does not provide any Stata software licensing.
+2. **Research Purpose**: This project is for research purposes only. I am not responsible for any damage caused by this project.
 
-3. **API Keys**: Using this software may require API keys from third-party LLM services. Users should comply with the terms of use and privacy policies of these service providers. The developer is not responsible for any fees or issues that may arise from using third-party services.
+3. **Stata License**: This tool is only intended as an auxiliary tool for Stata. Users must have a valid and legal Stata license to use this software. This project is not affiliated with Stata and does not provide any Stata software licensing. Please ensure you have proper licensing to use Stata.
 
-4. **Data Security**: This software may process data provided by users. Users should ensure they have legal rights to process such data and understand the risks of transmitting data to third-party LLM services. The developer is not responsible for data security or privacy breaches.
+4. **API Keys**: Using this software may require API keys from third-party LLM services. Users should comply with the terms of use and privacy policies of these service providers. The developer is not responsible for any fees or issues that may arise from using third-party services.
 
-5. **Functional Limitations**: This software currently only supports macOS systems, with support for other operating systems under development. The software may contain unknown errors or limitations, and the developer does not guarantee its completeness, reliability, or suitability.
+5. **Data Security**: This software may process data provided by users. Users should ensure they have legal rights to process such data and understand the risks of transmitting data to third-party LLM services. The developer is not responsible for data security or privacy breaches.
+
+6. **Functional Limitations**: This software currently only supports macOS systems, with support for other operating systems under development. The software may contain unknown errors or limitations, and the developer does not guarantee its completeness, reliability, or suitability.
+
+7. **No Affiliation**: The Stata referred to in this project is the commercial software Stata developed by StataCorp LLC. This project is not affiliated with, endorsed by, or sponsored by StataCorp LLC. This project does not include the Stata software or any installation packages; users must obtain and install a validly licensed copy of Stata from StataCorp.
 
 ### Copyright and License
 1. This project is licensed under the Apache License 2.0, allowing users to freely use, modify, and distribute it in compliance with the license terms.
@@ -89,13 +97,17 @@ Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réalis
 ### Avertissement
 1. **Risque d'Utilisation** : L'utilisation de ce logiciel se fait à vos propres risques. Le développeur n'est pas responsable des pertes directes ou indirectes qui pourraient résulter de l'utilisation de ce logiciel, y compris, mais sans s'y limiter, la perte de données, les défaillances du système ou d'autres formes de dommages.
 
-2. **Licence Stata** : Cet outil est uniquement destiné à servir d'outil auxiliaire pour Stata. Les utilisateurs doivent posséder une licence Stata valide et légale pour utiliser ce logiciel. Ce projet n'est pas affilié à Stata et ne fournit aucune licence pour le logiciel Stata.
+2. **But de Recherche** : Ce projet est à des fins de recherche uniquement. Je ne suis pas responsable des dommages causés par ce projet.
 
-3. **Clés API** : L'utilisation de ce logiciel peut nécessiter des clés API de services LLM tiers. Les utilisateurs doivent se conformer aux conditions d'utilisation et aux politiques de confidentialité de ces fournisseurs de services. Le développeur n'est pas responsable des frais ou problèmes qui pourraient survenir lors de l'utilisation de services tiers.
+3. **Licence Stata** : Cet outil est uniquement destiné à servir d'outil auxiliaire pour Stata. Les utilisateurs doivent posséder une licence Stata valide et légale pour utiliser ce logiciel. Ce projet n'est pas affilié à Stata et ne fournit aucune licence pour le logiciel Stata. Veuillez vous assurer que vous disposez d'une licence appropriée pour utiliser Stata.
 
-4. **Sécurité des Données** : Ce logiciel peut traiter des données fournies par les utilisateurs. Les utilisateurs doivent s'assurer qu'ils disposent des droits légaux pour traiter ces données et comprendre les risques liés à la transmission de données à des services LLM tiers. Le développeur n'est pas responsable de la sécurité des données ou des violations de confidentialité.
+4. **Clés API** : L'utilisation de ce logiciel peut nécessiter des clés API de services LLM tiers. Les utilisateurs doivent se conformer aux conditions d'utilisation et aux politiques de confidentialité de ces fournisseurs de services. Le développeur n'est pas responsable des frais ou problèmes qui pourraient survenir lors de l'utilisation de services tiers.
 
-5. **Limitations Fonctionnelles** : Ce logiciel ne prend actuellement en charge que les systèmes macOS, le support pour d'autres systèmes d'exploitation étant en cours de développement. Le logiciel peut contenir des erreurs ou des limitations inconnues, et le développeur ne garantit pas son exhaustivité, sa fiabilité ou son adéquation.
+5. **Sécurité des Données** : Ce logiciel peut traiter des données fournies par les utilisateurs. Les utilisateurs doivent s'assurer qu'ils disposent des droits légaux pour traiter ces données et comprendre les risques liés à la transmission de données à des services LLM tiers. Le développeur n'est pas responsable de la sécurité des données ou des violations de confidentialité.
+
+6. **Limitations Fonctionnelles** : Ce logiciel ne prend actuellement en charge que les systèmes macOS, le support pour d'autres systèmes d'exploitation étant en cours de développement. Le logiciel peut contenir des erreurs ou des limitations inconnues, et le développeur ne garantit pas son exhaustivité, sa fiabilité ou son adéquation.
+
+7. **Aucune Affiliation** : Le Stata mentionné dans ce projet est le logiciel commercial Stata développé par StataCorp LLC. Ce projet n'est pas affilié à, approuvé par, ou parrainé par StataCorp LLC. Ce projet n'inclut pas le logiciel Stata ou aucun package d'installation ; les utilisateurs doivent obtenir et installer une copie licenciée de manière valide de Stata à partir de StataCorp.
 
 ### Droits d'Auteur et Licence
 1. Ce projet est sous licence Apache 2.0, permettant aux utilisateurs de l'utiliser, de le modifier et de le distribuer librement conformément aux conditions de la licence.
