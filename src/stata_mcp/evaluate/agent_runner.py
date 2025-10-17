@@ -14,6 +14,8 @@ from agents import Agent, OpenAIChatCompletionsModel, Runner
 from agents.mcp import MCPServer, MCPServerStdio, MCPServerStdioParams
 from openai import AsyncOpenAI
 
+from .score_it import ScoreModel
+
 
 class AgentRunner:
     instructions: str = """
@@ -214,3 +216,45 @@ class AgentRunner:
         except Exception as e:
             # Return error information if extraction fails
             return f"Error extracting final result: {str(e)}"
+
+    def evaluate(self, task: str, reference_answer: str, is_display: bool = False):
+        """
+        Evaluate the agent's performance on a given task using ScoreModel.
+
+        Args:
+            task (str): The task description to evaluate
+            reference_answer (str): The reference answer for evaluation
+            is_display (bool): Whether to print the evaluation score, default False
+
+        Returns:
+            str: The evaluation score and detailed feedback from ScoreModel
+        """
+        # Run the agent task
+        result = self.run(task)
+
+        # Get the conversation process as list
+        processer_list = self.get_processer(result)
+
+        # Convert the processer list to string format for ScoreModel
+        processer_str = str(processer_list)
+
+        # Get the final result as string
+        results_str = self.get_final_result(result)
+
+        # Create and run the ScoreModel
+        score_model = ScoreModel(
+            task=task,
+            reference_answer=reference_answer,
+            processer=processer_str,
+            results=results_str
+        )
+
+        # Get the evaluation score
+        score_result = score_model.score_it()
+
+        # Display the result if requested
+        if is_display:
+            print(score_result)
+
+        # Return the evaluation score
+        return score_result
