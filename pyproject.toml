@@ -13,24 +13,39 @@ dependencies = [
     "mcp[cli]>=1.16.0",
     "pandas>=2.3.0",
     "pexpect>=4.9.0",
-#    "flask>=2.3.0",
 #    "jupyter-client>=8.6.3",
 #    "stata-kernel>=1.12.2",
     "openpyxl>=3.1.5",
 #    "notebook>=7.4.5",
 #    "jupyter>=1.1.1",
 #    "pystata>=0.0.1",
+    "pathvalidate>=3.3.1",
+]
+
+[project.scripts]
+stata-mcp = "stata_mcp.cli:main"
+
+[project.optional-dependencies]
+agent = [
     "langchain>=0.3.27",
     "openai-agents>=0.3.2",
     "openai>=1.109.1",
     "langchain-mcp-adapters>=0.1.10",
     "langgraph>=0.6.7",
     "langchain-openai>=0.3.33",
-    "pathvalidate>=3.3.1",
 ]
 
-[project.scripts]
-stata-mcp = "stata_mcp.cli:main"
+webui = [
+    "openai-agents>=0.32",
+    "openai>-1.109.1",
+    "flask>=2.3.0",
+]
+
+all = [
+    "stata-mcp[agent]",
+    "stata-mcp[webui]",
+]
+
 
 [build-system]
 requires = ["hatchling"]
