@@ -43,7 +43,7 @@ Before using it, please make sure you have ever install `Claude Code`, if you do
 
 You can open your terminal and `cd` to your working directory, and run:
 ```bash
-claude mcp add uvx stata-mcp -c cc
+claude mcp add stata-mcp --env STATA-MCP-CWD=$(pwd) -- uvx stata-mcp
 ```
 
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
