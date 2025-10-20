@@ -2,6 +2,47 @@
 
 
 <details>
+<summary>Click to expand v1.11.0 details</summary>
+
+## [1.11.0] - 2025-10-20
+
+### Added
+- **Claude Code Client Mode**: Added dedicated support for Claude Code client environment
+  - New `-c/--client` CLI option for Claude Code client mode
+  - Automatic detection and configuration for Claude Code environment
+  - Enhanced working directory handling for client-specific workflows
+  - Optimized MCP server integration for Claude Code platform
+
+### Changed
+- **Code Architecture**: Major refactoring to improve modularity and maintainability
+  - Extracted MCP server initialization and tools from `__init__.py` to dedicated `mcp_servers.py` module
+  - Updated main.py import path to use new modular structure
+  - Streamlined package initialization with better separation of concerns
+  - Improved code organization for enhanced development experience
+
+### Changed
+- **Dependency Management**: Optimized dependency structure for cleaner installation
+  - Removed python-dotenv from active dependencies as it's no longer required
+  - Updated uv.lock file to reflect dependency changes
+  - Improved CLI import structure for better performance
+  - Enhanced version import using importlib.metadata instead of package-level import
+
+### Changed
+- **CLI Enhancements**: Improved command-line interface with new client mode support
+  - Restructured CLI imports for better loading performance
+  - Added lazy loading patterns for non-critical components
+  - Enhanced error handling and user feedback
+  - Better separation between different CLI modes (agent, client, mcp)
+
+### Technical
+- **Performance**: Enhanced startup performance through optimized imports and modular architecture
+- **Maintainability**: Improved code organization with clear separation between server initialization and package metadata
+- **Compatibility**: Better support for different client environments and use cases
+- **Dependencies**: Streamlined dependency list with removal of unnecessary python-dotenv requirement
+
+</details>
+
+<details>
 <summary>Click to expand v1.10.2 details</summary>
 
 ## [1.10.2] - 2025-10-17
