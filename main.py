@@ -1,4 +1,4 @@
-from stata_mcp import stata_mcp as mcp
+from stata_mcp.mcp_servers import stata_mcp as mcp
 
 
 def main(transport: str = "stdio"):
