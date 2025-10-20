@@ -20,7 +20,7 @@
 
 ---
 **新闻**：
-- 现在您可以使用Stata-MCP的代理模式，更多信息请查看[此处](../../../../agent_examples/README.md)。
+- 在Claude Code中使用Stata-MCP，请查看[此处](#在claude-code中使用stata-mcp)
 - 尝试将代理模式用作工具？现在更容易支持了，请查看[此处](../../Usages/agent_as_tool.md)。
 - 想要评估您的LLM？请查看[此处](../../Usages/Evaluation.md)。
 
@@ -36,6 +36,24 @@
 
 
 ## 💡 快速开始
+### 在Claude Code中使用Stata-MCP
+我们可以利用Stata-MCP在Claude Code中作为其完美的代理能力。
+
+在使用之前，请确保您已经安装了`Claude Code`，如果您不知道如何安装，请访问[GitHub](https://github.com/anthropics/claude-code)
+
+您可以打开终端并`cd`到您的工作目录，然后运行：
+```bash
+claude mcp add uvx stata-mcp -c cc
+```
+
+然后，您就可以在Claude Code中使用Stata-MCP了。以下是一些使用场景：
+
+- **论文复刻**：通过复刻经济学论文中的实证研究
+- **快速验证假设**：通过回归分析验证经济学假设
+- **Stata陪伴教学**：通过逐步Stata解释学习计量经济学
+- **整理代码**：审查和优化现有Stata do-files
+- **解释结果**：理解复杂的统计输出和回归结果
+
 ### 代理模式
 代理模式的详细信息请查看[此处](../../../../agent_examples/README.md)。
 
@@ -146,7 +164,7 @@ uv build
 
 例如：
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.10.2-py3-non-any.whl  # 这里的文件名可根据版本修改
+uvx /path/to/your/whl/stata_mcp-1.11.0-py3-non-any.whl  # 这里的文件名可根据版本修改
 ```
 
 ## 📝 文档
@@ -185,18 +203,18 @@ uvx /path/to/your/whl/stata_mcp-1.10.2-py3-non-any.whl  # 这里的文件名可�
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.10.2}
+  version = {1.11.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.10.2) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.11.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.10.2. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.11.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 联系方式

@@ -20,7 +20,7 @@
 
 ---
 **News**: 
-- Now you can use Stata-MCP with agent mode, more information [here](./agent_examples/README.md).
+- Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
 - Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as_tool.md).
 - Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
 
@@ -36,6 +36,24 @@ Finding our **newest research**? Click [here](source/reports/README.md) or visit
 > - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
 
 ## 💡 Quick Start
+### Use Stata-MCP in Claude Code
+We can use Stata-MCP in Claude Code as its prefect agentic ability. 
+
+Before using it, please make sure you have ever install `Claude Code`, if you don't know how to install it, visit on [GitHub](https://github.com/anthropics/claude-code)
+
+You can open your terminal and `cd` to your working directory, and run:
+```bash
+claude mcp add uvx stata-mcp -c cc
+```
+
+Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
+
+- **Paper Replication**: Replicate empirical studies from economics papers
+- **Quick Hypothesis Testing**: Validate economic hypotheses through regression analysis
+- **Stata Learning Assistant**: Learn econometrics with step-by-step Stata explanations
+- **Code Organization**: Review and optimize existing Stata do-files
+- **Result Interpretation**: Understand complex statistical outputs and regression results
+
 ### Agent Mode
 The details of agent mode find [here](agent_examples/README.md).
 
@@ -147,7 +165,7 @@ Then you can find the compiled `stata-mcp` binary in the `dist` directory. You c
 
 For example:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.10.2-py3-non-any.whl  # here is the wheel file name, you can change it to your version
+uvx /path/to/your/whl/stata_mcp-1.11.0-py3-non-any.whl  # here is the wheel file name, you can change it to your version
 ```
 
 ## 📝 Documentation
@@ -186,18 +204,18 @@ If you use Stata-MCP in your research, please cite this repository using one of 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.10.2}
+  version = {1.11.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.10.2) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.11.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.10.2. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.11.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contact
