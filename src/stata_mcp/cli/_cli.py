@@ -8,12 +8,9 @@
 # @File   : _cli.py
 
 import argparse
+import os
 import sys
-
-from .. import __version__
-from .. import stata_mcp as mcp
-from ..utils.Installer import Installer
-from ..utils.usable import usable
+from importlib.metadata import version
 
 
 def main() -> None:
@@ -26,13 +23,19 @@ def main() -> None:
         "-v",
         "--version",
         action="version",
-        version=f"Stata-MCP version is {__version__}",
+        version=f"Stata-MCP version is {version('stata-mcp')}",
         help="show version information",
     )
     parser.add_argument(
         "-a", "--agent",
         action="store_true",
         help="run Stata-MCP as agent mode",
+    )
+    parser.add_argument(
+        "-c", "--client",
+        nargs="?",
+        const="cc",
+        help="set the client mode (default for Claude Code)"
     )
     parser.add_argument(
         "--usable",
@@ -55,13 +58,27 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.usable:
+        from ..utils.usable import usable
         sys.exit(usable())
+
     elif args.install:
+        from ..utils.Installer import Installer
         Installer(sys_os=sys.platform).install()
+
     elif args.agent:
         from ..mode import run_agent_mode
         run_agent_mode()
+
+    elif args.client:
+        os.environ["STATA-MCP-CLIENT"] = "cc"
+
+        from ..mcp_servers import stata_mcp as mcp
+
+        mcp.run()
+
     else:
+        from ..mcp_servers import stata_mcp as mcp
+
         print("Starting Stata-MCP...")
 
         # Use stdio if there is no transport argument
