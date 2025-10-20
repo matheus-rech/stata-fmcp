@@ -1360,7 +1360,6 @@ dependencies = [
     { name = "pandas" },
     { name = "pathvalidate" },
     { name = "pexpect" },
-    { name = "python-dotenv" },
 ]
 
 [package.metadata]
@@ -1376,7 +1375,6 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.3.0" },
     { name = "pathvalidate", specifier = ">=3.3.1" },
     { name = "pexpect", specifier = ">=4.9.0" },
-    { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
 
 [[package]]
