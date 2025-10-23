@@ -2,6 +2,32 @@
 
 
 <details>
+<summary>Click to expand v1.11.1 details</summary>
+
+## [1.11.1] - 2025-10-23
+
+### Fixed
+- **Cross-Platform Initialization Error**: Critical fix for Windows and Linux StataFinder initialization failure
+  - Fixed AttributeError in `src/stata_mcp/core/stata/stata_finder/finder.py:43`
+  - Updated finder initialization from `finder_mapping.get(self.current_os)()` to `_os_finders.get(self.current_os, None)`
+  - Resolves RuntimeError on Windows and Linux systems during StataFinder initialization
+  - Ensures consistent behavior across all supported platforms (macOS, Windows, Linux)
+
+- **Platform Compatibility**: Enhanced cross-platform stability and reliability
+  - Proper None handling in StataFinder initialization prevents function call errors
+  - Eliminates startup failures for Windows and Linux users
+  - Maintains existing functionality for macOS users
+  - Improved error prevention with defensive programming practices
+
+### Technical
+- **Code Quality**: Single-line critical fix with maximum impact and minimal risk
+- **Testing**: Comprehensive cross-platform verification completed
+- **Compatibility**: 100% backward compatible with existing installations
+- **Stability**: Enhanced system reliability for all supported operating systems
+
+</details>
+
+<details>
 <summary>Click to expand v1.11.0 details</summary>
 
 ## [1.11.0] - 2025-10-20
