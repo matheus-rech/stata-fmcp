@@ -8,7 +8,7 @@
 
 <p align="center"> 
     Let LLM help you achieve your regression analysis with Stata ✨ <br>
-    Evolve from reg monkey to causal thinker
+    Evolve from reg monkey to causal thinker 🐒 -> 🤔
 </p>
 
 [![en](https://img.shields.io/badge/lang-English-red.svg)](README.md)
