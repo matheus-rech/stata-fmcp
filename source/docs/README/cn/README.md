@@ -43,8 +43,9 @@
 
 您可以打开终端并`cd`到您的工作目录，然后运行：
 ```bash
-claude mcp add stata-mcp --env STATA-MCP-CWD=$(pwd) -- uvx stata-mcp
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
 ```
+我不确定这是否在Windows的电脑上也工作，因为我并没有真的拥有一台Windows电脑用于测试。
 
 然后，您就可以在Claude Code中使用Stata-MCP了。以下是一些使用场景：
 

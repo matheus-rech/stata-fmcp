@@ -88,7 +88,7 @@ client = os.getenv("STATA-MCP-CLIENT")
 if client == "cc":
     cwd = os.getcwd()
 else:  # If not special client follow default way.
-    cwd = os.getenv("STATA-MCP-CWD")
+    cwd = os.getenv("STATA_MCP_CWD") or os.getenv("STATA-MCP-CWD")  # Keep STATA-MCP-CWD for backward compatibility.
     if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
         if SYSTEM_OS in ["Darwin", "Linux"]:
             cwd = os.path.expanduser("~/Documents")
