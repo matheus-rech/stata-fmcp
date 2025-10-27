@@ -6,7 +6,10 @@
 
 <h1 align="center">Stata-MCP</h1>
 
-<p align="center"> 让大语言模型（LLM）帮助您使用Stata完成回归分析 ✨</p>
+<p align="center"> 
+    让大语言模型（LLM）帮助您使用Stata完成回归分析 ✨<br>
+    让 reg monkey 进化为 causal thinker
+</p>
 
 [![en](https://img.shields.io/badge/lang-English-red.svg)](../../../../README.md)
 [![cn](https://img.shields.io/badge/语言-中文-yellow.svg)](README.md)

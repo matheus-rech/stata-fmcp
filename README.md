@@ -6,7 +6,10 @@
 
 <h1 align="center">Stata-MCP</h1>
 
-<p align="center"> Let LLM help you achieve your regression analysis with Stata ✨</p>
+<p align="center"> 
+    Let LLM help you achieve your regression analysis with Stata ✨ <br>
+    Evolve from reg monkey to causal thinker
+</p>
 
 [![en](https://img.shields.io/badge/lang-English-red.svg)](README.md)
 [![cn](https://img.shields.io/badge/语言-中文-yellow.svg)](source/docs/README/cn/README.md)
@@ -44,7 +47,7 @@ Before using it, please make sure you have ever install `Claude Code`, if you do
 You can open your terminal and `cd` to your working directory, and run:
 ```bash
 claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
-```
+``` 
 I am not sure whether it works on Windows, as I do not have a Windows device for test it.
 
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
