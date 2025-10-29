@@ -85,10 +85,10 @@ except FileNotFoundError as e:
 # Determine current working directory (cwd)
 client = os.getenv("STATA-MCP-CLIENT")
 
-if client == "cc":
+if client == "cc":  # TODO: This is a mistake in Claude Code, as it could not get the cwd path.
     cwd = os.getcwd()
 else:  # If not special client follow default way.
-    cwd = os.getenv("STATA_MCP_CWD") or os.getenv("STATA-MCP-CWD")  # Keep STATA-MCP-CWD for backward compatibility.
+    cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
     if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
         if SYSTEM_OS in ["Darwin", "Linux"]:
             cwd = os.path.expanduser("~/Documents")
