@@ -8,6 +8,7 @@
 # @File   : base.py
 
 import os
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,18 +22,19 @@ class StataEditionConfig:
 
     Attributes:
         edition (str): Edition type (mp > se > be > ic > default)
-        version (Union[int, float]): Version number (e.g., 18, 19.5)
+        version (Union[int, float]): Version number (e.g., 18, 19.5). Default 99 if not found, indicating current default version
         path (str): Full path to Stata executable
 
     Comparison Rules:
-        1. First compare edition priority: mp > se > be > ic > default
-        2. Then compare numeric version: higher > lower
+        1. First compare edition priority: mp > se > be > ic > default (edition type always has priority)
+        2. Then compare numeric version: higher > lower (only for same edition type)
         3. Support float versions like 19.5 > 19
+        4. Version 99 is used when version info is not available (default edition gets highest version within its type)
 
     Example:
         >>> p1 = StataEditionConfig("mp", 18, "/usr/local/bin/stata-mp")
-        >>> p2 = StataEditionConfig("se", 19, "/usr/local/bin/stata-se")
-        >>> p1 > p2  # True (mp has priority over se even with smaller version)
+        >>> p2 = StataEditionConfig.from_path("/usr/local/bin/stata")  # Auto-detect as default with version 99
+        >>> p1 > p2  # True (mp edition has higher priority than default, regardless of version numbers)
     """
 
     edition: str
@@ -57,6 +59,71 @@ class StataEditionConfig:
         # If edition type is not in priority mapping, mark as unknown
         if self.edition not in self._EDITION_PRIORITY:
             self.edition = "unknown"
+
+    @classmethod
+    def from_path(cls, path: str) -> 'StataEditionConfig':
+        """
+        Create StataEditionConfig from path, automatically extracting edition and version.
+
+        Args:
+            path: Full path to Stata executable
+
+        Returns:
+            StataEditionConfig with auto-detected edition and version
+        """
+        import os
+
+        filename = os.path.basename(path).lower()
+        full_path_lower = path.lower()
+
+        # Extract edition
+        edition = "default"
+        edition_patterns = [
+            (r'stata-mp', 'mp'),
+            (r'satamp', 'mp'),
+            (r'stata-se', 'se'),
+            (r'statase', 'se'),
+            (r'sata-be', 'be'),
+            (r'satabe', 'be'),
+            (r'sata-ic', 'ic'),
+            (r'sataic', 'ic'),
+        ]
+
+        for pattern, ed in edition_patterns:
+            if re.search(pattern, filename):
+                edition = ed
+                break
+
+        # Extract version (default to 99 if not found, indicating current default version)
+        version = 99
+
+        # Try to extract version from directory name first
+        dir_version_match = re.search(r'stata(\d+(?:\.\d+)?)', full_path_lower)
+        if dir_version_match:
+            try:
+                version = float(dir_version_match.group(1))
+            except ValueError:
+                pass
+
+        # Try to extract version from filename
+        file_version_patterns = [
+            r'stata-[a-z]+-(\d+(?:\.\d+)?)',  # stata-mp-17.5
+            r'stata(\d+(?:\.\d+)?)',          # stata17.5
+        ]
+
+        for pattern in file_version_patterns:
+            file_version_match = re.search(pattern, filename)
+            if file_version_match:
+                try:
+                    file_version = float(file_version_match.group(1))
+                    # Only use reasonable version numbers (1-30)
+                    if 1 <= file_version <= 30:
+                        version = max(version, file_version)
+                        break
+                except ValueError:
+                    continue
+
+        return cls(edition=edition, version=version, path=path)
 
     @property
     def edition_priority(self) -> int:
@@ -129,9 +196,8 @@ class FinderBase(ABC):
     stata_cli: str = None
 
     def __init__(self, stata_cli: str = None):
-        if stata_cli:
-            self.stata_cli = stata_cli
-        self.load_default_cli_path()
+        # If there is any setting, use the input and environment first
+        self.stata_cli = stata_cli or os.getenv("STATA_CLI") or os.getenv("stata_cli")
 
     def find_stata(self) -> str | None:
         if self.stata_cli:
@@ -161,31 +227,41 @@ class FinderBase(ABC):
         except OSError:
             return False
 
-    def load_cli_from_env(self) -> Optional[str]:
-        self.stata_cli = os.getenv("stata_cli") or os.getenv("STATA_CLI")
-        return self.stata_cli
-
-    def load_default_cli_path(self) -> str | None:
-        if self.stata_cli is not None:
-            # try to load from env
-            self.load_cli_from_env()
-        return self.stata_cli
-
     def find_from_bin(self,
                       *,
-                      priority: Optional[Iterable[str]] = None) -> str | None:
+                      priority: Optional[Iterable[str]] = None) -> List[StataEditionConfig]:
+        """
+        Find all available Stata executables in bin directories.
+
+        Args:
+            priority: Edition priority order (default: ["mp", "se", "be", "default"])
+
+        Returns:
+            List of all executable Stata paths found in bin directories,
+            ordered by priority. Returns empty list if no executables found.
+        """
         pr = list(priority) if priority else ["mp", "se", "be", "default"]
         name_priority = self.priority()
         bins = self.find_path_base().get("bin")
 
+        if not bins:
+            return []
+
+        # Build ordered list of executable names by priority
         ordered_names: List[str] = []
         for key in pr:
             ordered_names.extend(name_priority.get(key, []))
 
+        found_executables: List[StataEditionConfig] = []
+
+        # Search for executables in all bin directories
         for b in bins:
             base = Path(b)
             for name in ordered_names:
                 p = base / name
                 if self._is_executable(p):
-                    return str(p)
-        return None
+                    # Convert path to StataEditionConfig
+                    config = StataEditionConfig.from_path(str(p))
+                    found_executables.append(config)
+
+        return found_executables

@@ -7,23 +7,79 @@
 # @Email  : sepinetam@gmail.com
 # @File   : macos.py
 
+import re
+from pathlib import Path
 from typing import Dict, List
 
-from .base import FinderBase
+from .base import FinderBase, StataEditionConfig
 
 
 class FinderMacOS(FinderBase):
     def finder(self) -> str | None:
-        stata_cli = self.find_from_bin()
-        if stata_cli:
-            return stata_cli
-        return None
+        stata_cli_from_bin = max(self.find_from_bin()).stata_cli_path
+        if stata_cli_from_bin:  # If there is a Stata CLI found in bin directory, return it as its effective.
+            return stata_cli_from_bin
+        # Disable find from application temporarily
+        # stata_cli_from_application = max(self.find_from_application()).stata_cli_path
+        # if stata_cli_from_application:  # Then, try to find from Applications dir
+        #     return stata_cli_from_application
+        else:  # If there is no Stata CLI found, raise an error
+            raise FileNotFoundError("Stata CLI not found")
 
     def find_path_base(self) -> Dict[str, List[str]]:
         return {
             "bin": ["/usr/local/bin"],
             "application": ["/Applications"],
         }
+
+    def _application_find_base(self,
+                               dot_app: str | Path,
+                               version: int | float = None) -> StataEditionConfig | None:
+        _version = version
+        _edition = None
+        stata_cli_path = None
+
+        if not _version:
+            for isstata_file in dot_app.glob("isstata.*"):
+                if isstata_file.is_file():
+                    # Extract version number from filename like "isstata.180"
+                    match = re.search(r'isstata\.(\d+)', isstata_file.name.lower())
+                    if match:
+                        _version = float(match.group(1)) / 10
+                        break
+        for stata_app in dot_app.glob("Stata*.app"):
+            if stata_app.is_dir():
+                # Extract edition from Stata app name (MP, SE, BE, IC)
+                # Remove "Stata" prefix and ".app" suffix, then convert to lowercase
+                _edition = stata_app.name.replace("Stata", "").replace(".app", "").lower()
+                __stata_cli_path = stata_app / "Contents" / "MacOS" / f"stata-{_edition}"
+                if self._is_executable(__stata_cli_path):
+                    stata_cli_path = str(__stata_cli_path)
+                    break
+        if _version and _edition and stata_cli_path:
+            return StataEditionConfig(_edition, _version, stata_cli_path)
+
+        else:
+            return None
+
+    def find_from_application(self) -> List[StataEditionConfig]:
+        found_executables: List[StataEditionConfig] = []
+        applications_dir = Path(self.find_path_base().get("application")[0])
+
+        # Check for /Applications/Stata directory for Multi-Stata Exist
+        stata_dir = applications_dir / "Stata"
+        if default_stata := self._application_find_base(stata_dir):  # If exist default, return directly.
+            return [default_stata]
+
+        # 通过for循环来从applications_dir里找stata*.app
+        for stata_app in applications_dir.glob("Stata *"):
+            _version = None
+            if stata_app.is_dir():
+                _version = eval(stata_app.name.split()[-1])
+                if stata_app_config := self._application_find_base(stata_app, version=_version):
+                    found_executables.append(stata_app_config)
+
+        return found_executables
 
 
 if __name__ == "__main__":
