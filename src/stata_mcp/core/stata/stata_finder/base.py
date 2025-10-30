@@ -9,8 +9,120 @@
 
 import os
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Union
+
+
+@dataclass
+class StataEditionConfig:
+    """
+    StataEditionConfig class for comparing Stata versions with sorting support.
+
+    Attributes:
+        edition (str): Edition type (mp > se > be > ic > default)
+        version (Union[int, float]): Version number (e.g., 18, 19.5)
+        path (str): Full path to Stata executable
+
+    Comparison Rules:
+        1. First compare edition priority: mp > se > be > ic > default
+        2. Then compare numeric version: higher > lower
+        3. Support float versions like 19.5 > 19
+
+    Example:
+        >>> p1 = StataEditionConfig("mp", 18, "/usr/local/bin/stata-mp")
+        >>> p2 = StataEditionConfig("se", 19, "/usr/local/bin/stata-se")
+        >>> p1 > p2  # True (mp has priority over se even with smaller version)
+    """
+
+    edition: str
+    version: Union[int, float]
+    path: str
+
+    # Edition priority mapping
+    _EDITION_PRIORITY = {
+        "mp": 5,
+        "se": 4,
+        "be": 3,
+        "ic": 2,
+        "default": 1,
+        "unknown": 0,
+    }
+
+    def __post_init__(self):
+        """Validation and processing after initialization."""
+        # Normalize edition type to lowercase
+        self.edition = self.edition.lower()
+
+        # If edition type is not in priority mapping, mark as unknown
+        if self.edition not in self._EDITION_PRIORITY:
+            self.edition = "unknown"
+
+    @property
+    def edition_priority(self) -> int:
+        """Get the priority value of the edition type."""
+        return self._EDITION_PRIORITY[self.edition]
+
+    def __lt__(self, other) -> bool:
+        """Less than comparison for sorting."""
+        if not isinstance(other, StataEditionConfig):
+            return NotImplemented
+
+        # First compare edition priority
+        if self.edition_priority != other.edition_priority:
+            return self.edition_priority < other.edition_priority
+
+        # Same edition, compare version number
+        return self.version < other.version
+
+    def __le__(self, other) -> bool:
+        """Less than or equal comparison."""
+        return self < other or self == other
+
+    def __gt__(self, other) -> bool:
+        """Greater than comparison."""
+        if not isinstance(other, StataEditionConfig):
+            return NotImplemented
+
+        # First compare edition priority
+        if self.edition_priority != other.edition_priority:
+            return self.edition_priority > other.edition_priority
+
+        # Same edition, compare version number
+        return self.version > other.version
+
+    def __ge__(self, other) -> bool:
+        """Greater than or equal comparison."""
+        return self > other or self == other
+
+    def __eq__(self, other) -> bool:
+        """Equality comparison."""
+        if not isinstance(other, StataEditionConfig):
+            return NotImplemented
+
+        return (self.edition_priority == other.edition_priority and
+                self.version == other.version)
+
+    def __str__(self) -> str:
+        """String representation - returns the path."""
+        return self.path
+
+    def __repr__(self) -> str:
+        """Detailed string representation - returns the path."""
+        return self.path
+
+    def __int__(self) -> int:
+        """Integer conversion - returns the version number."""
+        return int(self.version)
+
+    def __float__(self) -> float:
+        """Float conversion - returns the version number."""
+        return float(self.version)
+
+    @property
+    def stata_cli_path(self) -> str:
+        """Get the Stata CLI path."""
+        return self.path
 
 
 class FinderBase(ABC):
