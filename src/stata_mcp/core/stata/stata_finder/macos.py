@@ -19,10 +19,9 @@ class FinderMacOS(FinderBase):
         stata_cli_from_bin = max(self.find_from_bin()).stata_cli_path
         if stata_cli_from_bin:  # If there is a Stata CLI found in bin directory, return it as its effective.
             return stata_cli_from_bin
-        # Disable find from application temporarily
-        # stata_cli_from_application = max(self.find_from_application()).stata_cli_path
-        # if stata_cli_from_application:  # Then, try to find from Applications dir
-        #     return stata_cli_from_application
+        stata_cli_from_application = max(self.find_from_application()).stata_cli_path
+        if stata_cli_from_application:  # Then, try to find from Applications dir
+            return stata_cli_from_application
         else:  # If there is no Stata CLI found, raise an error
             raise FileNotFoundError("Stata CLI not found")
 
