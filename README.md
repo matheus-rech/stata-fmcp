@@ -26,6 +26,7 @@
 - Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
 - Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as_tool.md).
 - Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
+- Update `StataFinder`, but it is not stable, please config your `STATA_CLI` into your environment.
 
 Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
@@ -169,7 +170,7 @@ Then you can find the compiled `stata-mcp` binary in the `dist` directory. You c
 
 For example:
 ```bash
-uvx /path/to/your/whl/stata_mcp-1.11.1-py3-non-any.whl  # here is the wheel file name, you can change it to your version
+uvx /path/to/your/whl/stata_mcp-1.12.0-py3-non-any.whl  # here is the wheel file name, you can change it to your version
 ```
 
 ## 📝 Documentation
@@ -208,18 +209,18 @@ If you use Stata-MCP in your research, please cite this repository using one of 
   title = {Stata-MCP: Let LLM help you achieve your regression analysis with Stata},
   year = {2025},
   url = {https://github.com/sepinetam/stata-mcp},
-  version = {1.11.1}
+  version = {1.12.0}
 }
 ```
 
 ### APA
 ```
-Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.11.1) [Computer software]. https://github.com/sepinetam/stata-mcp
+Song Tan. (2025). Stata-MCP: Let LLM help you achieve your regression analysis with Stata (Version 1.12.0) [Computer software]. https://github.com/sepinetam/stata-mcp
 ```
 
 ### Chicago
 ```
-Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.11.1. https://github.com/sepinetam/stata-mcp.
+Song Tan. 2025. "Stata-MCP: Let LLM help you achieve your regression analysis with Stata." Version 1.12.0. https://github.com/sepinetam/stata-mcp.
 ```
 
 ## 📬 Contact

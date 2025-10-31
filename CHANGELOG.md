@@ -2,6 +2,67 @@
 
 
 <details>
+<summary>Click to expand v1.12.0 details</summary>
+
+## [1.12.0] - 2025-10-31
+
+### Added
+- **Unified Priority System**: Complete StataFinder architecture overhaul with intelligent version and edition comparison
+  - New `StataEditionConfig` class with comprehensive version extraction and sorting capabilities
+  - Priority system: MP > SE > BE > IC > default with configurable edition preferences
+  - Automatic version detection from file paths, directory names, and executable names
+  - Support for floating-point versions (e.g., 19.5 > 19) and reasonable version range validation (1-30)
+  - Magic methods for easy data access (`__str__`, `__int__`, `__float__`) and path properties
+
+- **Complete Windows Platform Support**: Full implementation of `FinderWindows` with three-layer search strategy
+  - **Layer 1**: Standard installation path search (Program Files, Program Files (x86))
+  - **Layer 2**: Non-standard custom installation locations with drive scanning
+  - **Layer 3**: Deep scan fallback for comprehensive discovery across all drives
+  - Intelligent drive detection and depth-limited scanning for performance optimization
+  - Skip pattern system to avoid redundant searching of standard directories in non-standard scans
+
+- **Enhanced macOS Application Detection**: Improved `FinderMacOS` with comprehensive app bundle support
+  - `/Applications` directory scanning with version extraction from `isstata.*` files
+  - Automatic edition detection from Stata app names (StataMP, StataSE, StataBE, StataIC)
+  - Support for both `/Applications/Stata` unified directory and separate versioned applications
+  - Robust executable path resolution within app bundles (`Contents/MacOS/stata-{edition}`)
+
+### Fixed
+- **Critical Empty List Handling**: Prevents crashes when no Stata installations are found
+  - Fixed `max()` calls on empty lists in both Windows and macOS finder methods
+  - Proper empty list validation before attempting to find highest priority Stata executable
+  - Graceful fallback behavior when search layers return no results
+  - Enhanced error handling with meaningful exception messages
+
+- **Platform-Specific Search Optimization**: Improved search efficiency and reliability
+  - Windows: Simple matching approach replaces overly strict regex filtering for broader compatibility
+  - macOS: Better handling of Homebrew installations without version numbers (defaults to version 99)
+  - Enhanced path validation and executable checking across all platforms
+  - Improved exception handling for permission errors and inaccessible directories
+
+### Changed
+- **Architecture Modernization**: Complete StataFinder system redesign for better maintainability
+  - Abstract `FinderBase` class with comprehensive documentation and type annotations
+  - Platform-specific implementations following consistent design patterns
+  - Enhanced `finder.py` integration with improved error handling and exception management
+  - Updated utility modules (`usable.py`, `installer.py`, `mcp_servers.py`) for better integration
+
+- **Enhanced Documentation and Type Safety**: Improved code quality and developer experience
+  - Comprehensive docstrings for all new classes and methods with examples
+  - Full type annotations throughout the StataFinder system
+  - Detailed abstract method documentation explaining platform-specific requirements
+  - Clear separation of concerns between different search strategies and platform implementations
+
+### Technical
+- **Performance**: Three-layer search strategy balances speed with thoroughness
+- **Reliability**: Robust error handling prevents crashes across all search scenarios
+- **Compatibility**: Maintains backward compatibility while adding new functionality
+- **Extensibility**: Clean architecture allows easy addition of new platforms and search strategies
+- **Testing**: Comprehensive validation across different installation patterns and platforms
+
+</details>
+
+<details>
 <summary>Click to expand v1.11.1 details</summary>
 
 ## [1.11.1] - 2025-10-23
