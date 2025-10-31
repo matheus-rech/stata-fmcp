@@ -78,7 +78,7 @@ if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
 try:
     # find stata_cli, env first, then default path
     finder = StataFinder()
-    STATA_CLI = finder.find_stata(os_name=SYSTEM_OS, is_env=True)
+    STATA_CLI = finder.STATA_CLI
 except FileNotFoundError as e:
     sys.exit(str(e))
 

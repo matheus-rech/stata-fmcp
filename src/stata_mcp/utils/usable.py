@@ -19,7 +19,7 @@ import sys
 import time
 from typing import Dict, Tuple
 
-from stata_mcp.core.stata import StataFinder
+from ..core.stata import StataFinder
 
 
 def print_status(message: str, status: bool) -> None:
@@ -184,7 +184,7 @@ def usable():
     # Find Stata CLI
     print("Locating Stata CLI...")
     animate_loading(2)  # Show loading animation for 2 seconds
-    stata_cli_path = StataFinder().find_stata(is_env=True)
+    stata_cli_path = StataFinder().STATA_CLI
 
     stata_found = bool(stata_cli_path and os.path.exists(stata_cli_path))
     print_status(

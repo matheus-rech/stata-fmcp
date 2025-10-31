@@ -13,27 +13,46 @@ import os
 import platform
 from typing import Optional
 
-import dotenv
-
+from .linux import FinderLinux
 from .macos import FinderMacOS
-from .windows import get_available_drives, windows_stata_match
-
-dotenv.load_dotenv()
-
-"""
-find_stata
-"""
+from .windows import FinderWindows, get_available_drives, windows_stata_match
 
 
 class StataFinder:
-    """A class to find Stata CLI installations across different operating systems."""
-
-    finder_mapping = {
-        "Darwin": FinderMacOS
+    FINDER_MAPPING = {
+        "Darwin": FinderMacOS,
+        "Windows": FinderWindows,
+        "Linux": FinderLinux,  # Not Support now
     }
 
-    def __init__(self):
-        """Initialize the StataFinder."""
+    def __init__(self, stata_cli: str = None):
+        finder_cls = self.FINDER_MAPPING.get(platform.system())
+        self.finder = finder_cls(stata_cli)
+
+    @property
+    def STATA_CLI(self) -> str | None:
+        try:
+            return self.finder.find_stata()
+        except (FileNotFoundError, AttributeError):
+            return None
+
+
+class StataFinderOLD:
+    """A class to find Stata CLI installations across different operating systems."""
+
+    FINDER_MAPPING = {
+        "Darwin": FinderMacOS,
+        "Windows": FinderWindows,
+        "Linux": FinderLinux,
+    }
+
+    def __init__(self, stata_cli: str = None):
+        """
+        Initialize the StataFinder.
+
+        Args:
+            stata_cli (str): the user updates stata_cli file path
+        """
         self.current_os = platform.system()
         self._os_finders = {
             "Darwin": self._find_stata_macos,
@@ -41,6 +60,12 @@ class StataFinder:
             "Linux": self._find_stata_linux,
         }
         self.finder = self._os_finders.get(self.current_os, None)
+        # TODO: Change the original finder to the newer
+        # self.finder = self.FINDER_MAPPING.get(self.current_os)(stata_cli = stata_cli)
+
+    # @property
+    # def STATA_CLI(self) -> str:  # 等前面的都改好了，就可以只保留这个了
+    #     return self.finder.find_stata()
 
     def _stata_version_windows(self, driver: str = "C:\\") -> list:
         """Find Stata installations on Windows."""
@@ -164,19 +189,3 @@ class StataFinder:
             return stata_path is not None
         except RuntimeError:
             return False
-
-
-if __name__ == "__main__":
-    finder = StataFinder()
-    sys_os = platform.system()
-
-    if sys_os == "Darwin":
-        stata_cli = finder._find_stata_macos()
-        print(stata_cli)
-    elif sys_os == "Windows":
-        stata_paths = finder._stata_version_windows()
-        print(stata_paths)
-    else:
-        print("Hello Stata-MCP, Install it please~")
-
-    print(finder.find_stata())

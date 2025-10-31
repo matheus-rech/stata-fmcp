@@ -205,7 +205,28 @@ class FinderBase(ABC):
         return self.finder()
 
     @abstractmethod
-    def finder(self) -> str: ...
+    def finder(self) -> str:
+        """
+        Find the Stata executable on the current platform.
+
+        This method must be implemented by each platform-specific finder class
+        to locate Stata installations using platform-appropriate search strategies.
+
+        Returns:
+            str: The full path to the Stata executable
+
+        Raises:
+            FileNotFoundError: If no Stata installation is found
+
+        Note:
+            This is an abstract method and must be implemented by concrete finder classes
+            such as FinderMacOS, FinderWindows, or FinderLinux.
+
+            Each platform should implement appropriate search strategies for finding
+            Stata installations in their typical locations (e.g., /Applications for macOS,
+            Program Files for Windows, system PATH for Linux).
+        """
+        ...
 
     @abstractmethod
     def find_path_base(self) -> Dict[str, List[str]]: ...

@@ -12,8 +12,6 @@ import os
 
 from ...core.stata import StataFinder
 
-find_stata = StataFinder().find_stata
-
 
 class Installer:
     def __init__(self, sys_os, is_env=False):
@@ -41,23 +39,23 @@ class Installer:
                 # Or write the default configuration
                 f.write('{"mcpServers": {}}')
 
-        stata_cli = find_stata(os_name=sys_os, is_env=False)
+        stata_cli = StataFinder().STATA_CLI
         self.stata_mcp_config = {
             "stata-mcp": {
                 "command": "uvx",
                 "args": ["stata-mcp"],
-                "env": {"stata_cli": stata_cli},
+                "env": {"STATA_CLI": stata_cli},
             }
         }
 
     def install(self):
         server_cfg = self.stata_mcp_config["stata-mcp"]
-        stata_cli_path = server_cfg["env"]["stata_cli"]
+        stata_cli_path = server_cfg["env"]["STATA_CLI"]
         print("About to install the following MCP server into your Claude config:\n")
         print("  Server name:    stata-mcp")
         print(f"  Command:        {server_cfg['command']}")
         print(f"  Args:           {server_cfg['args']}")
-        print(f"  stata_cli path: {stata_cli_path}\n")
+        print(f"  STATA_CLI path: {stata_cli_path}\n")
         print(f"Configuration file to modify:\n  {self.config_file_path}\n")
 
         # Ask the user for confirmation
