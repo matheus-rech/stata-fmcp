@@ -16,12 +16,13 @@ from .base import FinderBase, StataEditionConfig
 
 class FinderMacOS(FinderBase):
     def finder(self) -> str | None:
-        stata_cli_from_bin = max(self.find_from_bin()).stata_cli_path
-        if stata_cli_from_bin:  # If there is a Stata CLI found in bin directory, return it as its effective.
-            return stata_cli_from_bin
-        stata_cli_from_application = max(self.find_from_application()).stata_cli_path
-        if stata_cli_from_application:  # Then, try to find from Applications dir
-            return stata_cli_from_application
+        bin_results = self.find_from_bin()
+        if bin_results:
+            return max(bin_results).stata_cli_path
+
+        application_results = self.find_from_application()
+        if application_results:
+            return max(application_results).stata_cli_path
         else:  # If there is no Stata CLI found, raise an error
             raise FileNotFoundError("Stata CLI not found")
 
