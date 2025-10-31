@@ -21,7 +21,7 @@
 ---
 **Note :** Après la sortie de la v2.0.0, ce document ne sera plus mis à jour. Pour plus de contenu, veuillez consulter le README en anglais [ici](../../../../README.md).
 
-Nouveauté : Vous pouvez maintenant utiliser Stata-MCP en mode agent, plus d'informations [ici](../../../../agent_examples/README.md).
+Nouveauté : Vous pouvez maintenant utiliser Stata-MCP en mode agent, plus d'informations [ici](../../../agent_examples/README.md).
 
 
 > Vous cherchez d'autres?
@@ -35,7 +35,7 @@ Nouveauté : Vous pouvez maintenant utiliser Stata-MCP en mode agent, plus d'inf
 
 ## 💡 Démarrage Rapide
 ### Mode Agent
-Les détails du mode agent se trouvent [ici](../../../../agent_examples/README.md).
+Les détails du mode agent se trouvent [ici](../../../agent_examples/README.md).
 
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git

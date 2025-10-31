@@ -59,7 +59,7 @@ claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
 - **解释结果**：理解复杂的统计输出和回归结果
 
 ### 代理模式
-代理模式的详细信息请查看[此处](../../../../agent_examples/README.md)。
+代理模式的详细信息请查看[此处](../../../agent_examples/README.md)。
 
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git
@@ -78,7 +78,7 @@ uvx stata-mcp --version  # 测试它是否可以在您的计算机上使用。
 uvx stata-mcp --agent
 ```
 
-您可以编辑 `agent_examples/openai/main.py` 中的 `model_instructions` 和 `task_message` 变量，[点击我](../../../../agent_examples/openai/main.py) #L37 和 #L68
+您可以编辑 `agent_examples/openai/main.py` 中的 `model_instructions` 和 `task_message` 变量，[点击我](../../../agent_examples/openai/main.py) #L37 和 #L68
 
 ### 代理作为工具
 如果您想在另一个代理中使用Stata代理，[此处](../../Usages/agent_as_tool.md)有一个简单的示例：

@@ -60,7 +60,7 @@ Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it
 - **Result Interpretation**: Understand complex statistical outputs and regression results
 
 ### Agent Mode
-The details of agent mode find [here](agent_examples/README.md).
+The details of agent mode find [here](source/agent_examples/README.md).
 
 ```bash
 git clone https://github.com/sepinetam/stata-mcp.git
@@ -79,7 +79,7 @@ uvx stata-mcp --version  # for test whether it could be used on your computer.
 uvx stata-mcp --agent
 ```
 
-You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](agent_examples/openai/main.py) #L37 and #L68
+You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](source/agent_examples/openai/main.py) #L37 and #L68
 
 ### Agent as Tool
 If you want to use a Stata-Agent in another agent, [here](source/docs/Usages/agent_as_tool.md) is a simple example:
