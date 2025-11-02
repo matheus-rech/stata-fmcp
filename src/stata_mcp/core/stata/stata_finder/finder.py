@@ -22,7 +22,7 @@ class StataFinder:
     FINDER_MAPPING = {
         "Darwin": FinderMacOS,
         "Windows": FinderWindows,
-        "Linux": FinderLinux,  # Not Support now
+        "Linux": FinderLinux,
     }
 
     def __init__(self, stata_cli: str = None):
