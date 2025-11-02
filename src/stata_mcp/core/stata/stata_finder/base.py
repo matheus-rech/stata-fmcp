@@ -278,6 +278,11 @@ class FinderBase(ABC):
         # Search for executables in all bin directories
         for b in bins:
             base = Path(b)
+
+            # Check weather the bin directory exists
+            if not base.exists():
+                continue
+
             for name in ordered_names:
                 p = base / name
                 if self._is_executable(p):
