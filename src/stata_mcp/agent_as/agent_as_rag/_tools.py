@@ -7,9 +7,9 @@
 # @Email  : sepinetam@gmail.com
 # @File   : _tools.py
 
-import os
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
+
 
 class FetchFromDocs:
     """
