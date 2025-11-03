@@ -9,12 +9,15 @@
 
 import os
 
-from agents import Agent, Model, set_tracing_disabled
+from agents import Model
 from agents.mcp import MCPServerStdio
 
+from ..agent_base import AgentBase
 
-class StataAgent:
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", None)
+
+class StataAgent(AgentBase):
+    NAME: str = "Stata Agent"
+
     agent_instructions: str = """
     # Role
     You are a **Stata Data Analysis Expert** and **Economics Research Assistant** with strong programming abilities. Stata is a very familiar and powerful tool for you.
@@ -113,32 +116,28 @@ class StataAgent:
                  DISABLE_TRACING: bool = False,
                  *args,
                  **kwargs):
-        # Disable tracing while not found openai_api_key and set tracing disable.
-        set_tracing_disabled(
-            (not kwargs.get("OPENAI_API_KEY", self.OPENAI_API_KEY)) or DISABLE_TRACING
-        )
-
         if not mcp_servers:
             mcp_servers = []
         mcp_servers.append(self.stata_mcp)
 
-        self.agent = Agent(
-            name=name or "Stata Agent",
+        super().__init__(
+            name=name or self.NAME,
             instructions=instructions or self.agent_instructions,
+            model=model,
             mcp_servers=mcp_servers,
+            tools=tools,
+            max_turns=max_turns,
+            DISABLE_TRACING=DISABLE_TRACING,
+            *args,
+            **kwargs
         )
-        if model:
-            self.agent.model = model
-        if tools:
-            self.agent.tools = tools
 
         self.tool_description = tool_description or self._default_tool_description
-        self.max_turns = max_turns
 
     @property
     def as_tool(self):
         return self.agent.as_tool(
             tool_name="Stata Agent",
-            tool_description="",
+            tool_description=self.tool_description,
             max_turns=self.max_turns
         )
