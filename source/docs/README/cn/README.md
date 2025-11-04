@@ -24,7 +24,7 @@
 ---
 **新闻**：
 - 在Claude Code中使用Stata-MCP，请查看[此处](#在claude-code中使用stata-mcp)
-- 尝试将代理模式用作工具？现在更容易支持了，请查看[此处](../../Usages/agent_as_tool.md)。
+- 尝试将代理模式用作工具？现在更容易支持了，请查看[此处](../../Usages/agent_as/agent_as_tool.md)。
 - 想要评估您的LLM？请查看[此处](../../Usages/Evaluation.md)。
 - 更新了`StataFinder`，但它还不稳定，请在您的环境中配置`STATA_CLI`。
 
@@ -83,13 +83,13 @@ uvx stata-mcp --agent
 您可以编辑 `agent_examples/openai/main.py` 中的 `model_instructions` 和 `task_message` 变量，[点击我](../../../agent_examples/openai/main.py) #L37 和 #L68
 
 ### 代理作为工具
-如果您想在另一个代理中使用Stata代理，[此处](../../Usages/agent_as_tool.md)有一个简单的示例：
+如果您想在另一个代理中使用Stata代理，[此处](../../Usages/agent_as/agent_as_tool.md)有一个简单的示例：
 
 ```python
 import asyncio
 
 from agents import Agent, Runner
-from stata_mcp.agent_as_tool import StataAgent
+from stata_mcp.agent_as.agent_as_tool import StataAgent
 
 # 初始化stata代理并设置为工具
 stata_agent = StataAgent()
@@ -101,6 +101,7 @@ agent = Agent(
     instructions="您是一个有用的助手",
     tools=[sa_tool],
 )
+
 
 # 然后像往常一样运行代理。
 async def main(task: str, max_turns: int = 30):

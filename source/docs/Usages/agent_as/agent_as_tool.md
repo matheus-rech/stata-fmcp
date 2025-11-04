@@ -21,7 +21,7 @@ Here is an example for use `stata-mcp` as a tool.
 import asyncio
 
 from agents import Agent
-from stata_mcp.agent_as_tool import StataAgent
+from stata_mcp.agent_as.agent_as_tool import StataAgent
 
 # init stata agent and set as tool
 stata_agent = StataAgent()
@@ -29,9 +29,10 @@ sa_tool = stata_agent.as_tool()
 
 # Create main Agent
 agent = Agent(
-    ..., 
+    ...,
     tools=[sa_tool],
 )
+
 
 # Then run the agent as usual.
 async def main():
@@ -52,7 +53,7 @@ Here is an example for using `DeepSeek` as model provider
 import os
 
 from agents import Agent
-from stata_mcp.agent_as_tool import StataAgent, set_model
+from stata_mcp.agent_as.agent_as_tool import StataAgent, set_model
 
 deepseek_model = set_model(
     model_name="deepseek-chat",

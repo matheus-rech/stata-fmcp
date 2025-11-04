@@ -24,7 +24,7 @@
 ---
 **News**: 
 - Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
-- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as_tool.md).
+- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).
 - Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
 - Update `StataFinder`, but it is not stable, please config your `STATA_CLI` into your environment.
 
@@ -82,13 +82,13 @@ uvx stata-mcp --agent
 You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](source/agent_examples/openai/main.py) #L37 and #L68
 
 ### Agent as Tool
-If you want to use a Stata-Agent in another agent, [here](source/docs/Usages/agent_as_tool.md) is a simple example:
+If you want to use a Stata-Agent in another agent, [here](source/docs/Usages/agent_as/agent_as_tool.md) is a simple example:
 
 ```python
 import asyncio
 
 from agents import Agent, Runner
-from stata_mcp.agent_as_tool import StataAgent
+from stata_mcp.agent_as.agent_as_tool import StataAgent
 
 # init stata agent and set as tool
 stata_agent = StataAgent()
@@ -97,9 +97,10 @@ sa_tool = stata_agent.as_tool()
 # Create main Agent
 agent = Agent(
     name="Assistant",
-    instructions="You are a helpful assistant", 
+    instructions="You are a helpful assistant",
     tools=[sa_tool],
 )
+
 
 # Then run the agent as usual.
 async def main(task: str, max_turns: int = 30):
