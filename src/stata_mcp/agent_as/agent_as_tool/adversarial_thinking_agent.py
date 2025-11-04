@@ -9,7 +9,9 @@
 
 import os
 from abc import ABC, abstractmethod
-from agents import Model, Runner
+from typing import List
+
+from agents import FunctionTool, Model, Runner
 from agents.tool import function_tool
 
 from ..agent_base import AgentBase
@@ -64,8 +66,9 @@ class NegativeAdvice(AdviceBase):
         """
         return instructions
 
-@function_tool()
-def advice_positive() -> str: ...
+
+def advice(task, advice_instance):
+    return advice_instance.get_run_result(task)
 
 
 class AdversarialThinkingAgent(AgentBase):
@@ -108,7 +111,28 @@ class AdversarialThinkingAgent(AgentBase):
             **kwargs
         )
 
+        self.agent.tools.extend(self.advice_tools())
+
         self.tool_description = tool_description or self._default_tool_description
+
+    def advice_tools(self) -> List[FunctionTool]:
+        model = self.agent.model
+
+        positive_advice_instance = PositiveAdvice(model)
+        negative_advice_instance = NegativeAdvice(model)
+
+        @function_tool()
+        def advice_positive(task: str) -> str:
+            return advice(task, positive_advice_instance)
+
+        @function_tool()
+        def advice_negative(task: str) -> str:
+            return advice(task, negative_advice_instance)
+
+        return [
+            advice_positive,
+            advice_negative
+        ]
 
     @property
     def as_tool(self):
@@ -117,4 +141,3 @@ class AdversarialThinkingAgent(AgentBase):
             tool_description=self.tool_description,
             max_turns=self.max_turns
         )
-
