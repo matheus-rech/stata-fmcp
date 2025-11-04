@@ -67,10 +67,6 @@ class NegativeAdvice(AdviceBase):
         return instructions
 
 
-def advice(task, advice_instance):
-    return advice_instance.get_run_result(task)
-
-
 class AdversarialThinkingAgent(AgentBase):
     NAME = "Adversarial Thinking Agent"
     agent_instructions = """
@@ -121,13 +117,16 @@ class AdversarialThinkingAgent(AgentBase):
         positive_advice_instance = PositiveAdvice(model)
         negative_advice_instance = NegativeAdvice(model)
 
+        def _advice(task, advice_instance):
+            return advice_instance.get_run_result(task)
+
         @function_tool()
         def advice_positive(task: str) -> str:
-            return advice(task, positive_advice_instance)
+            return _advice(task, positive_advice_instance)
 
         @function_tool()
         def advice_negative(task: str) -> str:
-            return advice(task, negative_advice_instance)
+            return _advice(task, negative_advice_instance)
 
         return [
             advice_positive,
