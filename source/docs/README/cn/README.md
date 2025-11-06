@@ -32,6 +32,7 @@
 
 > 正在寻找其他？
 >
+> - [STOP](https://opendata.ai4cssci.com)：StataMCP-Team 开放数据项目 📊，我们开源了全面的数据集集合用于社会科学研究，旨在实现 AI 驱动和数据赋能的研究范式未来。
 > - [追踪 DID](https://github.com/asjadnaqvi/DiD)：如果您想获取关于DID（双重差分法）的最新信息，请点击[此处](https://asjadnaqvi.github.io/DiD/)。现在有[Sepine Tam](https://github.com/sepine)和[StataMCP-Team](https://github.com/statamcp-team)的中文翻译 🎉
 > - Jupyter Lab 使用方法（重要提示：Stata 17+）[此处](../../JupyterStata.md)
 > - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 建造之下
