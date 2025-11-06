@@ -14,13 +14,14 @@ from agents import Agent, FunctionTool
 from ..agent_base import AgentBase
 
 
-def agent_list_to_tools(agents: List[Union[Agent, AgentBase]], descriptions: Optional[List[str]] = None) -> List[FunctionTool]:
+def agent_list_to_tools(agents: List[Union[Agent, AgentBase]], descriptions: Optional[List[str]] = None, raise_on_error: bool = False) -> List[FunctionTool]:
     """
     Convert a list of Agent objects to their tool representations.
 
     Args:
         agents: List of Agent objects to convert
         descriptions: Optional list of descriptions for each agent tool
+        raise_on_error: If True, raise exceptions on errors. If False, print error and skip.
 
     Returns:
         List[FunctionTool]: List of agent tools
@@ -31,7 +32,12 @@ def agent_list_to_tools(agents: List[Union[Agent, AgentBase]], descriptions: Opt
         if isinstance(agent, AgentBase):
             # Custom AgentBase wrapper - use agent.agent.as_tool
             if not hasattr(agent.agent, 'as_tool'):
-                raise ValueError(f"AgentBase at index {i} does not have as_tool property")
+                error_msg = f"AgentBase at index {i} does not have as_tool property"
+                if raise_on_error:
+                    raise ValueError(error_msg)
+                else:
+                    print(f"Warning: {error_msg}. Skipping...")
+                    continue
 
             # Get tool name from agent or generate default
             tool_name = getattr(agent, 'NAME', f"agent_{i}")
@@ -44,7 +50,12 @@ def agent_list_to_tools(agents: List[Union[Agent, AgentBase]], descriptions: Opt
         else:
             # Direct OpenAI Agents SDK Agent - use as_tool directly
             if not hasattr(agent, 'as_tool'):
-                raise ValueError(f"Agent at index {i} does not have as_tool property")
+                error_msg = f"Agent at index {i} does not have as_tool property"
+                if raise_on_error:
+                    raise ValueError(error_msg)
+                else:
+                    print(f"Warning: {error_msg}. Skipping...")
+                    continue
 
             # Get tool name from agent or generate default
             tool_name = getattr(agent, 'name', f"agent_{i}")
@@ -60,12 +71,13 @@ def agent_list_to_tools(agents: List[Union[Agent, AgentBase]], descriptions: Opt
     return tools
 
 
-def dict_to_agent_tools(agents_dict: Dict[str, Dict[str, Any]]) -> List[FunctionTool]:
+def dict_to_agent_tools(agents_dict: Dict[str, Dict[str, Any]], raise_on_error: bool = False) -> List[FunctionTool]:
     """
     Convert a dictionary of agents to their tool representations.
 
     Args:
         agents_dict: Dictionary where keys are tool names and values contain agents and metadata
+        raise_on_error: If True, raise exceptions on errors. If False, print error and skip.
 
     Returns:
         List[FunctionTool]: List of agent tools
@@ -84,12 +96,22 @@ def dict_to_agent_tools(agents_dict: Dict[str, Dict[str, Any]]) -> List[Function
 
         # Check if agent is None
         if agent is None:
-            raise ValueError(f"Agent for '{tool_name}' is None")
+            error_msg = f"Agent for '{tool_name}' is None"
+            if raise_on_error:
+                raise ValueError(error_msg)
+            else:
+                print(f"Warning: {error_msg}. Skipping...")
+                continue
 
         if isinstance(agent, AgentBase):
             # Custom AgentBase wrapper - use agent.agent.as_tool
             if not hasattr(agent.agent, 'as_tool'):
-                raise ValueError(f"AgentBase for '{tool_name}' does not have as_tool property")
+                error_msg = f"AgentBase for '{tool_name}' does not have as_tool property"
+                if raise_on_error:
+                    raise ValueError(error_msg)
+                else:
+                    print(f"Warning: {error_msg}. Skipping...")
+                    continue
 
             tool = agent.agent.as_tool(
                 tool_name=tool_name,
@@ -99,7 +121,12 @@ def dict_to_agent_tools(agents_dict: Dict[str, Dict[str, Any]]) -> List[Function
         else:
             # Direct OpenAI Agents SDK Agent - use as_tool directly
             if not hasattr(agent, 'as_tool'):
-                raise ValueError(f"Agent for '{tool_name}' does not have as_tool property")
+                error_msg = f"Agent for '{tool_name}' does not have as_tool property"
+                if raise_on_error:
+                    raise ValueError(error_msg)
+                else:
+                    print(f"Warning: {error_msg}. Skipping...")
+                    continue
 
             tool = agent.as_tool(
                 tool_name=tool_name,
@@ -110,7 +137,3 @@ def dict_to_agent_tools(agents_dict: Dict[str, Dict[str, Any]]) -> List[Function
         tools.append(tool)
 
     return tools
-
-
-
-
