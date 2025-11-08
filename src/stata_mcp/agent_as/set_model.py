@@ -10,7 +10,28 @@
 import os
 
 from agents import Model, OpenAIChatCompletionsModel
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAI
+
+
+class Provider:
+    def __init__(self, provider: str = "openai"):
+        self.provider_name = provider.lower()
+
+    @property
+    def API_KEY(self):
+        return os.getenv(f"{self.provider_name.upper()}_API_KEY")
+
+    @property
+    def BASE_URL(self):
+        return os.getenv(f"{self.provider_name.upper()}_BASE_URL")
+
+    @property
+    def client(self):
+        return OpenAI(api_key=self.API_KEY, base_url=self.BASE_URL)
+
+    @property
+    def async_client(self):
+        return AsyncOpenAI(api_key=self.API_KEY, base_url=self.BASE_URL)
 
 
 def set_model(model_name: str = None,
