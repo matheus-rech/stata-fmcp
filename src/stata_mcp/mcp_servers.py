@@ -86,31 +86,30 @@ except FileNotFoundError as e:
 client = os.getenv("STATA-MCP-CLIENT")
 
 if client == "cc":  # TODO: This is a mistake in Claude Code, as it could not get the cwd path.
-    cwd = os.getcwd()
+    cwd = Path.cwd()
 else:  # If not special client follow default way.
     cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
     if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
-        if SYSTEM_OS in ["Darwin", "Linux"]:
-            cwd = os.path.expanduser("~/Documents")
-        else:
-            cwd = os.path.join(os.getenv("USERPROFILE", "~"), "Documents")
+        cwd = Path.home() / "Documents"
+    else:
+        cwd = Path(cwd)
 
 # Use configured output path if available
-output_base_path = os.path.join(cwd, "stata-mcp-folder")
-os.makedirs(output_base_path, exist_ok=True)  # make sure this folder exists
+output_base_path = cwd / "stata-mcp-folder"
+output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
 
 # Create a series of folder
-log_base_path = os.path.join(output_base_path, "stata-mcp-log")
-os.makedirs(log_base_path, exist_ok=True)
-dofile_base_path = os.path.join(output_base_path, "stata-mcp-dofile")
-os.makedirs(dofile_base_path, exist_ok=True)
-result_doc_path = os.path.join(output_base_path, "stata-mcp-result")
-os.makedirs(result_doc_path, exist_ok=True)
-tmp_base_path = os.path.join(output_base_path, "stata-mcp-tmp")
-os.makedirs(tmp_base_path, exist_ok=True)
+log_base_path = output_base_path / "stata-mcp-log"
+log_base_path.mkdir(exist_ok=True)
+dofile_base_path = output_base_path / "stata-mcp-dofile"
+dofile_base_path.mkdir(exist_ok=True)
+result_doc_path = output_base_path / "stata-mcp-result"
+result_doc_path.mkdir(exist_ok=True)
+tmp_base_path = output_base_path / "stata-mcp-tmp"
+tmp_base_path.mkdir(exist_ok=True)
 
 # Config gitignore in STATA_MCP_FOLDER
-if not os.path.exists(GITIGNORE_FILE := os.path.join(output_base_path, ".gitignore")):
+if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
         f.write("*")
 
@@ -236,11 +235,12 @@ def read_file(file_path: str, encoding: str = "utf-8") -> str:
     Returns:
         str: The content of the file as a string.
     """
-    if not os.path.exists(file_path):
+    path = Path(file_path)
+    if not path.exists():
         raise FileNotFoundError(f"The file at {file_path} does not exist.")
 
     try:
-        with open(file_path, "r", encoding=encoding) as file:
+        with open(path, "r", encoding=encoding) as file:
             log_content = file.read()
         return log_content
     except IOError as e:
@@ -318,11 +318,11 @@ def get_data_info(data_path: str | Path,
         save_path = kwargs.get("save_path", None)
         if save_path is None:
             data_name = Path(data_path).name.split(".")[0]
-            data_info_path = os.path.join(tmp_base_path, data_name, ".txt")
+            data_info_path = tmp_base_path / f"{data_name}.txt"
         else:
             data_info_path = save_path
 
-        os.makedirs(os.path.dirname(data_info_path), exist_ok=True)
+        data_info_path.parent.mkdir(parents=True, exist_ok=True)
         with open(data_info_path, "w", encoding=kwargs.get("info_file_encoding", "utf-8")) as f:
             f.write(data_info)
 
@@ -351,15 +351,9 @@ def results_doc_path() -> str:
         - The returned path is suitable for use as the output directory for Stata commands such as `outreg2`
         - In specific Stata code, you can set the file output path at the beginning.
     """
-    os.makedirs(
-        (path := os.path.join(
-            result_doc_path,
-            datetime.strftime(
-                datetime.now(),
-                "%Y%m%d%H%M%S"))),
-        exist_ok=True,
-    )
-    return path
+    path = result_doc_path / datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
+    path.mkdir(exist_ok=True)
+    return str(path)
 
 
 @stata_mcp.tool(
@@ -390,14 +384,11 @@ def write_dofile(content: str, encoding: str = None) -> str:
         If you want to use the function `write_dofile`, please use `results_doc_path` before which is necessary.
 
     """
-    file_path = os.path.join(
-        dofile_base_path,
-        datetime.strftime(datetime.now(), "%Y%m%d%H%M%S") + ".do"
-    )
+    file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
     encoding = encoding or "utf-8"
     with open(file_path, "w", encoding=encoding) as f:
         f.write(content)
-    return file_path
+    return str(file_path)
 
 
 @stata_mcp.tool(
@@ -435,14 +426,12 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
     encoding = encoding or "utf-8"
 
     # Create a new file path for the output
-    new_file_path = os.path.join(
-        dofile_base_path, datetime.strftime(
-            datetime.now(), "%Y%m%d%H%M%S") + ".do")
+    new_file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
 
     # Check if original file exists and is valid
     original_exists = False
     original_content = ""
-    if original_dofile_path and os.path.exists(original_dofile_path):
+    if original_dofile_path and Path(original_dofile_path).exists():
         try:
             with open(original_dofile_path, "r", encoding=encoding) as f:
                 original_content = f.read()
@@ -461,7 +450,7 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
                 f.write("\n")
         f.write(content)
 
-    return new_file_path
+    return str(new_file_path)
 
 
 @stata_mcp.tool(name="ssc_install", description="Install a package from SSC")
@@ -547,7 +536,7 @@ def load_figure(figure_path: str) -> Image:
     Returns:
         Image: the figure thumbnail
     """
-    if not os.path.exists(figure_path):
+    if not Path(figure_path).exists():
         raise FileNotFoundError(f"{figure_path} not found")
     return Image(figure_path)
 
@@ -580,13 +569,13 @@ def mk_dir(path: str) -> bool:
         safe_path = sanitize_filepath(path, platform="auto")
 
         # Get absolute path for further validation
-        absolute_path = os.path.abspath(safe_path)
+        absolute_path = Path(safe_path).resolve()
 
         # Create directory with reasonable permissions
-        os.makedirs(absolute_path, exist_ok=True, mode=0o755)
+        absolute_path.mkdir(mode=0o755, exist_ok=True, parents=True)
 
         # Verify successful creation
-        return os.path.exists(absolute_path) and os.path.isdir(absolute_path)
+        return absolute_path.exists() and absolute_path.is_dir()
 
     except ValidationError as e:
         raise ValueError(f"Invalid path detected: {e}")
@@ -642,8 +631,8 @@ def stata_do(dofile_path: str,
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
         stata_cli=STATA_CLI,  # Path to Stata executable
-        log_file_path=log_base_path,  # Directory for log files
-        dofile_base_path=dofile_base_path,  # Base directory for do-files
+        log_file_path=str(log_base_path),  # Directory for log files
+        dofile_base_path=str(dofile_base_path),  # Base directory for do-files
         sys_os=SYSTEM_OS  # Operating system identifier
     )
 
