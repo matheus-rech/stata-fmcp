@@ -109,6 +109,11 @@ os.makedirs(result_doc_path, exist_ok=True)
 tmp_base_path = os.path.join(output_base_path, "stata-mcp-tmp")
 os.makedirs(tmp_base_path, exist_ok=True)
 
+# Config gitignore in STATA_MCP_FOLDER
+if not os.path.exists(GITIGNORE_FILE := os.path.join(output_base_path, ".gitignore")):
+    with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
+        f.write("*")
+
 
 def get_lang():
     LANG_MAPPING = {
