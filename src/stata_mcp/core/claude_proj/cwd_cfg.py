@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 # TODO: Add the save guard for relative path like "../../"
-def get_exp_cwd(path: str | Path = ".") -> str:
+def get_exp_cwd(path: str | Path = ".") -> Path:
     """
     Config the current working directory
     """
@@ -19,11 +19,11 @@ def get_exp_cwd(path: str | Path = ".") -> str:
     if path_obj.is_absolute():
         try:
             path_obj.mkdir(parents=True, exist_ok=True)
-            return path_obj.as_posix()
+            return path_obj
         except OSError as e:
             raise e
     else:
-        TERMINAL_CURRENT_PATH = Path.cwd().as_posix()
-        combined_path = (Path(TERMINAL_CURRENT_PATH) / path_obj).resolve()
+        TERMINAL_CURRENT_PATH = Path.cwd()
+        combined_path = (TERMINAL_CURRENT_PATH / path_obj).resolve()
         combined_path.mkdir(parents=True, exist_ok=True)
-        return combined_path.as_posix()
+        return combined_path
