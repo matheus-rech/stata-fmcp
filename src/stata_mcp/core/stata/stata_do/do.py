@@ -10,6 +10,7 @@
 import logging
 import os
 import subprocess
+from typing import Dict
 
 from ....utils import get_nowtime
 
@@ -77,6 +78,14 @@ class StataDo:
 
         return log_file
 
+    @staticmethod
+    def set_fake_terminal_size_env(columns: str | int = '120',
+                                   lines: str | int = '40') -> Dict[str, str]:
+        env = os.environ.copy()
+        env['COLUMNS'] = str(columns)
+        env['LINES'] = str(lines)
+        return env
+
     def _execute_unix_like(self, dofile_path: str, log_file: str, is_replace: bool = True):
         """
         Execute Stata on macOS/Linux systems
@@ -89,6 +98,9 @@ class StataDo:
         Raises:
             RuntimeError: Stata execution error
         """
+        # Get environment with terminal size settings
+        env = self.set_fake_terminal_size_env()
+
         proc = subprocess.Popen(
             [self.STATA_CLI],  # Launch the Stata CLI
             stdin=subprocess.PIPE,  # Prepare to send commands
@@ -96,6 +108,7 @@ class StataDo:
             stderr=subprocess.PIPE,
             text=True,
             shell=True,  # Required when the path contains spaces
+            env=env,  # Use environment with terminal size settings
         )
 
         # Execute commands sequentially in Stata
