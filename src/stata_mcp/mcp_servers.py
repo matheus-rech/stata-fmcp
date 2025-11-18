@@ -459,12 +459,15 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
 
 
 @stata_mcp.tool(name="ssc_install", description="Install a package from SSC")
-def ssc_install(command: str, is_replace: bool = True) -> str:
+def ssc_install(command: str,
+                package_source: str = "ssc",
+                is_replace: bool = True) -> str:
     """
     Install a package from SSC
 
     Args:
-        command (str): The name of the package to be installed from SSC.
+        command (str): The name of the package to be installed from SSC or other source.
+        package_source (str): The source os package install from, default is ssc and only ssc now.
         is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
 
     Returns:
@@ -524,10 +527,13 @@ def ssc_install(command: str, is_replace: bool = True) -> str:
         and may not be required if the package is already present.
     """
     replace_clause = ", replace" if is_replace else ""
-    dofile_path = write_dofile(f"ssc install {command}{replace_clause}")
-    result = stata_do(dofile_path)
-    log_file_content = result["log_content"]
-    return log_file_content
+    if package_source == "ssc":
+        dofile_path = write_dofile(f"ssc install {command}{replace_clause}")
+        result = stata_do(dofile_path)
+        log_file_content = result["log_content"]
+        return log_file_content
+    else:
+        raise ValueError("Only support ssc now")
 
 
 @stata_mcp.tool(name="load_figure")
