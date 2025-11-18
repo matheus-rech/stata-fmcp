@@ -22,9 +22,10 @@ from packaging.version import Version
 from pydantic_core._pydantic_core import ValidationError
 
 from .core.data_info import CsvDataInfo, DtaDataInfo
-from .core.stata import StataController, StataDo, StataFinder
-from .utils.Prompt import pmp
+from .core.stata import StataDo, StataFinder
+from .core.stata.builtin_tools import GITHUB_Install, SSC_Install
 from .core.stata.builtin_tools import StataHelp as Help
+from .utils.Prompt import pmp
 
 mcp_version = Version(version('mcp'))
 
@@ -451,23 +452,26 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
     return str(new_file_path)
 
 
-@stata_mcp.tool(name="ssc_install", description="Install a package from SSC")
-def ssc_install(command: str,
-                package_source: str = "ssc",
-                is_replace: bool = True) -> str:
+@stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
+def ado_package_install(package: str,
+                        source: str = "ssc",
+                        is_replace: bool = True):
     """
-    Install a package from SSC
+    Install a package from SSC or GitHub
 
     Args:
-        command (str): The name of the package to be installed from SSC or other source.
-        package_source (str): The source os package install from, default is ssc and only ssc now.
+        package (str): The name of the package to be installed. For SSC, use package name; for GitHub, use "username/reponame" format.
+        source (str): The source to install from. Options are "ssc" (default) or "GitHub".
         is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
 
     Returns:
         str: The execution log returned by Stata after running the installation.
 
     Examples:
-        >>> ssc_install(command="outreg2")
+        >>> ado_package_install(package="outreg2", source="ssc")
+        >>> # this would install outreg2 from ssc
+        >>> ado_package_install(package="sepinetam/texiv", source="github")
+        >>> # this would install texiv from https://github.com/sepinetam/texiv
         -------------------------------------------------------------------------------
         name:  <unnamed>
         log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
@@ -490,7 +494,7 @@ def ssc_install(command: str,
         closed on:  12 Oct 2025, 18:54:55
         -------------------------------------------------------------------------------
 
-        >>> ssc_install(command="a_fake_command")
+        >>> ado_package_install(command="a_fake_command")
         -------------------------------------------------------------------------------
         name:  <unnamed>
         log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
@@ -519,14 +523,12 @@ def ssc_install(command: str,
         Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
         and may not be required if the package is already present.
     """
-    replace_clause = ", replace" if is_replace else ""
-    if package_source == "ssc":
-        dofile_path = write_dofile(f"ssc install {command}{replace_clause}")
-        result = stata_do(dofile_path)
-        log_file_content = result["log_content"]
-        return log_file_content
-    else:
-        raise ValueError("Only support ssc now")
+    SOURCE_MAPPING: Dict = {
+        "github": GITHUB_Install,
+        "ssc": SSC_Install
+    }
+    installer = SOURCE_MAPPING.get(source, SSC_Install)
+    return installer(STATA_CLI, is_replace).install(package)
 
 
 @stata_mcp.tool(name="load_figure")
