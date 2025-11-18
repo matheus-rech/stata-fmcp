@@ -24,6 +24,7 @@ from pydantic_core._pydantic_core import ValidationError
 from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataController, StataDo, StataFinder
 from .utils.Prompt import pmp
+from .core.stata.builtin_tools import StataHelp as Help
 
 mcp_version = Version(version('mcp'))
 
@@ -108,6 +109,9 @@ result_doc_path = output_base_path / "stata-mcp-result"
 result_doc_path.mkdir(exist_ok=True)
 tmp_base_path = output_base_path / "stata-mcp-tmp"
 tmp_base_path.mkdir(exist_ok=True)
+
+# Config help class
+help_cls = Help(STATA_CLI)
 
 # Config gitignore in STATA_MCP_FOLDER
 if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
@@ -207,18 +211,7 @@ def help(cmd: str) -> str:
         str: The help text returned by Stata for the specified command,
              or a message indicating that no help was found.
     """
-    controller = StataController(STATA_CLI)
-    std_error_msg = (
-        f"help {cmd}\r\n"
-        f"help for {cmd} not found\r\n"
-        f"try help contents or search {cmd}"
-    )
-    help_result = controller.run(f"help {cmd}")
-
-    if help_result != std_error_msg:
-        return help_result
-    else:
-        return "No help found for the command: " + cmd
+    return help_cls.help(cmd)
 
 
 @stata_mcp.tool(
