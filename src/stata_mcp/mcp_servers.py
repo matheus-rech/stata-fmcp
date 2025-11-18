@@ -7,6 +7,7 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
+import json
 import locale
 import os
 import platform
@@ -255,6 +256,7 @@ def get_data_info(data_path: str | Path,
                   vars_list: List[str] | str | None = None,
                   encoding: str = "utf-8",
                   file_extension: Optional[str] = None,
+                  is_save: bool = False,
                   **kwargs) -> Dict[str, dict]:
     """
     Get data file vars information.
@@ -264,9 +266,9 @@ def get_data_info(data_path: str | Path,
         vars_list (List[str] | str | None): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg).
         file_extension (Optional[str]): the data file's extension, default is None, then would find it automatically.
+        is_save (Optional[bool]): default = False, whether save the result to a txt file.
 
         **kwargs:
-            is_save (Optional[bool]): default = rue, whether save the result to a txt file.
             save_path (str): the data-info saved file path,
                              if None would be saved rooted in `{tmp_base_path}` with name same as data,
                              like: data_path = "/Users/username/Documents/stata-mcp-folder/stata-mcp-tmp/some_data.dta",
@@ -314,17 +316,20 @@ def get_data_info(data_path: str | Path,
     cls = EXTENSION_METHOD_MAPPING.get(file_extension)
     data_info = cls(data_path=data_path, vars_list=vars_list, encoding=encoding, **kwargs).info
 
-    if kwargs.get("is_save", True):
+    if is_save:
         save_path = kwargs.get("save_path", None)
-        if save_path is None:
+        if save_path and isinstance(save_path, str):
+            data_info_path = Path(save_path)
+        else:
             data_name = Path(data_path).name.split(".")[0]
             data_info_path = tmp_base_path / f"{data_name}.txt"
-        else:
-            data_info_path = save_path
 
         data_info_path.parent.mkdir(parents=True, exist_ok=True)
         with open(data_info_path, "w", encoding=kwargs.get("info_file_encoding", "utf-8")) as f:
-            f.write(data_info)
+            try:
+                json.dump(data_info, f, indent=2, ensure_ascii=False, default=str)
+            except (TypeError, ValueError):
+                f.write(str(data_info))
 
     return data_info
 
