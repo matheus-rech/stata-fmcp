@@ -26,3 +26,15 @@ class StataHelp:
             return help_result
         else:
             return "No help found for the command: " + cmd
+
+    def check_command_exist_with_help(self, cmd: str) -> bool:
+        std_error_msg = (
+            f"help {cmd}\r\n"
+            f"help for {cmd} not found\r\n"
+            f"try help contents or search {cmd}"
+        )
+        help_result = self.controller.run(f"help {cmd}")
+        if help_result != std_error_msg:
+            return True
+        else:
+            return False

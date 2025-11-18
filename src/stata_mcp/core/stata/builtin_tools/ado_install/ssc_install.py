@@ -9,6 +9,7 @@
 
 from .base import AdoInstallBase
 
+
 class SSC_Install(AdoInstallBase):
     def install(self, package: str) -> str:
         install_command = f"ssc install {package}{self.REPLACE_MESSAGE}"
@@ -21,7 +22,7 @@ class SSC_Install(AdoInstallBase):
             # for the package is not install before or not found in current.
             "installing into ",
             "installation complete.",
-            
+
             # for replace arg, the package is already exist and up to date
             "all files already exist and are up to date.",
         ]

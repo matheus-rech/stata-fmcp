@@ -11,11 +11,12 @@ from abc import ABC, abstractmethod
 
 from ...stata_controller import StataController
 
+
 class AdoInstallBase(ABC):
     def __init__(self,
                  stata_cli,
                  is_replace: bool = True):
-        self.controller = StataController(stata_cli)
+        self.stata_cli = stata_cli
         self.is_replace = is_replace
         self.__post_initialization()
 
@@ -36,6 +37,10 @@ class AdoInstallBase(ABC):
             ...         return f"Installing {package} with {self.custom_setting}"
         """
         pass
+
+    @property
+    def controller(self) -> StataController:
+        return StataController(self.stata_cli)
 
     @property
     def REPLACE_MESSAGE(self) -> str:
