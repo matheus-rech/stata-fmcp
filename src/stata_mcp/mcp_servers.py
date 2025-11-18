@@ -256,7 +256,7 @@ def get_data_info(data_path: str | Path,
                   vars_list: List[str] | str | None = None,
                   encoding: str = "utf-8",
                   file_extension: Optional[str] = None,
-                  is_save: bool = False,
+                  is_save: bool = True,
                   **kwargs) -> Dict[str, dict]:
     """
     Get data file vars information.
@@ -266,7 +266,7 @@ def get_data_info(data_path: str | Path,
         vars_list (List[str] | str | None): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg).
         file_extension (Optional[str]): the data file's extension, default is None, then would find it automatically.
-        is_save (Optional[bool]): default = False, whether save the result to a txt file.
+        is_save (Optional[bool]): default = True, whether save the result to a txt file.
 
         **kwargs:
             save_path (str): the data-info saved file path,
