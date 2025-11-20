@@ -28,7 +28,8 @@ stata-mcp/
 │   ├── mode/                   # Different operation modes
 │   │   ├── langchain_agent.py  # LangChain-based agent mode
 │   │   └── pmp/                # Prompt-based mode
-│   ├── agent_as_tool/          # Agent as tool integration
+│   ├── agent_as/               # Agent as tool integration
+│   │   ├── agent_as_tool/      # Tool implementation
 │   ├── evaluate/               # LLM evaluation module
 │   └── sandbox/                # Sandbox environment
 │       ├── core/               # Sandbox core
@@ -125,9 +126,10 @@ uvx stata-mcp --agent
 ```
 
 #### Agent as Tool Integration
+
 ```python
 from agents import Agent, Runner
-from stata_mcp.agent_as_tool import StataAgent
+from stata_mcp.agent_as.agent_as_tool import StataAgent
 
 # Initialize Stata agent
 stata_agent = StataAgent()
@@ -135,15 +137,16 @@ sa_tool = stata_agent.as_tool()
 
 # Create main agent with Stata tool
 agent = Agent(
-    name="Assistant",
-    instructions="You are a helpful assistant",
-    tools=[sa_tool],
+   name="Assistant",
+   instructions="You are a helpful assistant",
+   tools=[sa_tool],
 )
+
 
 # Run the agent
 async def main(task: str):
-    result = await Runner.run(agent, input=task)
-    return result
+   result = await Runner.run(agent, input=task)
+   return result
 ```
 
 ### Evaluation System

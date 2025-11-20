@@ -28,7 +28,8 @@ stata-mcp/
 │   ├── mode/                   # 不同操作模式
 │   │   ├── langchain_agent.py  # LangChain 基础的代理模式
 │   │   └── pmp/                # 基于提示词的模式
-│   ├── agent_as_tool/          # 代理作为工具集成
+│   ├── agent_as/               # 代理作为工具集成
+│   │   ├── agent_as_tool/      # 工具实现
 │   ├── evaluate/               # LLM 评估模块
 │   └── sandbox/                # 沙箱环境
 │       ├── core/               # 沙箱核心
@@ -125,9 +126,10 @@ uvx stata-mcp --agent
 ```
 
 #### 代理作为工具集成
+
 ```python
 from agents import Agent, Runner
-from stata_mcp.agent_as_tool import StataAgent
+from stata_mcp.agent_as.agent_as_tool import StataAgent
 
 # 初始化 Stata 代理
 stata_agent = StataAgent()
@@ -135,15 +137,16 @@ sa_tool = stata_agent.as_tool()
 
 # 创建包含 Stata 工具的主代理
 agent = Agent(
-    name="Assistant",
-    instructions="You are a helpful assistant",
-    tools=[sa_tool],
+   name="Assistant",
+   instructions="You are a helpful assistant",
+   tools=[sa_tool],
 )
+
 
 # 运行代理
 async def main(task: str):
-    result = await Runner.run(agent, input=task)
-    return result
+   result = await Runner.run(agent, input=task)
+   return result
 ```
 
 ### 评估系统
