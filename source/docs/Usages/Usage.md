@@ -1,406 +1,117 @@
-# Usage Catalog
-- [中文](#使用指南中文)
-  - [macOS](#macos)
-  - [Windows](#windows)
-- [English](#usage-guide-english)
-  - [macOS](#macos-1)
-  - [Windows](#windows-1)
+# Usage Guide
+> Finding other language? Look here 👀
+> - [English](#usage-guide)  
+> - [中文](#使用指南)
 
-# 使用指南（中文）
-## macOS
-### 视频演示
+Hope no [Star War](https://www.aeaweb.org/articles?id=10.1257/app.20150044) future. 
 
-* YouTube
-* bilibili
-* 官方网站
+## Use in Python
 
-### 准备工作
-#### 必需品
+The project provides interfaces for easy invocation in Python. Here are a few specific examples to help you quickly get started with using it in Python.
 
-* **Stata 17+**
-* **Python 3.11+**（低版本可能可行，但本项目未经过测试）
-* **uv** 和 **uvx**（推荐使用，以避免不必要的配置问题）
-* 任意支持 MCP 的客户端，如 Claude 桌面版、Cursor、Cherry Studio 等
+### OpenAI-Agents
 
-#### 获取项目
+Launch as MCP:
+
+```python
+# !uv pip install openai-agents
+from agents import Agent, Runner
+from agents.mcp import MCPServerStdio, MCPServerStdioParams
+
+stata_mcp_server = MCPServerStdio(
+    name="Stata-MCP",
+    params=MCPServerStdioParams(
+        command="uvx",
+        args=["stata-mcp"]
+    )
+)
+
+agent = Agent(
+    name="Agent",
+    instructions="You are a helpful agent.",
+    mcp_servers=[stata_mcp_server]
+)
+
+result = await Runner.run(
+    agent,
+    input="Help me run a regression -> log(wage) ~ age, educ, exper with `nlsw88` data and report me the coefficients."
+)
+
+print(f"Result: \n> {result.final_output}")
+```
+
+Or, you can use our pre-defined Stata-Agent:
+
+```python
+# !uv pip install stata-mcp
+from agents import Runner
+from stata_mcp.agent_as import StataAgent
+
+agent = StataAgent()
+result = await Runner.run(
+    agent,
+    input="Help me run a regression -> log(wage) ~ age, educ, exper with `nlsw88` data and report me the coefficients."
+)
+print(f"Result: \n> {result.final_output}")
+```
+
+### Agent as Tool
+
+Thanks to the agent-as-tool feature provided by OpenAI-Agents, we have pre-configured a Stata-Agent and exposed `as_tool`:
+
+```python
+# !uv pip install openai-agents stata-mcp
+from agents import Agent
+from stata_mcp.agent_as import StataAgent
+
+agent = Agent(
+    name="Scientist Agent",
+    instructions="You are a helpful scientist.",
+    tools=[StataAgent(max_turns=100).as_tool]
+)
+```
+
+## Coding Agent
+
+The project was initially designed for Claude Desktop and related products, so it may not be helpful for all agents. The following are only the agent configurations that have been tested. We also believe that MCP has been designed for agents from Day 0. The current coding agents are flourishing and overwhelming. We especially recommend using Claude Code and collaborating with other MCPs to complete your tasks.
+
+### Claude Code
+
+This is our most recommended coding agent solution and a basic usage solution for the project. If you want to use `Stata-MCP` in `Claude Code`, refer to the following configuration command:
 
 ```bash
-git clone https://www.github.com/sepinetam/stata-mcp.git
-cd stata-mcp
+claude mcp add stata-mcp -- uvx stata-mcp
 ```
 
-#### 环境配置
-
-1. 确保已安装 Stata 软件，并具有有效许可证；如使用非官方授权，请阅读本项目的[开源许可](../../../LICENSE)。
-2. 在项目目录下运行：
+If you want to manage your research as a project, here is a more suitable solution for you:
 
 ```bash
-uvx stata-mcp --usable
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
 ```
 
-* 若所有检查通过，则可使用默认配置。
-* 若 `stata_cli` 项显示 **FAILED**，则需在配置中指定 Stata 可执行文件路径。
-
-3. （可选）可直接通过以下命令确认：
+If you want to specify a specific version of `Stata-MCP`, add the corresponding version number:
 
 ```bash
-/usr/local/bin/stata-se  # 或者 stata-mp、stata-ci 等，视安装版本而定
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp==1.13.0
 ```
 
-### Stata-MCP 配置
+Then you can try to use `claude mcp list` to check if the installation was successful.
 
-#### 通用配置
+To summarize, in your research directory, after initializing the project, you can freely configure MCP based on the project rather than global configuration. Of course, if you don't want global configuration, you can also remove the path-related parameters, which will not have any impact.
 
-> Stata-MCP 支持自动查找本地 Stata 路径，无需手动指定版本号。
+### Codex
 
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": ["stata-mcp"]
-    }
-  }
-}
+If you want to use `Codex` in `VScode`, you need to modify the `~/.codex/config.toml` file. You can directly paste the following content at the end of the file:
+
+```toml
+[mcp_servers.stata-mcp]
+command = "uvx"
+args = ["stata-mcp"]
 ```
 
-> 若需指定 Stata 可执行文件路径或自定义文档保存目录，可添加 `env`：
+### Cline
 
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": ["stata-mcp"],
-      "env": {
-        "stata_cli": "/usr/local/bin/stata-se",
-        "documents_path": "~/Documents/stata-mcp"
-      }
-    }
-  }
-}
-```
-
-#### Claude 配置
-
-同通用配置。若需指定 Stata CLI 路径，只需在 `env` 中添加 `stata_cli`（可选：`documents_path`）。
-
-#### Cherry Studio 配置
-
-通过 GUI 填写：
-
-```text
-name: Stata-MCP
-command: uvx
-args:
-  - stata-mcp
-envs:
-  stata_cli="/usr/local/bin/stata-se"
-  documents_path="~/Documents/stata-mcp"
-```
-
-#### ChatWise 配置
-
-支持剪贴板 JSON 导入，或直接输入：
-
-```bash
-uvx stata-mcp
-```
-
-如需指定 CLI 路径：
-
-```bash
-uvx stata-mcp --env stata_cli="/usr/local/bin/stata-se"
-```
-
----
-
-## Windows
-
-### 视频演示
-
-* YouTube
-* bilibili
-* 官方网站
-
-### 准备工作
-
-#### 必需品
-
-* **Stata 17+**
-* **Python 3.11+**（低版本可能可行，但本项目未经过测试）
-* **uv** 和 **uvx**（推荐使用，以避免不必要的配置问题）
-* 任意支持 MCP 的客户端，如 Claude 桌面版、Cursor、Cherry Studio 等
-
-#### 获取项目
-
-```bash
-git clone https://www.github.com/sepinetam/stata-mcp.git
-cd stata-mcp
-```
-
-#### 环境配置
-
-1. 安装 Stata，并确保可通过命令行（CMD 或 PowerShell）启动（如 `Stata.exe`、`StataMP.exe`、`StataSE.exe`）。
-2. 在项目目录下运行：
-
-```bash
-uvx stata-mcp --usable
-```
-
-* 全部检查通过后，可使用默认配置。
-* 若 `stata_cli` 显示 **FAILED**，请记录 Stata 可执行文件的完整路径，并在配置中指定。
-
-### Stata-MCP 配置
-
-#### 通用配置
-
-> 若 Stata 安装在默认位置（仅盘符不同），可使用以下简单配置：
-
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": ["stata-mcp"]
-    }
-  }
-}
-```
-
-> 若需指定自定义 Stata 路径或文档目录，添加 `env`：
-
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": ["stata-mcp"],
-      "env": {
-        "stata_cli": "C:\\Program Files\\Stata18\\StataSE.exe",
-        "documents_path": "C:\\Users\\YourUser\\Documents\\stata-mcp"
-      }
-    }
-  }
-}
-```
-
-#### Claude 配置
-
-同通用配置，将 `stata_cli`（及可选的 `documents_path`）添加至 `env`。
-
-#### Cherry Studio 配置
-
-在 GUI 中填写：
-
-```text
-name: Stata-MCP
-command: uvx
-args:
-  - stata-mcp
-envs:
-  stata_cli="C:\\Program Files\\Stata18\\StataSE.exe"
-  documents_path="C:\\Users\\YourUser\\Documents\\stata-mcp"
-```
-
-#### ChatWise 配置
-
-可粘贴 JSON 或直接在命令行输入：
-
-```bash
-uvx stata-mcp
-```
-
-指定 CLI 路径：
-
-```bash
-uvx stata-mcp --env stata_cli="C:\\Program Files\\Stata18\\StataSE.exe"
-```
-
----
-
-更多信息请参阅 [Advanced](Advanced.md#高级功能)。
-
-
-# Usage Guide (English)
-## macOS
-### Video Demonstration
-- [YouTube]()
-- [bilibili]()
-- [Official Website]()
-
-### Prerequisites
-#### Requirements
-- Stata 17+
-- Python 3.11+ (lower versions might work, but this project has not been tested with lower versions)
-- uv and uvx(recommended for setup to avoid unnecessary configuration issues)
-- Any client that supports MCP, such as Claude desktop app, Cursor, Cherry Studio, etc.
-
-#### Check your environments
-```bash
-uvx stata-mcp --usable
-```
-If all of them are PASSED, it means you can use it directory with the default config, if you find the stata_cli FAILED, you can config your env-variable in your shell, or you can config it in your MCP client later.
-
-#### Environment Setup
-1. Ensure that you have Stata software installed on your computer (with a valid Stata license. If you're using a non-official Stata license, please make sure to read the [open source license](../../../LICENSE) of this project)
-2. Install Stata terminal tools: In Stata's menu bar, click on Stata, then select "Install Terminal Tools..." (as shown in the image below)
-
-![](../../img/usage_01.png)
-
-Then, 
-
-![](../../img/macOS_cli.png)
-
-3. Verify Stata CLI installation by running `uv run usable.py` in the project directory. If no exceptions are thrown, it means the usability test has passed.
-4. Alternatively, you can check if it's available by using `/usr/local/bin/stata-se` directly in the terminal (replace "se" with your Stata version). You should see a return similar to the one shown below:
-
-![](../../img/usage_02.png)
-
-### Stata-MCP Configuration
-#### General Configuration
-> Currently, Stata-MCP supports automatically finding the Stata path, so users don't need to provide version numbers. The configuration below allows for quick setup.
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": [
-        "stata-mcp"
-      ]
-    }
-  }
-}
-```
-
-> If you want to specify the path to the Stata executable, or you want to make the certain file saving path, use the following configuration:
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": [
-        "stata-mcp"
-      ],
-      "env": {
-        "stata_cli": "/path/to/your/stata-cli",
-        "documents_path": "~/Documents/stata-mcp"
-      }
-    }
-  }
-}
-```
-
-> Notes: <br>
-> for Windows, you should find the exe file if you want to use the certain version of your Stata if there are lots of different version on your computer;<br>
-> for macOS, you could not use the two different `stata-mp` because it is a cli tool, but if you have a StataSE 17 and a StataMP 19, you can use both of them. 
-
-#### Claude Configuration
-Same as the general configuration. To specify the Stata CLI path, and add `stata_cli` to the `env`.
-```json
-{
-  "mcpServers": {
-    "stata-mcp": {
-      "command": "uvx",
-      "args": [
-        "stata-mcp"
-      ],
-      "env": {
-        "stata_cli": "/path/to/your/stata-cli",
-        "documents_path": "~/Documents/stata-mcp"
-      }
-    }
-  }
-}
-```
-
-#### Cherry Studio Configuration
-In Cherry Studio, it's recommended to use the GUI to fill in:
-```text
-name: Stata-MCP
-command: uvx
-args:
-  stata-mcp
-envs:
-  stata_cli="/path/to/your/stata-cli"
-  documents_path=~/Documents/stata-mcp
-```
-
-If you need to specify the Stata CLI path, add `stata_cli` to the `env`.
-
-> Notes:<br>
-> Maybe there is something wrong on CherryStudio, here is an alternative method to config it:
-> you can con down the source code and use it or download it via pip
-```bash
-# for first download it
-pip install stata-mcp
-
-# for upgrade it
-pip install --upgrade stata-mcp
-```
-Then you can config it like this:
-```text
-name: Stata-MCP
-command: stata-mcp
-(no args)
-envs:
-  stata_cli="/path/to/your/stata-cli"
-  documents_path=~/Documents/stata-mcp
-```
-
-#### ChatWise Configuration
-ChatWise not only supports JSON import via clipboard (in which case you can directly copy the general configuration after modifying the repo path),
-but you can also directly type the command:
-```bash
-uvx stata-mcp
-```
-
-Similarly, if you need to specify the Stata CLI path, add `stata_cli` to the `env`:
-
-### More
-Refer to [Advanced](Advanced.md#advanced)
-
-
-## Windows
-## Windows
-
-### Video Demonstration
-
-* [YouTube]()
-* [bilibili]()
-* [Official Website]()
-
-### Prerequisites
-
-#### Requirements
-
-* **Stata 17+**
-* **Python 3.11+** (lower versions might work, but this project has not been tested with them)
-* **uv and uvx** (recommended for setup to avoid unnecessary configuration issues)
-* Any MCP-compatible client (e.g., Claude desktop app, Cursor, Cherry Studio)
-
-### Check Your Environment
-
-```bash
-uvx stata-mcp --usable
-```
-
-If all checks pass, you can proceed with the default configuration. If `stata_cli` shows **FAILED**, you’ll need to specify its path in your config (see below).
-
-### Environment Setup
-
-1. **Install Stata** on your Windows machine (ensure you have a valid license; if using an unofficial license, please review this project’s [open-source license](../../../LICENSE)).
-2. **No terminal tools** are required on Windows—just verify you can launch Stata from Command Prompt or PowerShell.
-3. If `uvx stata-mcp --usable` does not open Stata, locate your Stata executable (`Stata.exe`, `StataMP.exe`, or `StataSE.exe`) and note its full path for the configuration step.
-
----
-
-### Stata-MCP Configuration
-
-#### General Configuration
-
-> If Stata is installed in the **default location** (e.g., only the drive letter differs), use the simple setup below.
-> On Windows, avoid Chinese characters and spaces in paths; be mindful of `\\` vs `/`.
+Open Cline's MCP configuration file `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/setting/cline_mcp_settings.json` and add the following content:
 
 ```json
 {
@@ -415,7 +126,33 @@ If all checks pass, you can proceed with the default configuration. If `stata_cl
 }
 ```
 
-> To specify a **custom Stata path** or set a **documents directory**, add an `env` section:
+### Cursor
+
+`Cursor` performs slightly poorly. In our previous tests, we found that the MCP Server in `Cursor` seems unable to access the user's `Documents` directory. If you still want to use `Cursor`, we recommend you use the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "stata-mcp": {
+      "command": "uvx",
+      "args": [
+        "--directory",
+        "~/Documents/StataProj",
+        "stata-mcp"
+      ],
+      "env": {
+        "STATA_MCP_CWD": "~/Documents/StataProj"
+      }
+    }
+  }
+}
+```
+
+If there are further errors, please solve them yourself. If you have any good solutions, you are also welcome to submit a PR to help others.
+
+## LLMs Client
+
+Most AI client configurations are similar. Claude Desktop is the most universal format. Taking Claude Desktop configuration as an example:
 
 ```json
 {
@@ -424,50 +161,167 @@ If all checks pass, you can proceed with the default configuration. If `stata_cl
       "command": "uvx",
       "args": [
         "stata-mcp"
-      ],
-      "env": {
-        "stata_cli": "C:\\Program Files\\Stata18\\StataSE.exe",
-        "documents_path": "C:\\Users\\YourUser\\Documents\\stata-mcp"
-      }
+      ]
     }
   }
 }
 ```
 
-#### Claude Configuration
+Similarly, the configuration for other agents such as Cherry Studio is the same and will not be repeated here.
 
-Same as General Configuration. To override the Stata executable path, include the `stata_cli` (and optionally `documents_path`) in the `env`.
 
-#### Cherry Studio Configuration
+# 使用指南
+> Finding other language? Look here 👀
+> - [English](#usage-guide)  
+> - [中文](#使用指南)
 
-Use the GUI in Cherry Studio:
+> Statement: Chinese documents is translated by machine as I am not good at Chinese, if there is any mistake, please let me know. Simultaneously, we recommend you read the English version of the Usage Guide. 
 
-```text
-name: Stata-MCP
-command: uvx
-args:
-  - stata-mcp
-envs:
-  stata_cli="C:\\Program Files\\Stata18\\StataSE.exe"
-  documents_path="C:\\Users\\YourUser\\Documents\\stata-mcp"
+我们诚挚地希望经济学再无 🐒 reg monkey，不要再做无意义的研究！
+
+## 在 Python 中使用
+项目提供了容易在 Python 中调用的接口，这里是一些具体的例子来让你能在 python 中快速开始使用。
+
+### OpenAI-Agents
+以 MCP 形式启动：
+```python
+# !uv pip install openai-agents
+from agents import Agent, Runner
+from agents.mcp import MCPServerStdio, MCPServerStdioParams
+
+stata_mcp_server = MCPServerStdio(
+    name="Stata-MCP",
+    params=MCPServerStdioParams(
+        command="uvx",
+        args=["stata-mcp"]
+    )
+)
+
+agent = Agent(
+    name="Agent",
+    instructions="You are a helpful agent.",
+    mcp_servers=[stata_mcp_server]
+)
+
+result = await Runner.run(
+    agent,
+    input="Help me run a regression -> log(wage) ~ age, educ, exper with `nlsw88` data and report me the coefficients."
+)
+
+print(f"Result: \n> {result.final_output}")
 ```
 
-#### ChatWise Configuration
+或者，你可以使用我们预定义的 Stata-Agent：
+```python
+# !uv pip install stata-mcp
+from agents import Runner
+from stata_mcp.agent_as import StataAgent
 
-You can import JSON via clipboard or type the command directly:
+agent = StataAgent()
+result = await Runner.run(
+    agent,
+    input="Help me run a regression -> log(wage) ~ age, educ, exper with `nlsw88` data and report me the coefficients."
+)
+print(f"Result: \n> {result.final_output}")
 
+```
+
+### Agent as tool
+同时，得益于 OpenAI-Agents 提供的 agent-as-tool，我们预设置了一个 Stata-Agent 配置并预留了 `as_tool`：
+```python
+# !uv pip install openai-agents stata-mcp
+from agents import Agent
+from stata_mcp.agent_as import StataAgent
+
+agent = Agent(
+    name="Scientist Agent",
+    instructions="You are a helpful scientist.",
+    tools=[StataAgent(max_turns=100).as_tool]
+)
+
+```
+
+## 在编码智能体中使用
+这个项目最初设计目标是给 Claude Desktop 和相关产品使用的，可能不会为所有的智能体提供帮助，下面列出的只是被测试过的智能体配置。我们也认为 MCP 从 Day 0 开始就是为 Agent 服务的，现在的编码智能体也是各种各样让人类眼花缭乱，我们要特别推荐使用 Claude Code 并搭配其他 MCP 一起协作来完成你的任务。
+
+### Claude Code
+这是我们要最建议的编码智能体解决方案，这是一个项目基本的使用方案。如果你希望在 `Claude Code` 中使用`Stata-MCP`，参考下面的配置命令：
 ```bash
-uvx stata-mcp
+claude mcp add stata-mcp -- uvx stata-mcp
 ```
 
-To specify the Stata path:
-
+如果你希望用项目来管理你的研究，这里是更适合你的解决方案：
 ```bash
-uvx stata-mcp --env stata_cli="C:\\Program Files\\Stata18\\StataSE.exe"
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
 ```
 
----
+如果你希望指定特定版本的 `Stata-MCP`，加上对应的版本号：
+```bash
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp==1.13.0
+```
 
-### More
+然后你可以尝试使用 `claude mcp list` 去检查是否成功安装了。
 
-Refer to [Advanced](Advanced.md#advanced) for additional features and customization.
+总结来看，在你的研究目录下，初始化项目后你可以自由地根据项目进行配置MCP而非全局配置，当然如果你不希望全局配置也可以移除与路径有关的相关参数，这也不会产生影响。
+
+### Codex
+如果你希望使用 `VScode` 中的 `Codex`，你需要修改 `~/.codex/config.toml` 文件，可以直接把下面的内容粘贴到文件最后：
+```toml
+[mcp_servers.stata-mcp]
+command = "uvx"
+args = ["stata-mcp"]
+```
+
+### Cline
+打开 `Cline` 的 MCP 配置文件 `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/setting/cline_mcp_settings.json` 添加以下的内容：
+```json
+{
+  "mcpServers": {
+    "stata-mcp": {
+      "command": "uvx",
+      "args": [
+        "stata-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Cursor
+`Cursor` 的表现有点糟糕，我们在之前的测试中就发现 `Cursor` 中的 MCP Server 似乎不能访问用户的 `Documents` 目录，如果你还是要使用 `Cursor`，我们推荐你使用下面的配置来使用：
+```json
+{
+  "mcpServers": {
+    "stata-mcp": {
+      "command": "uvx",
+      "args": [
+        "--directory",
+        "~/Documents/StataProj",
+        "stata-mcp"
+      ],
+      "env": {
+        "STATA_MCP_CWD": "~/Documents/StataProj"
+      }
+    }
+  }
+}
+```
+进一步如果有错误请自己解决，如果你有任何好的解决方案也欢迎你提交PR来帮助其他人。
+
+## 在 AI 代理中使用
+大多数的AI代理的配置都是相似的，Claude Desktop是最通用的格式，主要以 Claude Desktop 的配置作为例子：
+```json
+{
+  "mcpServers": {
+    "stata-mcp": {
+      "command": "uvx",
+      "args": [
+        "stata-mcp"
+      ]
+    }
+  }
+}
+```
+
+同样地，其他代理像Cherry Studio的配置也是相同的，这里不再重复。
+
