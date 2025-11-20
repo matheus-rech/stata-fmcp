@@ -65,6 +65,29 @@ class StataDo:
             ValueError: Unsupported operating system
             RuntimeError: Stata execution error
         """
+        # ===== Initial security guard: validate do-file content =====
+        def _validate_dofile_content(text: str) -> None:
+            """
+            Initial security guard: reject Stata shell-escape directives
+            like `!cmd` or `shell cmd` to prevent OS command execution.
+            """
+            dangerous_tokens = ["\n!", "\nshell "]
+            for token in dangerous_tokens:
+                if token in text:
+                    raise ValueError(
+                        "Shell-escape commands (!cmd or shell cmd) "
+                        "are disabled for security reasons."
+                    )
+
+        try:
+            # Load the do-file content and validate before execution
+            with open(dofile_path, "r", encoding="utf-8") as f:
+                dofile_content = f.read()
+            _validate_dofile_content(dofile_content)
+        except Exception as e:
+            return f"There is a security in {dofile_path}, error: {e}"
+        # ===== End of initial security guard =====
+                           
         nowtime = get_nowtime()
         log_name = log_file_name or nowtime
         log_file = os.path.join(self.log_file_path, f"{log_name}.log")
