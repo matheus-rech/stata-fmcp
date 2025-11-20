@@ -2,6 +2,90 @@
 
 
 <details>
+<summary>Click to expand v1.13.0 details</summary>
+
+## [1.13.0] - 2025-11-20
+
+### Added
+- **Agent-as-Tools Framework**: Complete framework for converting agents to MCP tools with seamless integration
+  - New comprehensive agent conversion system for enhanced workflow automation
+  - Flexible error handling and type safety throughout the agent-as-tools ecosystem
+  - Enhanced module exports for improved discoverability and integration
+
+- **ADO Package Installation Framework**: Comprehensive Stata package management system
+  - Complete framework for installing Stata packages from multiple sources
+  - SSC (Statistical Software Components) archive integration with enhanced search capabilities
+  - Direct GitHub repository installation support for custom packages
+  - Net install functionality for additional package distribution methods
+  - Extensible architecture supporting future package sources and installation methods
+
+
+- **Multi-Provider API System**: Enhanced model provider flexibility and management
+  - New Provider class for flexible API provider management in set_model functionality
+  - Support for multiple LLM providers with unified configuration interface
+  - Improved API switching and configuration management for different provider environments
+
+### Security
+- **Shell-Escape Protection**: Critical security enhancement to prevent OS command execution
+  - Added validation step to block Stata shell-escape directives (`!cmd`, `shell cmd`)
+  - Comprehensive input validation before do-file execution to prevent malicious commands
+  - Enhanced security posture for production environments (Contributed by @123mutouren321414)
+  - Fixes security issue #20 with robust protection mechanisms
+
+### Changed
+- **Pathlib Migration**: Complete migration from os.path to pathlib.Path for enhanced cross-platform support
+  - System-wide replacement of os.path operations with modern pathlib.Path interface
+  - Improved cross-platform compatibility and path handling reliability
+  - Enhanced type safety and better IDE support with path operations
+  - More robust and maintainable path manipulation throughout the codebase
+
+- **Enhanced Error Handling**: Comprehensive type safety improvements and parameter design enhancements
+  - Fixed get_data_info tool write type errors for improved data processing reliability
+  - Resolved get_exp_cwd to properly return Path object instead of string
+  - Fixed dict -> str function return type errors throughout the application
+  - Updated default args in get_data_info tool for better parameter design
+  - Improved type annotations and validation across core functionality
+
+- **Code Architecture Enhancements**: Improved maintainability and performance optimizations
+  - Refactored help functionality into dedicated StataHelp class for better modularity
+  - Enhanced log width issue resolution through terminal size environment configuration
+  - Improved overall code organization with better separation of concerns
+  - Enhanced performance and reliability through systematic code improvements
+
+### Fixed
+- **Type Safety Issues**: Resolved multiple type-related errors for improved application stability
+  - Fixed function return type errors that could cause runtime issues
+  - Enhanced parameter validation and type checking across core tools
+  - Improved error handling for edge cases and invalid input scenarios
+  - Better integration between different components with consistent type handling
+
+- **Terminal and Logging Issues**: Resolved display and logging problems for better user experience
+  - Fixed log width issues by properly setting terminal size environment variables
+  - Improved overall terminal output formatting and readability
+  - Enhanced debugging capabilities with better error message formatting
+
+### Technical
+- **Code Quality**: Comprehensive improvements to code maintainability and extensibility
+  - Enhanced type annotations throughout the application for better IDE support
+  - Improved error handling patterns with comprehensive exception management
+  - Better separation of concerns with modular architecture enhancements
+  - Enhanced documentation and code examples for improved developer experience
+
+- **Performance**: Optimized application performance through systematic improvements
+  - Faster startup times with optimized module loading and initialization
+  - Improved memory usage patterns through better resource management
+  - Enhanced overall application responsiveness and stability
+  - Better integration efficiency between different system components
+
+- **Security**: Strengthened security posture with comprehensive protection mechanisms
+  - Enhanced input validation and sanitization throughout the application
+  - Improved protection against common web and CLI security vulnerabilities
+  - Better error handling that prevents information leakage in production environments
+  - Comprehensive security review and hardening of core functionality
+
+</details>
+
+<details>
 <summary>Click to expand v1.12.1 details</summary>
 
 ## [1.12.1] - 2025-11-02
