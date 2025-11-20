@@ -85,10 +85,7 @@ class StataDo:
                 dofile_content = f.read()
             _validate_dofile_content(dofile_content)
         except Exception as e:
-            return {
-                "error": str(e),
-                "dofile_path": dofile_path,
-            }
+            return f"There is a security in {dofile_path}, error: {e}"
         # ===== End of initial security guard =====
                            
         nowtime = get_nowtime()
