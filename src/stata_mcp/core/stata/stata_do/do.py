@@ -87,7 +87,7 @@ class StataDo:
         except Exception as e:
             return f"There is a security in {dofile_path}, error: {e}"
         # ===== End of initial security guard =====
-                           
+
         nowtime = get_nowtime()
         log_name = log_file_name or nowtime
         log_file = os.path.join(self.log_file_path, f"{log_name}.log")

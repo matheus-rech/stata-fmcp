@@ -23,8 +23,8 @@ from pydantic_core._pydantic_core import ValidationError
 
 from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataDo, StataFinder
-from .core.stata.builtin_tools import GITHUB_Install, SSC_Install
 from .core.stata.builtin_tools import StataHelp as Help
+from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .utils.Prompt import pmp
 
 mcp_version = Version(version('mcp'))
@@ -455,14 +455,18 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
 @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
 def ado_package_install(package: str,
                         source: str = "ssc",
-                        is_replace: bool = True):
+                        is_replace: bool = True,
+                        package_source_from: str = None):
     """
     Install a package from SSC or GitHub
 
     Args:
-        package (str): The name of the package to be installed. For SSC, use package name; for GitHub, use "username/reponame" format.
+        package (str): The name of the package to be installed.
+                       for SSC, use package name;
+                       for GitHub, use "username/reponame" format.
         source (str): The source to install from. Options are "ssc" (default) or "GitHub".
         is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+        package_source_from (str): The directory or url of the package from, only works if source == 'net'
 
     Returns:
         str: The execution log returned by Stata after running the installation.
@@ -525,10 +529,15 @@ def ado_package_install(package: str,
     """
     SOURCE_MAPPING: Dict = {
         "github": GITHUB_Install,
+        "net": NET_Install,
         "ssc": SSC_Install
     }
     installer = SOURCE_MAPPING.get(source, SSC_Install)
-    return installer(STATA_CLI, is_replace).install(package)
+    if source == "net":
+        args = [package, package_source_from]
+    else:
+        args = [package]
+    return installer(STATA_CLI, is_replace).install(*args)
 
 
 @stata_mcp.tool(name="load_figure")
