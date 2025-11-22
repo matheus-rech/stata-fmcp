@@ -2,6 +2,30 @@
 
 
 <details>
+<summary>Click to expand v1.13.1 details</summary>
+
+## [1.13.1] - 2025-11-22
+
+### Added
+- **Comprehensive Logging System**: Implemented complete logging infrastructure throughout MCP server
+  - Added comprehensive logging system to MCP server for enhanced debugging and monitoring
+  - Added logging to all 8 core tool functions for better operation tracking
+  - Improved StataDo constructor documentation for clearer usage guidance
+
+### Changed
+- **Enhanced System Observability**: Improved debugging capabilities with comprehensive logging coverage
+  - Better visibility into MCP server operations and tool function executions
+  - Enhanced error tracking and performance monitoring capabilities
+  - Improved developer experience with detailed operation logs
+
+### Technical
+- **Logging Infrastructure**: Complete logging system integration with configurable log levels
+- **Documentation**: Enhanced constructor documentation for better developer understanding
+- **Debugging**: Improved troubleshooting capabilities with comprehensive operation logging
+
+</details>
+
+<details>
 <summary>Click to expand v1.13.0 details</summary>
 
 ## [1.13.0] - 2025-11-20
