@@ -27,7 +27,7 @@ class StataDo:
         Args:
             stata_cli: Path to Stata command line tool
             log_file_path: Path for storing log files
-            dofile_base_path: Base path for do files
+            dofile_base_path: Base path for do files, this arg is work for Windows user.
             sys_os: Operating system type
         """
         self.stata_cli = stata_cli
