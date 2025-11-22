@@ -25,7 +25,7 @@ class StataHelp:
         if help_result != std_error_msg:
             return help_result
         else:
-            return "No help found for the command: " + cmd
+            raise Exception("No help found for the command in Stata ado locally: " + cmd)
 
     def check_command_exist_with_help(self, cmd: str) -> bool:
         std_error_msg = (

@@ -9,6 +9,7 @@
 
 import json
 import locale
+import logging
 import os
 import platform
 import sys
@@ -100,6 +101,18 @@ else:  # If not special client follow default way.
 # Use configured output path if available
 output_base_path = cwd / "stata-mcp-folder"
 output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
+
+# Configure logging
+log_file = os.getenv("STATA_MCP_LOG_FILE", "~/.statamcp.log")
+logging_handlers = [
+    logging.FileHandler(log_file, encoding='utf-8'),
+    # logging.StreamHandler()  # This will output to console
+]
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=logging_handlers
+)
 
 # Create a series of folder
 log_base_path = output_base_path / "stata-mcp-log"
@@ -212,7 +225,14 @@ def help(cmd: str) -> str:
         str: The help text returned by Stata for the specified command,
              or a message indicating that no help was found.
     """
-    return help_cls.help(cmd)
+    try:
+        help_result = help_cls.help(cmd)
+        logging.info(f"Successfully retrieved help for command: {cmd}")
+        return help_result
+    except Exception as e:
+        logging.error(f"Failed to retrieve help for command: {cmd}.")
+        logging.debug(str(e))
+        return f"No help found for command: {cmd}"
 
 
 @stata_mcp.tool(
@@ -237,8 +257,10 @@ def read_file(file_path: str, encoding: str = "utf-8") -> str:
     try:
         with open(path, "r", encoding=encoding) as file:
             log_content = file.read()
+        logging.info(f"Successfully read file: {file_path}")
         return log_content
     except IOError as e:
+        logging.error(f"Failed to read file {file_path}: {str(e)}")
         raise IOError(f"An error occurred while reading the file: {e}")
 
 
@@ -385,8 +407,12 @@ def write_dofile(content: str, encoding: str = None) -> str:
     """
     file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
     encoding = encoding or "utf-8"
-    with open(file_path, "w", encoding=encoding) as f:
-        f.write(content)
+    try:
+        with open(file_path, "w", encoding=encoding) as f:
+            f.write(content)
+        logging.info(f"Successful write dofile to {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to write dofile to {file_path}: {str(e)}")
     return str(file_path)
 
 
@@ -447,8 +473,12 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
             # Add a newline if the original file doesn't end with one
             if original_content and not original_content.endswith("\n"):
                 f.write("\n")
+            logging.info(f"Successfully appended content to {new_file_path} from {original_dofile_path}")
+        else:
+            logging.info(f"Created new dofile {new_file_path} with content (original file not found)")
         f.write(content)
 
+    logging.info(f"Successfully wrote dofile to {new_file_path}")
     return str(new_file_path)
 
 
@@ -533,11 +563,20 @@ def ado_package_install(package: str,
         "ssc": SSC_Install
     }
     installer = SOURCE_MAPPING.get(source, SSC_Install)
-    if source == "net":
-        args = [package, package_source_from]
+
+    logging.info(f"Try to use {installer.__name__} to install {package}.")
+
+    # set the args for the special cases
+    args = [package, package_source_from] if source == "net" else [package]
+    install_msg = installer(STATA_CLI, is_replace).install(*args)
+
+    if installer.check_installed_from_msg(install_msg):
+        logging.info(f"{package} is installed successfully.")
     else:
-        args = [package]
-    return installer(STATA_CLI, is_replace).install(*args)
+        logging.error(f"{package} installation failed.")
+        logging.debug(f"Full installation message: {install_msg}")
+
+    return install_msg
 
 
 @stata_mcp.tool(name="load_figure")
@@ -552,7 +591,10 @@ def load_figure(figure_path: str) -> Image:
         Image: the figure thumbnail
     """
     if not Path(figure_path).exists():
+        logging.error(f"Try to load figure {figure_path} but not found.")
         raise FileNotFoundError(f"{figure_path} not found")
+
+    logging.info(f"Successfully loaded figure from {figure_path}")
     return Image(figure_path)
 
 
@@ -586,17 +628,31 @@ def mk_dir(path: str) -> bool:
         # Get absolute path for further validation
         absolute_path = Path(safe_path).resolve()
 
-        # Create directory with reasonable permissions
-        absolute_path.mkdir(mode=0o755, exist_ok=True, parents=True)
+        # Check if directory already exists
+        if absolute_path.exists():
+            logging.info(f"Directory already exists: {absolute_path}")
+        else:
+            # Create directory with reasonable permissions
+            absolute_path.mkdir(mode=0o755, exist_ok=True, parents=True)
+            logging.info(f"Successfully created directory: {absolute_path}")
 
         # Verify successful creation
-        return absolute_path.exists() and absolute_path.is_dir()
+        success = absolute_path.exists() and absolute_path.is_dir()
+        if success:
+            logging.info(f"Directory creation verified: {absolute_path}")
+        else:
+            logging.error(f"Directory creation failed: {absolute_path}")
+
+        return success
 
     except ValidationError as e:
+        logging.error(f"Invalid path for directory creation: {path} - {str(e)}")
         raise ValueError(f"Invalid path detected: {e}")
     except PermissionError:
+        logging.error(f"Permission denied when creating directory: {path}")
         raise PermissionError(f"Insufficient permissions to create directory: {path}")
     except OSError as e:
+        logging.error(f"OS error when creating directory {path}: {str(e)}")
         raise OSError(f"Failed to create directory {path}: {str(e)}")
 
 
@@ -634,9 +690,14 @@ def stata_do(dofile_path: str,
         >>> print(result[log_content])
         Stata log content...
 
-        >>> result = stata_do(do_file_path, log_file_name="experience")
+        >>> result = stata_do(do_file_path, log_file_name="experience")  # Not suggest to use log_file_name arg.
         >>> print(result[log_file_path])
         /log/file/base/experience.log
+
+        >>> not_exist_dofile = ...
+        >>> result = stata_do(not_exist_dofile)
+        >>> print(result)
+        {"error": "error content..."}
 
     Note:
         - The log file is automatically created in the configured log_file_path directory
@@ -652,7 +713,14 @@ def stata_do(dofile_path: str,
     )
 
     # Execute the do-file and get log file path
-    log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
+    logging.info(f"Try to running file {dofile_path}")
+
+    try:
+        log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
+        logging.info(f"{dofile_path} is executed successfully. Log file path: {log_file_path}")
+    except Exception as e:
+        logging.error(f"Failed to execute {dofile_path}. Error: {str(e)}")
+        return {"error": str(e)}
 
     # Return log content based on user preference
     if is_read_log:
