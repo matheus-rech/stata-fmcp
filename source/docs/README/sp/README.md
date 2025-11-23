@@ -83,7 +83,7 @@ Y para un uso más avanzado, visita la [Guía avanzada](../../Usages/Advanced.md
 
 > Notas:
 > 1. Si te encuentras en China, puedes encontrar un breve documento de uso de uv [aquí](../../ChinaUsers/uv.md).
-> 2. Claude es la mejor opción para Stata-MCP, para usuarios chinos, recomiendo usar DeepSeek como proveedor de modelos ya que es económico y potente, y su puntuación es la más alta entre los proveedores chinos, si estás interesado, visita el informe [How to use StataMCP improve your social science research](https://reports.statamcp.com/202509/how_to_use_statamcp_improve_your_social_science_research).
+> 2. Claude es la mejor opción para Stata-MCP, para usuarios chinos, recomiendo usar DeepSeek como proveedor de modelos ya que es económico y potente, y su puntuación es la más alta entre los proveedores chinos, si estás interesado, visita el informe [How to use StataMCP improve your social science research](https://statamcp.com/reports/2025/09/21/stata_mcp_a_research_report_on_ai_assisted_empirical_research).
 
 ### Instalación
 Para la nueva versión, no necesitas instalar el paquete `stata-mcp` de nuevo; simplemente ejecuta los siguientes comandos para comprobar si tu equipo puede utilizarlo.
