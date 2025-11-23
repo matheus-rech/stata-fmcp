@@ -2,6 +2,20 @@
 
 
 <details>
+<summary>Click to expand v1.13.2 details</summary>
+
+## [1.13.2] - 2025-11-23
+
+### Added
+- **Logging Control**: Added controller for logging system
+  - Environment variable control for flexible logging configuration
+  - STATA_MCP_LOGGING_ON for complete logging enable/disable control
+  - Separate handlers for console and file output with independent control
+  - Improved user experience with customizable logging behavior
+
+</details>
+
+<details>
 <summary>Click to expand v1.13.1 details</summary>
 
 ## [1.13.1] - 2025-11-22
