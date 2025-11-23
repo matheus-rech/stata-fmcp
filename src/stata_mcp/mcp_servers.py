@@ -102,17 +102,39 @@ else:  # If not special client follow default way.
 output_base_path = cwd / "stata-mcp-folder"
 output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
 
-# Configure logging
-log_file = os.getenv("STATA_MCP_LOG_FILE", "~/.statamcp.log")
-logging_handlers = [
-    logging.FileHandler(log_file, encoding='utf-8'),
-    # logging.StreamHandler()  # This will output to console
-]
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=logging_handlers
-)
+# Maybe somebody does not like logging.
+# Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
+# Default Logging Staus: File (on), Console (off).
+if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
+    # Configure logging
+    logging_handlers = []
+
+    if os.getenv("STATA_MCP_LOGGING_CONSOLE_HANDLER", 'false').lower() == 'true':
+        # config logging in console.
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+
+        logging_handlers.append(console_handler)
+
+    if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
+        # If there is no handler, must add file-handler.
+        file_handler = logging.FileHandler(
+            os.getenv("STATA_MCP_LOG_FILE", "~/.statamcp.log"),
+            encoding='utf-8'
+        )
+        file_handler.setLevel(logging.DEBUG)
+
+        logging_handlers.append(file_handler)
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=logging_handlers
+    )
+else:
+    # I am not sure about whether this command would disable logging, and there is another suggestion
+    # logging.basicConfig(level=logging.CRITICAL + 1)
+    logging.disable()
 
 # Create a series of folder
 log_base_path = output_base_path / "stata-mcp-log"
