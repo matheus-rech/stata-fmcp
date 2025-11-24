@@ -321,6 +321,7 @@ def get_data_info(data_path: str | Path,
     data_info_cls = CLASS_MAPPING.get(data_extension, None)
 
     if not data_info_cls:
+        logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
         return f"Unsupported file extension now: {data_extension}"
 
     # save the data description into tmp-dir
@@ -350,6 +351,7 @@ def get_data_info(data_path: str | Path,
     #     _filter = [filter_i for filter_i in info_filter if filter_i in default_filter]
     # filtered_summary = {key: value for key, value in summary_result.items() if key in _filter}
 
+    logging.info(f"Successfully generated data summary for {data_path}, saved to {saved_file_path}")
     return str(summary_result)
 
 
