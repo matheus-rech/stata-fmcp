@@ -308,6 +308,34 @@ def get_data_info(data_path: str | Path,
 
     Examples:
         >>> get_data_info("/Applications/Stata/auto.dta")
+        {
+            'overview': {'obs': 74, 'var_numbers': 12},
+            'vars_detail': {
+                'make': {'type': 'str', 'obs': 74, 'value_list': ['Buick Skylark', 'Chev. Chevette', ...]},
+                'price': {'type': 'float', 'obs': 74,
+                          'summary': {'mean': 6165.257, 'se': np.float64(342.872), 'min': 3291.0, 'max': 15906.0}},
+                'mpg': {'type': 'float', 'obs': 74,
+                        'summary': {'mean': 21.297, 'se': np.float64(0.673), 'min': 12.0, 'max': 41.0}},
+                'rep78': {'type': 'float', 'obs': 69,
+                          'summary': {'mean': 3.406, 'se': np.float64(0.119), 'min': 1.0, 'max': 5.0}},
+                'headroom': {'type': 'float', 'obs': 74,
+                             'summary': {'mean': 2.993, 'se': np.float64(0.098), 'min': 1.5, 'max': 5.0}},
+                'trunk': {'type': 'float', 'obs': 74,
+                          'summary': {'mean': 13.757, 'se': np.float64(0.497), 'min': 5.0, 'max': 23.0}},
+                'weight': {'type': 'float', 'obs': 74,
+                           'summary': {'mean': 3019.459, 'se': np.float64(90.347), 'min': 1760.0, 'max': 4840.0}},
+                'length': {'type': 'float', 'obs': 74,
+                           'summary': {'mean': 187.932, 'se': np.float64(2.588), 'min': 142.0, 'max': 233.0}},
+                'turn': {'type': 'float', 'obs': 74,
+                         'summary': {'mean': 39.649, 'se': np.float64(0.511), 'min': 31.0, 'max': 51.0}},
+                'displacement': {'type': 'float', 'obs': 74,
+                                 'summary': {'mean': 197.297, 'se': np.float64(10.676), 'min': 79.0, 'max': 425.0}},
+                'gear_ratio': {'type': 'float', 'obs': 74,
+                               'summary': {'mean': 3.015, 'se': np.float64(0.053), 'min': 2.190, 'max': 3.890}},
+                'foreign': {'type': 'float', 'obs': 74,
+                            'summary': {'mean': 0.297, 'se': np.float64(0.053), 'min': 0.0, 'max': 1.0}}},
+            'saved_path': '/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-tmp/auto.json'
+        }
     """
     # Config the allowed class
     CLASS_MAPPING = {
