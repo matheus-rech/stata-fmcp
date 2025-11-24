@@ -2,6 +2,40 @@
 
 
 <details>
+<summary>Click to expand v1.13.3 details</summary>
+
+## [1.13.3] - 2025-11-24
+
+### Added
+- **JSON Export Feature**: Enhanced `summary()` method with `saved_path` parameter for exporting data summaries to JSON files
+- **UTF-8 Encoding Support**: JSON files are saved with proper UTF-8 encoding for international character support
+- **File Path Tracking**: Summary results now include the saved file path when export is used
+- **New `save_to_json` Static Method**: Dedicated method for reliable JSON file writing with error handling
+- **Comprehensive Logging**: Added detailed logging throughout the `get_data_info` function for better debugging and monitoring
+- **Enhanced Documentation**: Updated function docstrings with complete output examples and usage patterns
+
+### Changed
+- **Core Function Refactoring**: Complete restructure of `get_data_info` function implementation for better maintainability and performance
+- **Improved Data Processing**: Optimized data processing pipeline with better separation of concerns
+- **Numerical Precision**: Standardized to 3-decimal precision in summary outputs for consistency
+- **Error Handling**: Enhanced error handling for file operations with proper boolean return status
+- **Documentation Examples**: Added real data format examples in function documentation
+
+### Technical Improvements
+- **Code Organization**: Better separation of concerns with dedicated helper methods
+- **Performance Enhancement**: Optimized data processing pipeline for improved speed
+- **Path Validation**: Proper handling of both string and PathLike objects for file paths
+- **Maintainability**: Cleaner code structure for easier future development
+
+### Backward Compatibility
+- ✅ All changes maintain full backward compatibility
+- ✅ Existing code will continue to work without modifications
+- ✅ New features are opt-in through additional parameters
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.2 details</summary>
 
 ## [1.13.2] - 2025-11-23
