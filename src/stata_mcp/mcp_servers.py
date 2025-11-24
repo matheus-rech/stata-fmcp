@@ -7,7 +7,6 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
-import json
 import locale
 import logging
 import os
@@ -16,7 +15,7 @@ import sys
 from datetime import datetime
 from importlib.metadata import version
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from mcp.server.fastmcp import FastMCP, Image
 from packaging.version import Version
@@ -291,85 +290,67 @@ def read_file(file_path: str, encoding: str = "utf-8") -> str:
     description="Get descriptive statistics for the data file"
 )
 def get_data_info(data_path: str | Path,
-                  vars_list: List[str] | str | None = None,
-                  encoding: str = "utf-8",
-                  file_extension: Optional[str] = None,
-                  is_save: bool = True,
-                  **kwargs) -> Dict[str, dict]:
+                  vars_list: Optional[List[str]] = None,
+                  encoding: str = "utf-8") -> str:
     """
-    Get data file vars information.
+    Get descriptive statistics for the data file.
 
     Args:
-        data_path (str | Path): the data file's absolutely path.
-        vars_list (List[str] | str | None): the vars you want to get info (default is None, means all vars).
-        encoding (str): data file encoding method (dta file is not supported this arg).
-        file_extension (Optional[str]): the data file's extension, default is None, then would find it automatically.
-        is_save (Optional[bool]): default = True, whether save the result to a txt file.
+        data_path (str): the data file's absolutely path.
+            Current, only allow [dta, csv] file.
+        vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
+        encoding (str): data file encoding method (dta file is not supported this arg),
+            if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
 
-        **kwargs:
-            save_path (str): the data-info saved file path,
-                             if None would be saved rooted in `{tmp_base_path}` with name same as data,
-                             like: data_path = "/Users/username/Documents/stata-mcp-folder/stata-mcp-tmp/some_data.dta",
-                                 -> "/Users/your_name/Documents/stata-mcp-folder/stata-mcp-tmp/some_data.txt"
-            info_file_encoding (Optional[str]): default = "utf-8", the data-info saved file encoding.
     Returns:
-        Dict[str, dict]: the data file vars information.
+        str: the return result is a type <str> but looks like a type <dict>, including the `info_filter` as keys.
+            there is a more details which saved all the information about the data, visit the value of `saved_path`.
 
     Examples:
-        >>> get_data_info(data_path="https://example-data.statamcp.com/01_OLS.dta")
-        >>> # the info file will be ~/Documents/stata-mcp-folder/stata-mcp-tmp/01_OLS.txt
-        ->
-        {
-            'summary': {
-                'overview': {
-                    'obs': 10000,
-                    'var_numbers': 3
-                },
-                'vars_detail': {
-                    'height': {
-                        'type': 'float',
-                        'obs': 10000,
-                        'summary': {
-                            'mean': 170.0025177001953,
-                            'se': np.float64(0.07957535743713379),
-                            'min': 134.2535858154297,
-                            'max': 204.62001037597656
-                        }
-                    },
-                    'weight': {...},
-                    'id': {...}
-                }
-            }
-        }
+        >>> get_data_info("/Applications/Stata/auto.dta")
     """
-    EXTENSION_METHOD_MAPPING: Dict[str, Callable] = {
+    # Config the allowed class
+    CLASS_MAPPING = {
         "dta": DtaDataInfo,
-        "csv": CsvDataInfo
+        "csv": CsvDataInfo,
     }
-    if file_extension is None:
-        file_extension = Path(data_path).suffix
-    file_extension = file_extension.split(".")[-1].lower()
-    if file_extension not in EXTENSION_METHOD_MAPPING:
-        raise ValueError(f"Unsupported file extension: {file_extension}")
-    cls = EXTENSION_METHOD_MAPPING.get(file_extension)
-    data_info = cls(data_path=data_path, vars_list=vars_list, encoding=encoding, **kwargs).info
 
-    if is_save:
-        save_path = kwargs.get("save_path", None)
-        if save_path and isinstance(save_path, str):
-            data_info_path = Path(save_path)
-        else:
-            data_name = Path(data_path).name.split(".")[0]
-            data_info_path = tmp_base_path / f"{data_name}.txt"
+    data_path = Path(data_path).expanduser().resolve()
+    data_name = data_path.stem
+    data_extension = data_path.suffix.lower().strip(".")
+    data_info_cls = CLASS_MAPPING.get(data_extension, None)
 
-        data_info_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(data_info_path, "w", encoding=kwargs.get("info_file_encoding", "utf-8")) as f:
-            try:
-                json.dump(data_info, f, indent=2, ensure_ascii=False, default=str)
-            except (TypeError, ValueError):
-                f.write(str(data_info))
+    if not data_info_cls:
+        return f"Unsupported file extension now: {data_extension}"
 
-    return data_info
+    # save the data description into tmp-dir
+    saved_file_path = (
+        tmp_base_path / f"{data_name}.json"
+    ).as_posix()  # change to type <str>
+
+    summary_result = data_info_cls(
+        data_path=data_path,
+        vars_list=vars_list,
+        encoding=encoding
+    ).summary(saved_file_path)
+
+    # filter的部分有一些问题，等后续再改吧。
+    # 相关注释和实现
+    # info_filter: Optional[List[str]] = None,
+    # info_filter (Optional[List[str]]): the part what you want to reach, (default is None, means all parts).
+    #     for the arg, suggest to use None,
+    #     at present, parts including ["overview", "vars_detail"]
+
+    # # default_filter是所有存在的key
+    # default_filter = ["overview", "vars_detail"]
+    #
+    # if info_filter is None:
+    #     _filter = default_filter
+    # else:
+    #     _filter = [filter_i for filter_i in info_filter if filter_i in default_filter]
+    # filtered_summary = {key: value for key, value in summary_result.items() if key in _filter}
+
+    return str(summary_result)
 
 
 @stata_mcp.prompt()
