@@ -7,10 +7,12 @@
 # @Email  : sepinetam@gmail.com
 # @File   : _base.py
 
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List
 from urllib.parse import urlparse
+from os import PathLike
 
 import numpy as np
 import pandas as pd
@@ -65,9 +67,13 @@ class DataInfoBase(ABC):
         ...
 
     # Public methods
-    def summary(self) -> Dict[str, Any]:
+    def summary(self,
+                saved_path: str | PathLike = None) -> Dict[str, Any]:
         """
         Provide a summary of the data.
+
+        Args:
+            saved_path (str): If you want to save the result into a json, config this arg with absloute path.
 
         Returns:
             Dict[str, Any]: the summary of provided data (vars)
@@ -129,10 +135,27 @@ class DataInfoBase(ABC):
             var_info = DataInfoBase._get_variable_info(var_series)
             vars_detail[var_name] = var_info
 
-        return {
+        summary_result = {
             "overview": overview,
             "vars_detail": vars_detail
         }
+
+        if saved_path:
+            # If there is `saved_path`, save the summary into that file with json format.
+            summary_result["saved_path"] = str(saved_path)
+            self.save_to_json(summary_result, saved_path)
+
+        return summary_result
+
+    @staticmethod
+    def save_to_json(summary_result: Dict[str, Any],
+                     save_path: str) -> bool:
+        try:
+            with open(save_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps(summary_result, ensure_ascii=False, indent=4))
+            return True
+        except Exception:
+            return False
 
     # Private helper methods
     def _get_selected_vars(self, vars: List[str] | str = None) -> List[str]:
