@@ -118,7 +118,10 @@ if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
         # If there is no handler, must add file-handler.
         file_handler = logging.FileHandler(
-            os.getenv("STATA_MCP_LOG_FILE", "~/.statamcp.log"),
+            os.getenv(
+                "STATA_MCP_LOG_FILE",
+                (Path.home() / ".statamcp.log").as_posix()
+            ),
             encoding='utf-8'
         )
         file_handler.setLevel(logging.DEBUG)
