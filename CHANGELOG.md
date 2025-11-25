@@ -2,6 +2,19 @@
 
 
 <details>
+<summary>Click to expand v1.13.4 details</summary>
+
+## [1.13.4] - 2025-11-25
+
+### Fixed
+- **Log File Path Resolution**: Fixed FileNotFoundError when running stata-mcp from directories without "~" subdirectory
+- **Path Configuration**: Use Path.home() for log file path instead of hardcoded "~/.statamcp.log"
+- **User Experience**: Eliminates need to manually create "~" folder in current directory
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.3 details</summary>
 
 ## [1.13.3] - 2025-11-24
