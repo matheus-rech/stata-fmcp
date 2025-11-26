@@ -7,8 +7,8 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
-import locale
 import logging
+import logging.handlers
 import os
 import platform
 import sys
@@ -116,12 +116,18 @@ if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
         logging_handlers.append(console_handler)
 
     if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
-        # If there is no handler, must add file-handler.
-        file_handler = logging.FileHandler(
-            os.getenv(
-                "STATA_MCP_LOG_FILE",
-                (Path.home() / ".statamcp.log").as_posix()
-            ),
+        # If there is no handler, must add file-handler with rotation support.
+        stata_mcp_dot_log_file_path = os.getenv(
+            "STATA_MCP_LOG_FILE",
+            (Path.home() / ".statamcp.log").as_posix()
+        )
+
+        # Use RotatingFileHandler to limit file size and implement log rotation
+        # Single file max size: 10MB, backup count: 5 (total 6 files including current)
+        file_handler = logging.handlers.RotatingFileHandler(
+            stata_mcp_dot_log_file_path,
+            maxBytes=10_000_000,  # 10MB
+            backupCount=5,
             encoding='utf-8'
         )
         file_handler.setLevel(logging.DEBUG)
@@ -155,18 +161,6 @@ help_cls = Help(STATA_CLI)
 if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
         f.write("*")
-
-
-def get_lang():
-    LANG_MAPPING = {
-        "zh-CN": "cn",
-        "en_US": "en"
-    }
-    _lang, _ = locale.getdefaultlocale()
-    return LANG_MAPPING.get(_lang, "en")  # Default to English if not set or invalid
-
-
-pmp.set_lang(get_lang())
 
 
 @stata_mcp.prompt()

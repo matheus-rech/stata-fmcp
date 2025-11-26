@@ -7,7 +7,29 @@
 # @Email  : sepinetam@gmail.com
 # @File   : __init__.py
 
+import locale
+import os
+
 from .string import frame
+
+
+def _get_system_lang() -> str:
+    """
+    Get the system language and return mapped language code.
+
+    Returns:
+        str: 'cn' for Chinese, 'en' for English (default)
+    """
+    LANG_MAPPING = {
+        "zh-CN": "cn",
+        "en_US": "en"
+    }
+    system_language, _ = locale.getdefaultlocale()
+    _lang = os.getenv(
+        "STATA_MCP_PROMPT_LANGUAGE",
+        system_language
+    )
+    return LANG_MAPPING.get(_lang, "en")  # Default to English if not set or invalid
 
 
 class Prompt:
@@ -67,3 +89,9 @@ prompts_dict: dict = filter_system_vars(frame.f_locals)
 
 pmp = Prompt()
 pmp.auto_extract(prompts_dict)
+pmp.set_lang(_get_system_lang())  # Auto-detect and set system language on initialization
+
+
+__all__ = [
+    "pmp",
+]
