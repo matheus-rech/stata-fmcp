@@ -2,6 +2,31 @@
 
 
 <details>
+<summary>Click to expand v1.13.6 details</summary>
+
+## [1.13.6] - 2025-12-03
+
+### Fixed
+- **Windows Compatibility Issues**: Critical fixes for Windows user experience and cross-platform support
+  - Fixed environment variable name from `STATA-MCP-CLIENT` to `STATA_MCP_CLIENT` for proper Windows environment access
+  - Disabled help functionality on Windows systems to prevent system crashes during help command execution
+  - Disabled ado package installation on Windows systems to ensure stable operation
+  - Enhanced cross-platform reliability with Windows-specific conditional code paths
+
+### Changed
+- **Function Parameters**: Added `strict_mode` parameter to `write_dofile` function for enhanced control
+- **Code Quality**: Fixed grammar typos and improved documentation clarity throughout code comments
+- **Platform Detection**: Improved operating system detection with better case-insensitive handling
+
+### Technical
+- **Cross-Platform Architecture**: Enhanced Windows support while maintaining functionality for macOS and Linux
+- **Error Prevention**: Proactive disabling of problematic features on Windows to prevent crashes
+- **Documentation**: Improved code comments and parameter documentation for better maintainability
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.5 details</summary>
 
 ## [1.13.5] - 2025-11-26
