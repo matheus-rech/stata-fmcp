@@ -59,7 +59,7 @@ try:
             )]
         )
     else:
-        # Before v1.15.0, there is not a option named icons, just use the minimal config.
+        # Before v1.15.0, there is not an option named icons, just use the minimal config.
         print(f"Suggest upgrade your mcp version to v{mcp_version}")
         stata_mcp = FastMCP(name="stata-mcp")
 except ValidationError as e:
@@ -86,7 +86,7 @@ except FileNotFoundError as e:
     sys.exit(str(e))
 
 # Determine current working directory (cwd)
-client = os.getenv("STATA-MCP-CLIENT")
+client = os.getenv("STATA_MCP_CLIENT")
 
 if client == "cc":  # TODO: This is a mistake in Claude Code, as it could not get the cwd path.
     cwd = Path.cwd()
@@ -103,7 +103,7 @@ output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
 
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
-# Default Logging Staus: File (on), Console (off).
+# Default Logging Status: File (on), Console (off).
 if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     # Configure logging
     logging_handlers = []
@@ -155,12 +155,16 @@ tmp_base_path = output_base_path / "stata-mcp-tmp"
 tmp_base_path.mkdir(exist_ok=True)
 
 # Config help class
-help_cls = Help(STATA_CLI)
+if SYSTEM_OS.lower() != "windows":
+    help_cls = Help(STATA_CLI)
 
 # Config gitignore in STATA_MCP_FOLDER
 if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
         f.write("*")
+
+
+IS_PROMPT = os.getenv("STATA_MCP_PROMPT", 'true').lower() == 'true'
 
 
 @stata_mcp.prompt()
@@ -224,33 +228,34 @@ def stata_analysis_strategy(lang: str = None) -> str:
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
 
-# As AI-Client does not support Resource at a board yet, we still keep the prompt
-@stata_mcp.resource(
-    uri="help://stata/{cmd}",
-    name="help",
-    description="Get help for a Stata command"
-)
-@stata_mcp.prompt(name="help", description="Get help for a Stata command")
-@stata_mcp.tool(name="help", description="Get help for a Stata command")
-def help(cmd: str) -> str:
-    """
-    Execute the Stata 'help' command and return its output.
+if SYSTEM_OS != "Windows":
+    # As AI-Client does not support Resource at a board yet, we still keep the prompt
+    @stata_mcp.resource(
+        uri="help://stata/{cmd}",
+        name="help",
+        description="Get help for a Stata command"
+    )
+    @stata_mcp.prompt(name="help", description="Get help for a Stata command")
+    @stata_mcp.tool(name="help", description="Get help for a Stata command")
+    def help(cmd: str) -> str:
+        """
+        Execute the Stata 'help' command and return its output.
 
-    Args:
-        cmd (str): The name of the Stata command to query, e.g., "regress" or "describe".
+        Args:
+            cmd (str): The name of the Stata command to query, e.g., "regress" or "describe".
 
-    Returns:
-        str: The help text returned by Stata for the specified command,
-             or a message indicating that no help was found.
-    """
-    try:
-        help_result = help_cls.help(cmd)
-        logging.info(f"Successfully retrieved help for command: {cmd}")
-        return help_result
-    except Exception as e:
-        logging.error(f"Failed to retrieve help for command: {cmd}.")
-        logging.debug(str(e))
-        return f"No help found for command: {cmd}"
+        Returns:
+            str: The help text returned by Stata for the specified command,
+                 or a message indicating that no help was found.
+        """
+        try:
+            help_result = help_cls.help(cmd)
+            logging.info(f"Successfully retrieved help for command: {cmd}")
+            return help_result
+        except Exception as e:
+            logging.error(f"Failed to retrieve help for command: {cmd}.")
+            logging.debug(str(e))
+            return f"No help found for command: {cmd}"
 
 
 @stata_mcp.tool(
@@ -411,7 +416,7 @@ def results_doc_path() -> str:
     name="write_dofile",
     description="write the stata-code to dofile"
 )
-def write_dofile(content: str, encoding: str = None) -> str:
+def write_dofile(content: str, encoding: str = None, strict_mode: bool = False) -> str:
     """
     Write stata code to a dofile and return the do-file path.
 
@@ -512,101 +517,102 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
     return str(new_file_path)
 
 
-@stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
-def ado_package_install(package: str,
-                        source: str = "ssc",
-                        is_replace: bool = True,
-                        package_source_from: str = None):
-    """
-    Install a package from SSC or GitHub
+if SYSTEM_OS.lower() != "windows":
+    @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
+    def ado_package_install(package: str,
+                            source: str = "ssc",
+                            is_replace: bool = True,
+                            package_source_from: str = None):
+        """
+        Install a package from SSC or GitHub
 
-    Args:
-        package (str): The name of the package to be installed.
-                       for SSC, use package name;
-                       for GitHub, use "username/reponame" format.
-        source (str): The source to install from. Options are "ssc" (default) or "GitHub".
-        is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
-        package_source_from (str): The directory or url of the package from, only works if source == 'net'
+        Args:
+            package (str): The name of the package to be installed.
+                           for SSC, use package name;
+                           for GitHub, use "username/reponame" format.
+            source (str): The source to install from. Options are "ssc" (default) or "GitHub".
+            is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+            package_source_from (str): The directory or url of the package from, only works if source == 'net'
 
-    Returns:
-        str: The execution log returned by Stata after running the installation.
+        Returns:
+            str: The execution log returned by Stata after running the installation.
 
-    Examples:
-        >>> ado_package_install(package="outreg2", source="ssc")
-        >>> # this would install outreg2 from ssc
-        >>> ado_package_install(package="sepinetam/texiv", source="github")
-        >>> # this would install texiv from https://github.com/sepinetam/texiv
-        -------------------------------------------------------------------------------
-        name:  <unnamed>
-        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-        log type:  text
-        opened on:  12 Oct 2025, 18:54:47
+        Examples:
+            >>> ado_package_install(package="outreg2", source="ssc")
+            >>> # this would install outreg2 from ssc
+            >>> ado_package_install(package="sepinetam/texiv", source="github")
+            >>> # this would install texiv from https://github.com/sepinetam/texiv
+            -------------------------------------------------------------------------------
+            name:  <unnamed>
+            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+            log type:  text
+            opened on:  12 Oct 2025, 18:54:47
 
-        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
+            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
 
-        . ssc install outreg2, replace
-        checking outreg2 consistency and verifying not already installed...
-        all files already exist and are up to date.
+            . ssc install outreg2, replace
+            checking outreg2 consistency and verifying not already installed...
+            all files already exist and are up to date.
 
-        .
-        end of do-file
+            .
+            end of do-file
 
-        . log close
-        name:  <unnamed>
-        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-        log type:  text
-        closed on:  12 Oct 2025, 18:54:55
-        -------------------------------------------------------------------------------
+            . log close
+            name:  <unnamed>
+            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+            log type:  text
+            closed on:  12 Oct 2025, 18:54:55
+            -------------------------------------------------------------------------------
 
-        >>> ado_package_install(command="a_fake_command")
-        -------------------------------------------------------------------------------
-        name:  <unnamed>
-        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-        log type:  text
-        opened on:  12 Oct 2025, 19:01:59
+            >>> ado_package_install(command="a_fake_command")
+            -------------------------------------------------------------------------------
+            name:  <unnamed>
+            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+            log type:  text
+            opened on:  12 Oct 2025, 19:01:59
 
-        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
+            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
 
-        . ssc install a_fake_command, replace
-        ssc install: "a_fake_command" not found at SSC, type search a_fake_command
-        (To find all packages at SSC that start with a, type ssc describe a)
-        r(601);
+            . ssc install a_fake_command, replace
+            ssc install: "a_fake_command" not found at SSC, type search a_fake_command
+            (To find all packages at SSC that start with a, type ssc describe a)
+            r(601);
 
-        end of do-file
+            end of do-file
 
-        r(601);
+            r(601);
 
-        . log close
-        name:  <unnamed>
-        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-        log type:  text
-        closed on:  12 Oct 2025, 19:02:00
-        -------------------------------------------------------------------------------
+            . log close
+            name:  <unnamed>
+            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+            log type:  text
+            closed on:  12 Oct 2025, 19:02:00
+            -------------------------------------------------------------------------------
 
-    Notes:
-        Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
-        and may not be required if the package is already present.
-    """
-    SOURCE_MAPPING: Dict = {
-        "github": GITHUB_Install,
-        "net": NET_Install,
-        "ssc": SSC_Install
-    }
-    installer = SOURCE_MAPPING.get(source, SSC_Install)
+        Notes:
+            Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
+            and may not be required if the package is already present.
+        """
+        SOURCE_MAPPING: Dict = {
+            "github": GITHUB_Install,
+            "net": NET_Install,
+            "ssc": SSC_Install
+        }
+        installer = SOURCE_MAPPING.get(source, SSC_Install)
 
-    logging.info(f"Try to use {installer.__name__} to install {package}.")
+        logging.info(f"Try to use {installer.__name__} to install {package}.")
 
-    # set the args for the special cases
-    args = [package, package_source_from] if source == "net" else [package]
-    install_msg = installer(STATA_CLI, is_replace).install(*args)
+        # set the args for the special cases
+        args = [package, package_source_from] if source == "net" else [package]
+        install_msg = installer(STATA_CLI, is_replace).install(*args)
 
-    if installer.check_installed_from_msg(install_msg):
-        logging.info(f"{package} is installed successfully.")
-    else:
-        logging.error(f"{package} installation failed.")
-        logging.debug(f"Full installation message: {install_msg}")
+        if installer.check_installed_from_msg(install_msg):
+            logging.info(f"{package} is installed successfully.")
+        else:
+            logging.error(f"{package} installation failed.")
+            logging.debug(f"Full installation message: {install_msg}")
 
-    return install_msg
+        return install_msg
 
 
 @stata_mcp.tool(name="load_figure")

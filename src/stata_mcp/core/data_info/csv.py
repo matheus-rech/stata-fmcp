@@ -116,8 +116,20 @@ class CsvDataInfo(DataInfoBase):
                 # Generate default column names
                 self.kwargs['names'] = [f'V{i+1}' for i in range(num_cols)]
 
-            # Read the CSV file
-            df = pd.read_csv(file_path, **self.kwargs)
+            # Read the CSV file with error handling for invalid parameters
+            try:
+                df = pd.read_csv(file_path, **self.kwargs)
+            except TypeError as e:
+                if "unexpected keyword argument" in str(e):
+                    # Filter out problematic parameters and retry with basic ones
+                    basic_kwargs = {k: v for k, v in self.kwargs.items()
+                                    if k in {'sep', 'header', 'encoding', 'names'}}
+                    print(f"Warning: Retrying CSV read with filtered parameters due to: {e}")
+                    df = pd.read_csv(file_path, **basic_kwargs)
+                else:
+                    raise
+            except Exception as e:
+                raise ValueError(f"Error reading CSV file {file_path}: {str(e)}")
 
             return df
 

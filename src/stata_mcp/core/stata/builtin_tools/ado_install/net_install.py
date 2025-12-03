@@ -17,7 +17,7 @@ class NET_Install(AdoInstallBase):
 
         install_command = f"net install {package}{self.REPLACE_MESSAGE}{from_message}"
         runner_result = self.controller.run(install_command)
-        return f"Installation State: {self.check_install(runner_result)}\n" + runner_result
+        return self._install_msg_template(runner_result)
 
     @staticmethod
     def check_install(message: str) -> bool:

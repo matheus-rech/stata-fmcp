@@ -15,7 +15,7 @@ class GITHUB_Install(AdoInstallBase):
     def install(self, package: str) -> str:
         install_command = f"github install {package}{self.REPLACE_MESSAGE}"
         runner_result = self.controller.run(install_command)
-        return f"Installation State: {self.check_install(runner_result)}\n" + runner_result
+        return self._install_msg_template(runner_result)
 
     @property
     def IS_EXIST_GITHUB(self) -> bool:

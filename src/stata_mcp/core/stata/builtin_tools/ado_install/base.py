@@ -34,7 +34,7 @@ class AdoInstallBase(ABC):
             ...         self.github_mirror = "https://github.com"  # Fake var
             ...
             ...     def install(self, package: str):
-            ...         return f"Installing {package} with {self.custom_setting}"
+            ...         ...
         """
         pass
 
@@ -56,3 +56,15 @@ class AdoInstallBase(ABC):
     @abstractmethod
     def check_install(message: str) -> bool:
         ...
+
+    @staticmethod
+    def check_installed_from_msg(msg: str) -> bool:
+        state_with_prompt = msg.split("\n")[0]
+        state_str = state_with_prompt.split(":")[-1].strip()
+        if isinstance(state := eval(state_str), bool):
+            return state
+        else:
+            return False
+
+    def _install_msg_template(self, runner_result: str) -> str:
+        return f"Installation State: {self.check_install(runner_result)}\n" + runner_result

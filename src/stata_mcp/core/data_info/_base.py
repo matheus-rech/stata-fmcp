@@ -9,10 +9,10 @@
 
 import json
 from abc import ABC, abstractmethod
+from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, List
 from urllib.parse import urlparse
-from os import PathLike
 
 import numpy as np
 import pandas as pd
