@@ -1512,7 +1512,7 @@ wheels = [
 
 [[package]]
 name = "stata-mcp"
-version = "1.13.6"
+version = "1.13.7"
 source = { editable = "." }
 dependencies = [
     { name = "langchain" },

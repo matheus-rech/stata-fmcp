@@ -2,6 +2,34 @@
 
 
 <details>
+<summary>Click to expand v1.13.7 details</summary>
+
+## [1.13.7] - 2025-12-05
+
+### Changed
+- **System Detection Optimization**: Enhanced system detection logic with IS_UNIX variable
+  - Added IS_UNIX variable to replace repetitive `SYSTEM_OS.lower() != "windows"` checks
+  - Optimized 4 conditional statements across the codebase for better performance
+  - Improved code readability with simplified conditional logic
+  - Enhanced maintainability with centralized system detection
+
+- **Module Interface Enhancement**: Added explicit __all__ list for better module exports
+  - Introduced comprehensive __all__ list defining public module interface
+  - Categorized exports: Core Functions (get_data_info, stata_do, write_dofile, append_dofile)
+  - Categorized exports: Utilities (mk_dir, load_figure, read_file)
+  - Conditional exports for Unix-specific functions (help, ado_package_install)
+  - Improved IDE support and module discoverability
+
+### Technical
+- **Performance**: Reduced repetitive string operations with centralized system detection
+- **Code Quality**: Enhanced module organization with explicit public interface definition
+- **Maintainability**: Centralized system detection logic easier to modify and maintain
+- **Developer Experience**: Better IDE autocomplete and module navigation with explicit exports
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.6 details</summary>
 
 ## [1.13.6] - 2025-12-03
