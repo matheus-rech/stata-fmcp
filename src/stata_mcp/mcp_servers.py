@@ -77,6 +77,9 @@ if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
     # Here, if unknown system -> exit.
     sys.exit("Unknown System")
 
+# Define IS_UNIX for cleaner conditional logic
+IS_UNIX = SYSTEM_OS.lower() != "windows"
+
 # Set stata_cli
 try:
     # find stata_cli, env first, then default path
@@ -155,7 +158,7 @@ tmp_base_path = output_base_path / "stata-mcp-tmp"
 tmp_base_path.mkdir(exist_ok=True)
 
 # Config help class
-if SYSTEM_OS.lower() != "windows":
+if IS_UNIX:
     help_cls = Help(STATA_CLI)
 
 # Config gitignore in STATA_MCP_FOLDER
@@ -228,7 +231,7 @@ def stata_analysis_strategy(lang: str = None) -> str:
     return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
 
 
-if SYSTEM_OS != "Windows":
+if IS_UNIX:
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
         uri="help://stata/{cmd}",
@@ -517,7 +520,7 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
     return str(new_file_path)
 
 
-if SYSTEM_OS.lower() != "windows":
+if IS_UNIX:
     @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
     def ado_package_install(package: str,
                             source: str = "ssc",
@@ -772,3 +775,25 @@ def stata_do(dofile_path: str,
             "log_file_path": log_file_path,
             "log_content": None
         }
+
+
+__all__ = [
+    "stata_mcp",
+
+    # Functions (Core)
+    "get_data_info",
+    "stata_do",
+    "write_dofile",
+    "append_dofile",
+
+    # Utilities
+    "mk_dir",
+    "load_figure",
+    "read_file",
+]
+
+if IS_UNIX:
+    __all__.extend([
+        "ado_package_install",
+        "help"
+    ])
