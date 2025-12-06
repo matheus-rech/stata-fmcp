@@ -2,6 +2,33 @@
 
 
 <details>
+<summary>Click to expand v1.13.8 details</summary>
+
+## [1.13.8] - 2025-12-06
+
+### Changed
+- **Agent Architecture Modernization**: Complete refactoring of agent mode with modern framework adoption
+  - Implemented new REPLAgent using agents.as framework replacing deprecated LangChain-based implementation
+  - Enhanced agent performance and reliability through modern agents.as integration
+  - Updated CLI agent mode to leverage new REPLAgent for improved user experience
+  - Removed 396 lines of deprecated code from langchain-based mode module
+
+- **Code Quality Enhancement**: Significant codebase cleanup and modernization
+  - Removed deprecated langchain-based mode module including agent, prompt generator components
+  - Eliminated legacy PMP (Prompt Management Package) system for streamlined architecture
+  - Improved maintainability through removal of obsolete code patterns and dependencies
+  - Enhanced code organization with modern agent framework adoption
+
+### Technical
+- **Framework Migration**: Transitioned from LangChain to agents.as framework for improved agent capabilities
+- **Performance**: Enhanced agent execution efficiency and resource utilization
+- **Maintainability**: Simplified codebase architecture with modern framework patterns
+- **Reliability**: Improved agent mode stability through contemporary framework adoption
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.7 details</summary>
 
 ## [1.13.7] - 2025-12-05
