@@ -28,8 +28,9 @@ def main() -> None:
     )
     parser.add_argument(
         "-a", "--agent",
-        action="store_true",
-        help="run Stata-MCP as agent mode",
+        nargs="?",
+        const="./",
+        help="run Stata-MCP as agent mode (default work dir: current working directory)",
     )
     parser.add_argument(
         "-c", "--client",
@@ -66,8 +67,9 @@ def main() -> None:
         Installer(sys_os=sys.platform).install()
 
     elif args.agent:
-        from ..mode import run_agent_mode
-        run_agent_mode()
+        from ..agent_as import REPLAgent
+        agent = REPLAgent(work_dir=args.agent)
+        agent.run()
 
     elif args.client:
         os.environ["STATA-MCP-CLIENT"] = "cc"
