@@ -13,13 +13,10 @@ import os
 import platform
 import sys
 from datetime import datetime
-from importlib.metadata import version
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from mcp.server.fastmcp import FastMCP, Image
-from packaging.version import Version
-from pydantic_core._pydantic_core import ValidationError
+from mcp.server.fastmcp import FastMCP, Icon, Image
 
 from .core.data_info import CsvDataInfo, DtaDataInfo
 from .core.stata import StataDo, StataFinder
@@ -27,48 +24,17 @@ from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .utils.Prompt import pmp
 
-mcp_version = Version(version('mcp'))
-
 # Initialize MCP Server
-try:
-    from mcp.server.fastmcp import Icon
-
-    # Use different logic for init MCP Server
-    if mcp_version >= Version("1.16.0"):
-        # v1.16.0 requires icons-sizes as list[str]
-        stata_mcp = FastMCP(
-            name="stata-mcp",
-            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-            website_url="https://www.statamcp.com",
-            icons=[Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes=["512x512"]
-            )]
-        )
-    elif mcp_version == Version("1.15.0"):
-        # v1.15.0 requires icons-sizes as str | None
-        stata_mcp = FastMCP(
-            name="stata-mcp",
-            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-            website_url="https://www.statamcp.com",
-            icons=[Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes="512x512"
-            )]
-        )
-    else:
-        # Before v1.15.0, there is not an option named icons, just use the minimal config.
-        print(f"Suggest upgrade your mcp version to v{mcp_version}")
-        stata_mcp = FastMCP(name="stata-mcp")
-except ValidationError as e:
-    print(f"Unknown Error: {e}\nTry to use non-config way.")
-    try:
-        stata_mcp = FastMCP()
-    except ValidationError as e:
-        print(f"Still error: {e}! \nIf you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
-        sys.exit(1)
+stata_mcp = FastMCP(
+    name="stata-mcp",
+    instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+    website_url="https://www.statamcp.com",
+    icons=[Icon(
+        src="https://r2.statamcp.com/android-chrome-512x512.png",
+        mimeType="image/png",
+        sizes=["512x512"]
+    )]
+)
 
 # Initialize optional parameters
 SYSTEM_OS = platform.system()
