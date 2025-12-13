@@ -2,6 +2,26 @@
 
 
 <details>
+<summary>Click to expand v1.13.9 details</summary>
+
+## [1.13.9] - 2025-12-13
+
+### Changed
+- **MCP Server Initialization**: Simplified MCP server initialization and dependency management
+  - Adjusted MCP version requirement from >=1.20.0 to >=1.16.0 for better compatibility
+  - Removed version compatibility checks and complex error handling code
+  - Cleaned up commented dependencies in pyproject.toml for cleaner configuration
+  - Simplified FastMCP initialization with fixed icon configuration
+
+### Technical
+- **Dependency Management**: Streamlined MCP version requirements and compatibility handling
+- **Code Simplification**: Removed 53 lines of complex version checking and error handling code
+- **Initialization Performance**: Enhanced server startup performance through simplified initialization logic
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.8 details</summary>
 
 ## [1.13.8] - 2025-12-06
