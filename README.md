@@ -48,7 +48,7 @@ Before using it, please make sure you have ever install `Claude Code`, if you do
 
 You can open your terminal and `cd` to your working directory, and run:
 ```bash
-claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
 ``` 
 I am not sure whether it works on Windows, as I do not have a Windows device for test it.
 
