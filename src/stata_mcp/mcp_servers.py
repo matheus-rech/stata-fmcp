@@ -206,12 +206,14 @@ if IS_UNIX:
     )
     @stata_mcp.prompt(name="help", description="Get help for a Stata command")
     @stata_mcp.tool(name="help", description="Get help for a Stata command")
-    def help(cmd: str) -> str:
+    def help(cmd: str,
+             is_save: bool = True) -> str:
         """
         Execute the Stata 'help' command and return its output.
 
         Args:
             cmd (str): The name of the Stata command to query, e.g., "regress" or "describe".
+            is_save (bool): whether save help content into files.
 
         Returns:
             str: The help text returned by Stata for the specified command,
@@ -220,6 +222,9 @@ if IS_UNIX:
         try:
             help_result = help_cls.help(cmd)
             logging.info(f"Successfully retrieved help for command: {cmd}")
+            if is_save:
+                with open(tmp_base_path / f"help__{cmd}.txt", "w", encoding="utf-8") as help_file:
+                    help_file.write(help_result)
             return help_result
         except Exception as e:
             logging.error(f"Failed to retrieve help for command: {cmd}.")
