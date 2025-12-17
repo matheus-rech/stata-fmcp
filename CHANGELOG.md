@@ -2,6 +2,38 @@
 
 
 <details>
+<summary>Click to expand v1.13.10 details</summary>
+
+## [1.13.10] - 2025-12-17
+
+### Added
+- **Help Function Enhancement**: Added `is_save` parameter to help function for flexible help content management
+  - New `is_save: bool = True` parameter allows users to control whether help content is saved to files
+  - Help content is now automatically saved to `tmp_base_path / f"help__{cmd}.txt"` when `is_save=True`
+  - Enhanced user experience with optional help content persistence for reference
+
+- **Windows Platform Support for ADO Package Installation**: Enabled cross-platform Stata package management
+  - Moved `ado_package_install` function from Unix-only condition block to all platforms
+  - Windows users can now install Stata packages from SSC, GitHub, and net sources
+  - Added Windows-specific error handling with fallback do-file execution for improved reliability
+  - Updated `__all__` exports to include `ado_package_install` for all platform users
+  - Enhanced return type annotation for better IDE support and code clarity
+
+### Changed
+- **Code Simplification**: Streamlined `stata_do` function log handling logic
+  - Simplified conditional log content processing with ternary operator
+  - Improved code readability without affecting business logic
+  - Maintained identical functionality while reducing code complexity
+
+### Technical
+- **Cross-Platform Compatibility**: Enhanced Windows platform support while maintaining Unix/Linux functionality
+- **Code Quality**: Improved function parameter design with better type annotations and documentation
+- **User Experience**: Expanded feature availability to all supported platforms regardless of operating system
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.9 details</summary>
 
 ## [1.13.9] - 2025-12-13
