@@ -123,10 +123,6 @@ result_doc_path.mkdir(exist_ok=True)
 tmp_base_path = output_base_path / "stata-mcp-tmp"
 tmp_base_path.mkdir(exist_ok=True)
 
-# Config help class
-if IS_UNIX:
-    help_cls = Help(STATA_CLI)
-
 # Config gitignore in STATA_MCP_FOLDER
 if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
@@ -198,9 +194,12 @@ def stata_analysis_strategy(lang: str = None) -> str:
 
 
 if IS_UNIX:
+    # Config help class
+    help_cls = Help(STATA_CLI)
+
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
-        uri="help://stata/{cmd}",
+        uri="help://stata/{cmd}?is_save={is_save}",
         name="help",
         description="Get help for a Stata command"
     )
@@ -223,8 +222,10 @@ if IS_UNIX:
             help_result = help_cls.help(cmd)
             logging.info(f"Successfully retrieved help for command: {cmd}")
             if is_save:
-                with open(tmp_base_path / f"help__{cmd}.txt", "w", encoding="utf-8") as help_file:
+                help_file = (tmp_base_path / f"help__{cmd}.txt").as_posix()
+                with open(help_file, "w", encoding="utf-8") as help_file:
                     help_file.write(help_result)
+                help_result = help_result + f"\n{cmd} help file: {help_file}"
             return help_result
         except Exception as e:
             logging.error(f"Failed to retrieve help for command: {cmd}.")
@@ -390,7 +391,7 @@ def results_doc_path() -> str:
     name="write_dofile",
     description="write the stata-code to dofile"
 )
-def write_dofile(content: str, encoding: str = None, strict_mode: bool = False) -> str:
+def write_dofile(content: str, encoding: str = None) -> str:
     """
     Write stata code to a dofile and return the do-file path.
 
@@ -566,12 +567,12 @@ def ado_package_install(package: str,
         Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
         and may not be required if the package is already present.
     """
-    SOURCE_MAPPING: Dict = {
-        "github": GITHUB_Install,
-        "net": NET_Install,
-        "ssc": SSC_Install
-    }
-    try:
+    if IS_UNIX:
+        SOURCE_MAPPING: Dict = {
+            "github": GITHUB_Install,
+            "net": NET_Install,
+            "ssc": SSC_Install
+        }
         installer = SOURCE_MAPPING.get(source, SSC_Install)
 
         logging.info(f"Try to use {installer.__name__} to install {package}.")
@@ -587,14 +588,11 @@ def ado_package_install(package: str,
             logging.debug(f"Full installation message: {install_msg}")
 
         return install_msg
-    except Exception as e:
-        if IS_UNIX:
-            return f"Error: {e}, {package} installation failed"
-        else:
-            from_message = f"from({package_source_from})" if (package_source_from and source == "net") else ""
-            replace_str = "replace" if is_replace else ""
-            tmp_file = write_dofile(f"{source} install {package}, {replace_str} {from_message}")
-            return stata_do(tmp_file, is_read_log=True).get("log_content")
+    else:
+        from_message = f"from({package_source_from})" if (package_source_from and source == "net") else ""
+        replace_str = "replace" if is_replace else ""
+        tmp_file = write_dofile(f"{source} install {package}, {replace_str} {from_message}")
+        return stata_do(tmp_file, is_read_log=True).get("log_content")
 
 
 @stata_mcp.tool(name="load_figure")
