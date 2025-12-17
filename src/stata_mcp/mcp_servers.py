@@ -384,7 +384,7 @@ def results_doc_path() -> str:
     """
     path = result_doc_path / datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
     path.mkdir(exist_ok=True)
-    return str(path)
+    return path.as_posix()
 
 
 @stata_mcp.tool(
@@ -423,7 +423,7 @@ def write_dofile(content: str, encoding: str = None) -> str:
         logging.info(f"Successful write dofile to {file_path}")
     except Exception as e:
         logging.error(f"Failed to write dofile to {file_path}: {str(e)}")
-    return str(file_path)
+    return file_path.as_posix()
 
 
 @stata_mcp.tool(
@@ -489,7 +489,7 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
         f.write(content)
 
     logging.info(f"Successfully wrote dofile to {new_file_path}")
-    return str(new_file_path)
+    return new_file_path.as_posix()
 
 
 @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
