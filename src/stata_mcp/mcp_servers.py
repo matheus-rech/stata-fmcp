@@ -491,87 +491,87 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
     return str(new_file_path)
 
 
-if IS_UNIX:
-    @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
-    def ado_package_install(package: str,
-                            source: str = "ssc",
-                            is_replace: bool = True,
-                            package_source_from: str = None):
-        """
-        Install a package from SSC or GitHub
+@stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
+def ado_package_install(package: str,
+                        source: str = "ssc",
+                        is_replace: bool = True,
+                        package_source_from: str = None) -> str:
+    """
+    Install a package from SSC or GitHub
 
-        Args:
-            package (str): The name of the package to be installed.
-                           for SSC, use package name;
-                           for GitHub, use "username/reponame" format.
-            source (str): The source to install from. Options are "ssc" (default) or "GitHub".
-            is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
-            package_source_from (str): The directory or url of the package from, only works if source == 'net'
+    Args:
+        package (str): The name of the package to be installed.
+                       for SSC, use package name;
+                       for GitHub, use "username/reponame" format.
+        source (str): The source to install from. Options are "ssc" (default) or "GitHub".
+        is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+        package_source_from (str): The directory or url of the package from, only works if source == 'net'
 
-        Returns:
-            str: The execution log returned by Stata after running the installation.
+    Returns:
+        str: The execution log returned by Stata after running the installation.
 
-        Examples:
-            >>> ado_package_install(package="outreg2", source="ssc")
-            >>> # this would install outreg2 from ssc
-            >>> ado_package_install(package="sepinetam/texiv", source="github")
-            >>> # this would install texiv from https://github.com/sepinetam/texiv
-            -------------------------------------------------------------------------------
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-            log type:  text
-            opened on:  12 Oct 2025, 18:54:47
+    Examples:
+        >>> ado_package_install(package="outreg2", source="ssc")
+        >>> # this would install outreg2 from ssc
+        >>> ado_package_install(package="sepinetam/texiv", source="github")
+        >>> # this would install texiv from https://github.com/sepinetam/texiv
+        -------------------------------------------------------------------------------
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+        log type:  text
+        opened on:  12 Oct 2025, 18:54:47
 
-            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
+        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
 
-            . ssc install outreg2, replace
-            checking outreg2 consistency and verifying not already installed...
-            all files already exist and are up to date.
+        . ssc install outreg2, replace
+        checking outreg2 consistency and verifying not already installed...
+        all files already exist and are up to date.
 
-            .
-            end of do-file
+        .
+        end of do-file
 
-            . log close
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-            log type:  text
-            closed on:  12 Oct 2025, 18:54:55
-            -------------------------------------------------------------------------------
+        . log close
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+        log type:  text
+        closed on:  12 Oct 2025, 18:54:55
+        -------------------------------------------------------------------------------
 
-            >>> ado_package_install(command="a_fake_command")
-            -------------------------------------------------------------------------------
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-            log type:  text
-            opened on:  12 Oct 2025, 19:01:59
+        >>> ado_package_install(command="a_fake_command")
+        -------------------------------------------------------------------------------
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+        log type:  text
+        opened on:  12 Oct 2025, 19:01:59
 
-            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
+        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
 
-            . ssc install a_fake_command, replace
-            ssc install: "a_fake_command" not found at SSC, type search a_fake_command
-            (To find all packages at SSC that start with a, type ssc describe a)
-            r(601);
+        . ssc install a_fake_command, replace
+        ssc install: "a_fake_command" not found at SSC, type search a_fake_command
+        (To find all packages at SSC that start with a, type ssc describe a)
+        r(601);
 
-            end of do-file
+        end of do-file
 
-            r(601);
+        r(601);
 
-            . log close
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-            log type:  text
-            closed on:  12 Oct 2025, 19:02:00
-            -------------------------------------------------------------------------------
+        . log close
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+        log type:  text
+        closed on:  12 Oct 2025, 19:02:00
+        -------------------------------------------------------------------------------
 
-        Notes:
-            Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
-            and may not be required if the package is already present.
-        """
-        SOURCE_MAPPING: Dict = {
-            "github": GITHUB_Install,
-            "net": NET_Install,
-            "ssc": SSC_Install
-        }
+    Notes:
+        Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
+        and may not be required if the package is already present.
+    """
+    SOURCE_MAPPING: Dict = {
+        "github": GITHUB_Install,
+        "net": NET_Install,
+        "ssc": SSC_Install
+    }
+    try:
         installer = SOURCE_MAPPING.get(source, SSC_Install)
 
         logging.info(f"Try to use {installer.__name__} to install {package}.")
@@ -587,6 +587,14 @@ if IS_UNIX:
             logging.debug(f"Full installation message: {install_msg}")
 
         return install_msg
+    except Exception as e:
+        if IS_UNIX:
+            return f"Error: {e}, {package} installation failed"
+        else:
+            from_message = f"from({package_source_from})" if (package_source_from and source == "net") else ""
+            replace_str = "replace" if is_replace else ""
+            tmp_file = write_dofile(f"{source} install {package}, {replace_str} {from_message}")
+            return stata_do(tmp_file, is_read_log=True).get("log_content")
 
 
 @stata_mcp.tool(name="load_figure")
@@ -733,19 +741,11 @@ def stata_do(dofile_path: str,
         return {"error": str(e)}
 
     # Return log content based on user preference
-    if is_read_log:
-        # Read and include log file content in response
-        log_content = stata_executor.read_log(log_file_path)
-        return {
-            "log_file_path": log_file_path,
-            "log_content": log_content
-        }
-    else:
-        # Return only the log file path
-        return {
-            "log_file_path": log_file_path,
-            "log_content": None
-        }
+    log_content = stata_executor.read_log(log_file_path) if is_read_log else "Not read log"
+    return {
+        "log_file_path": log_file_path,
+        "log_content": log_content
+    }
 
 
 __all__ = [
@@ -761,10 +761,10 @@ __all__ = [
     "mk_dir",
     "load_figure",
     "read_file",
+    "ado_package_install",
 ]
 
 if IS_UNIX:
     __all__.extend([
-        "ado_package_install",
         "help"
     ])
