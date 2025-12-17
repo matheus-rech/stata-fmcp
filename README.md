@@ -20,7 +20,8 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
-**News**: 
+**News**:
+- **v1.13.11**: Fixed macOS compatibility issues and improved cross-platform path handling
 - Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
 - Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).
 - Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
@@ -43,12 +44,11 @@ Before using it, please make sure you have ever install `Claude Code`, if you do
 
 You can open your terminal and `cd` to your working directory, and run:
 ```bash
-claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp==1.13.9
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
 ```
-Suggesting using v1.13.9, as there may be something unknown bug for the new version has not been detected.
 
 ~~I am not sure whether it works on Windows, as I do not have a Windows device for test it.~~  
-Now the bug on Windows has been solved after v1.13.6 and it works (but I have released v1.13.10 for Windows user to use `ado_install_package`, it has not been test on any Windows and it make the macOS user failed to use).
+Now the bug on Windows has been solved after v1.13.6 and it works.
 
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
 

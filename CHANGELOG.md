@@ -2,6 +2,40 @@
 
 
 <details>
+<summary>Click to expand v1.13.11 details</summary>
+
+## [1.13.11] - 2025-12-17
+
+### Fixed
+- **Critical macOS Compatibility Issue**: Resolved MCP server startup failures for macOS users
+  - Fixed resource decorator parameter mismatch by updating URI from `help://stata/{cmd}` to `help://stata/{cmd}?is_save={is_save}`
+  - Resolved ValueError that prevented server initialization due to function signature mismatch
+  - Restored full functionality for macOS users upgrading from v1.13.9 to v1.13.10
+
+- **ADO Package Installation Logic**: Improved platform-specific package management reliability
+  - Replaced problematic try-except block with clean if-else platform separation
+  - Removed complex exception handling that could cause silent failures or inconsistent error messages
+  - Ensured stable behavior across Unix (macOS/Linux) and Windows platforms
+
+### Improved
+- **Cross-Platform Path Handling**: Enhanced file path consistency across operating systems
+  - Replaced `str(path)` with `path.as_posix()` in functions returning file paths
+  - Updated `results_doc_path`, `write_dofile`, and `append_dofile` functions for POSIX-style path consistency
+  - Improved reliability of file operations across different platforms
+
+- **Code Organization**: Better structural organization for maintainability
+  - Moved help class initialization inside IS_UNIX condition block for proper scoping
+  - Removed unnecessary `strict_mode` parameter from `write_dofile` function
+  - Enhanced code clarity and reduced potential configuration conflicts
+
+### Notes
+- This release focuses on fixing critical compatibility issues introduced in v1.13.10
+- All macOS users are strongly recommended to upgrade from v1.13.9 or earlier to this version
+- Windows users continue to benefit from the package installation improvements introduced in v1.13.10
+
+</details>
+
+<details>
 <summary>Click to expand v1.13.10 details</summary>
 
 ## [1.13.10] - 2025-12-17
