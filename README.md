@@ -47,8 +47,7 @@ You can open your terminal and `cd` to your working directory, and run:
 claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
 ```
 
-~~I am not sure whether it works on Windows, as I do not have a Windows device for test it.~~  
-Now the bug on Windows has been solved after v1.13.6 and it works.
+In your working directory, you can find a file named `.mcp.json`, your mcp config will be placed here. 
 
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
 
