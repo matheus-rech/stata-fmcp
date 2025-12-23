@@ -24,17 +24,22 @@ from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .utils.Prompt import pmp
 
-# Initialize MCP Server
-stata_mcp = FastMCP(
-    name="stata-mcp",
-    instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-    website_url="https://www.statamcp.com",
-    icons=[Icon(
-        src="https://r2.statamcp.com/android-chrome-512x512.png",
-        mimeType="image/png",
-        sizes=["512x512"]
-    )]
-)
+# Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
+try:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
+        website_url="https://www.statamcp.com",
+        icons=[Icon(
+            src="https://r2.statamcp.com/android-chrome-512x512.png",
+            mimeType="image/png",
+            sizes=["512x512"]
+        )]
+    )
+except Exception:
+    stata_mcp = FastMCP(
+        name="stata-mcp"
+    )
 
 # Initialize optional parameters
 SYSTEM_OS = platform.system()
