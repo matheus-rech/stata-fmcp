@@ -2,6 +2,26 @@
 
 
 <details>
+<summary>Click to expand v1.13.12 details</summary>
+
+## [1.13.12] - 2025-12-23
+
+### Fixed
+- **Icon Fetch Timeout Issue**: Added error handling for FastMCP icon initialization to prevent server startup failures
+  - Implemented try-except block to gracefully fallback when icon URL fetch times out
+  - Ensures server can start successfully even with network connectivity issues
+  - Maintains full functionality regardless of icon loading status
+
+### Improved
+- **MCP Instructions Clarity**: Enhanced server instructions for better LLM understanding
+  - Simplified and optimized instructions text for clearer context
+  - Emphasized do-file as the minimum operation unit
+  - Clarified session management behavior (no session config)
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.11 details</summary>
 
 ## [1.13.11] - 2025-12-17
