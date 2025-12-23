@@ -21,20 +21,22 @@
 
 ---
 **News**:
-- **v1.13.11**: Fixed macOS compatibility issues and improved cross-platform path handling
-- Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
-- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).
-- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
-- Update `StataFinder`, but it is not stable, please config your `STATA_CLI` into your environment.
+- Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)  
+- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).  
+- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).  
+- Update `StataFinder`, it could locate your Stata executable file automatically. 
 
 Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
-> Looking for others?
->
+> Looking for others?  
+> **MCP or AI about Stata**
+> - A session based MCP server for Stata, [mcp-stata](https://github.com/tmonk/mcp-stata)
+> - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
+> 
+> **Datasets and Informations**  
 > - [STOP Dataset](https://opendata.ai4cssci.com): StataMCP-Team Opendata Project 📊, we have open-sourced a comprehensive dataset collection for social science research, aiming to enable the future of AI-driven and data-powered research paradigms.  
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): If you want to fetch the newest information about DID (Difference-in-Difference), click [here](https://asjadnaqvi.github.io/DiD/). Now there is a Chinese translation by [Sepine Tam](https://github.com/sepine) and [StataMCP-Team](https://github.com/statamcp-team) 🎉
 > - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md) and [nbstata](https://github.com/hugetim/nbstata)
-> - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
 
 ## 💡 Quick Start
 ### Use Stata-MCP in Claude Code
