@@ -24,65 +24,10 @@ from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .utils.Prompt import pmp
 
-# Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
-instructions = ("Stata-MCP provides a set of tools to operate Stata locally. "
-                "Typically, it writes code to do-file and executes them. "
-                "The minimum operation unit should be the do-file; there is no session config.")
-try:
-    stata_mcp = FastMCP(
-        name="stata-mcp",
-        instructions=instructions,
-        website_url="https://www.statamcp.com",
-        icons=[Icon(
-            src="https://r2.statamcp.com/android-chrome-512x512.png",
-            mimeType="image/png",
-            sizes=["512x512"]
-        )]
-    )
-except Exception:
-    stata_mcp = FastMCP(
-        name="stata-mcp",
-        instructions=instructions,
-        website_url="https://www.statamcp.com",
-    )
-
-# Initialize optional parameters
-SYSTEM_OS = platform.system()
-
-if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
-    # Here, if unknown system -> exit.
-    sys.exit("Unknown System")
-
-# Define IS_UNIX for cleaner conditional logic
-IS_UNIX = SYSTEM_OS.lower() != "windows"
-
-# Set stata_cli
-try:
-    # find stata_cli, env first, then default path
-    finder = StataFinder()
-    STATA_CLI = finder.STATA_CLI
-except FileNotFoundError as e:
-    sys.exit(str(e))
-
-# Determine current working directory (cwd)
-client = os.getenv("STATA_MCP_CLIENT")
-
-if client == "cc":  # TODO: This is a mistake in Claude Code, as it could not get the cwd path.
-    cwd = Path.cwd()
-else:  # If not special client follow default way.
-    cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
-    if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
-        cwd = Path.home() / "Documents"
-    else:
-        cwd = Path(cwd)
-
-# Use configured output path if available
-output_base_path = cwd / "stata-mcp-folder"
-output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
-
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
+IS_DEBUG = False
 if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     # Configure logging
     logging_handlers = []
@@ -96,10 +41,15 @@ if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
 
     if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
         # If there is no handler, must add file-handler with rotation support.
+        IS_DEBUG = True
         stata_mcp_dot_log_file_path = os.getenv(
-            "STATA_MCP_LOG_FILE",
-            (Path.home() / ".statamcp.log").as_posix()
+            "STATA_MCP_LOG_FILE", None
         )
+        if stata_mcp_dot_log_file_path:
+            stata_mcp_dot_log_file_path = Path(stata_mcp_dot_log_file_path).expanduser().absolute()
+        else:
+            stata_mcp_dot_log_file_path = Path.home() / ".statamcp/stata_mcp_debug.log"
+        stata_mcp_dot_log_file_path.parent.mkdir(exist_ok=True, parents=True)
 
         # Use RotatingFileHandler to limit file size and implement log rotation
         # Single file max size: 10MB, backup count: 5 (total 6 files including current)
@@ -123,6 +73,36 @@ else:
     # logging.basicConfig(level=logging.CRITICAL + 1)
     logging.disable()
 
+# Initialize optional parameters
+SYSTEM_OS = platform.system()
+
+if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
+    # Here, if unknown system -> exit.
+    sys.exit(f"Unknown System: {SYSTEM_OS}")
+
+# Define IS_UNIX for cleaner conditional logic
+IS_UNIX = SYSTEM_OS.lower() != "windows"
+
+# Set stata_cli
+try:
+    # find stata_cli, env first, then default path
+    finder = StataFinder()
+    STATA_CLI = finder.STATA_CLI
+except FileNotFoundError as e:
+    sys.exit(str(e))
+
+cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
+if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
+    cwd = Path.home() / "Documents"
+else:
+    cwd = Path(cwd)
+    proj_name = cwd.name
+    logging.info(f"Project name: {proj_name} in {cwd}") if IS_DEBUG else None  # Log project name if debug is enabled
+
+# Use configured output path if available
+output_base_path = cwd / "stata-mcp-folder"
+output_base_path.mkdir(exist_ok=True, parents=True)  # make sure this folder exists
+
 # Create a series of folder
 log_base_path = output_base_path / "stata-mcp-log"
 log_base_path.mkdir(exist_ok=True)
@@ -138,6 +118,28 @@ if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
         f.write("*")
 
+
+# Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
+instructions = ("Stata-MCP provides a set of tools to operate Stata locally. "
+                "Typically, it writes code to do-file and executes them. "
+                "The minimum operation unit should be the do-file; there is no session config.")
+try:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions=instructions,
+        website_url="https://www.statamcp.com",
+        icons=[Icon(
+            src="https://r2.statamcp.com/android-chrome-512x512.png",
+            mimeType="image/png",
+            sizes=["512x512"]
+        )]
+    )
+except Exception:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions=instructions,
+        website_url="https://www.statamcp.com",
+    )
 
 IS_PROMPT = os.getenv("STATA_MCP_PROMPT", 'true').lower() == 'true'
 
@@ -383,7 +385,8 @@ def results_doc_path() -> str:
 
     Returns:
         str: The complete path of the newly created result document directory, formatted as:
-            `<result_doc_path>/<YYYYMMDDHHMMSS>`, where the timestamp portion is generated from the system time when the function is executed
+            `<result_doc_path>/<YYYYMMDDHHMMSS>`,
+            where the timestamp portion is generated from the system time when the function is executed
 
     Notes:
         (The following content is not needed for LLM to understand)
