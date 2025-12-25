@@ -29,7 +29,10 @@ class FinderMacOS(FinderBase):
     def find_path_base(self) -> Dict[str, List[str]]:
         return {
             "bin": ["/usr/local/bin"],
-            "application": ["/Applications"],
+            "application": [
+                "/Applications",
+                "~/Applications"
+            ],
         }
 
     def _application_find_base(self,
