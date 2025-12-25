@@ -2,6 +2,38 @@
 
 
 <details>
+<summary>Click to expand v1.13.13 details</summary>
+
+## [1.13.13] - 2025-12-25
+
+### Added
+- **StataNow Support**: Enhanced macOS StataFinder to support StataNow directory detection
+  - Added StataNow to the feature name search list with priority over Stata
+  - Improved multi-version Stata installation detection for better compatibility
+  - Returns list of found Stata installations and selects highest version via max()
+
+- **User Applications Directory**: Extended Stata search paths to include user directory
+  - Added ~/Applications to macOS search paths for user-installed Stata
+  - Maintains priority: system /Applications > user ~/Applications
+  - Better support for non-admin Stata installations
+
+### Changed
+- **Logging System Optimization**: Enhanced logging infrastructure with improved debug control
+  - Added IS_DEBUG flag for better debug mode control
+  - Moved log file to ~/.statamcp/stata_mcp_debug.log for centralized management
+  - Improved path handling with expanduser() and absolute() for reliability
+  - Added parent directory creation with proper error handling
+  - Added project name logging when using custom working directory
+
+- **MCP Server Initialization**: Reorganized initialization order for better reliability
+  - Moved MCP Server initialization after system checks
+  - Removed Claude Code-specific client handling for cross-platform compatibility
+  - Improved error message format with system information
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.12 details</summary>
 
 ## [1.13.12] - 2025-12-23
