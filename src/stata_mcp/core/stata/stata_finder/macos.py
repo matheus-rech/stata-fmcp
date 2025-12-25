@@ -67,20 +67,28 @@ class FinderMacOS(FinderBase):
 
     def find_from_application(self) -> List[StataEditionConfig]:
         found_executables: List[StataEditionConfig] = []
-        applications_dir = Path(self.find_path_base().get("application")[0])
+        applications_dirs = [Path(a) for a in self.find_path_base().get("application")]
+        stata_feature_names = ["StataNow", "Stata"]
 
         # Check for /Applications/Stata directory for Multi-Stata Exist
-        stata_dir = applications_dir / "Stata"
-        if default_stata := self._application_find_base(stata_dir):  # If exist default, return directly.
-            return [default_stata]
+        default_stata_list = []
+        for applications_dir in applications_dirs:  # priority: system applications > user applications
+            for stata_feature_name in stata_feature_names:  # priority: StataNow > Stata
+                stata_dir = applications_dir / stata_feature_name
+
+                if default_stata := self._application_find_base(stata_dir):  # If exist default, add to waitlist.
+                    default_stata_list.append(default_stata)
+        if default_stata_list:
+            return default_stata_list  # Finally choose the max-edition by max() function
 
         # 通过for循环来从applications_dir里找stata*.app
-        for stata_app in applications_dir.glob("Stata *"):
-            _version = None
-            if stata_app.is_dir():
-                _version = eval(stata_app.name.split()[-1])
-                if stata_app_config := self._application_find_base(stata_app, version=_version):
-                    found_executables.append(stata_app_config)
+        for applications_dir in applications_dirs:
+            for stata_app in applications_dir.glob("Stata *"):
+                _version = None
+                if stata_app.is_dir():
+                    _version = eval(stata_app.name.split()[-1])
+                    if stata_app_config := self._application_find_base(stata_app, version=_version):
+                        found_executables.append(stata_app_config)
 
         return found_executables
 
