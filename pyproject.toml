@@ -4,10 +4,11 @@ version = "1.13.13"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
-    { name = "Song Tan", email = "sepine@statamcp.com" }
+    { name = "Song Tan", email = "sepinetam@gmail.com" }
 ]
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
+keywords = ["stata", "mcp", "econometrics", "ai", "agent"]
 dependencies = [
     "python-dotenv>=1.1.1",
     "mcp[cli]>=1.16.0",
