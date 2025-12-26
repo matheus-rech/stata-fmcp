@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
 keywords = ["stata", "mcp", "econometrics", "ai", "agent"]
 dependencies = [
-    "python-dotenv>=1.1.1",
+    "python-dotenv>=1.2.1",
     "mcp[cli]>=1.16.0",
     "pandas>=2.3.0",
     "pexpect>=4.9.0",
@@ -18,7 +18,7 @@ dependencies = [
     "openai-agents>=0.3.2",
     "openai>=1.109.1",
     "pathvalidate>=3.3.1",
-    "openai-api-polling>=0.1.1",
+    "openai-api-polling>=0.1.2",
 ]
 
 [project.scripts]
