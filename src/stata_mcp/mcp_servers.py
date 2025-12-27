@@ -229,11 +229,19 @@ if IS_UNIX:
             str: The help text returned by Stata for the specified command,
                  or a message indicating that no help was found.
         """
+        help_file = (tmp_base_path / f"help__{cmd}.txt")
+        try:
+            with open(help_file, "r", encoding="utf-8") as f:
+                content = f.read()
+            if content:
+                logging.info(f"Successfully retrieved help for command: {cmd} from local storage.")
+                return content
+        except FileNotFoundError:
+            pass
         try:
             help_result = help_cls.help(cmd)
-            logging.info(f"Successfully retrieved help for command: {cmd}")
+            logging.info(f"Successfully retrieved help for command: {cmd} from Stata.")
             if IS_SAVE_HELP:
-                help_file = (tmp_base_path / f"help__{cmd}.txt").as_posix()
                 with open(help_file, "w", encoding="utf-8") as help_file:
                     help_file.write(help_result)
                 help_result = help_result + f"\n{cmd} help file: {help_file}"
