@@ -94,9 +94,22 @@ try:
 except FileNotFoundError as e:
     sys.exit(str(e))
 
-cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
-if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
-    cwd = Path.home() / "Documents"
+# Get working directory from environment variable (fallback: auto-detect writable directory)
+cwd = os.getenv("STATA_MCP_CWD")
+
+if not cwd:
+    # Auto-detect: try current directory first, fallback to ~/Documents
+    try:
+        cwd = Path.cwd()
+        # Test write permission by creating and deleting a temp file
+        test_file = cwd / ".stata_mcp_write_test"
+        test_file.touch()
+        test_file.unlink()
+        logging.info(f"Using {cwd} as current working directory. ")
+    except (OSError, PermissionError):
+        # Current directory not writable, use default Documents directory
+        logging.error(f"Cannot write to {cwd}. Using ~/Documents instead.")
+        cwd = Path.home() / "Documents"
 else:
     cwd = Path(cwd)
     proj_name = cwd.name
