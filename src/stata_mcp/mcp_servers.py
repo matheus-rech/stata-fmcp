@@ -82,6 +82,7 @@ if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
 
 # Define IS_UNIX for cleaner conditional logic
 IS_UNIX = SYSTEM_OS.lower() != "windows"
+IS_SAVE_HELP = os.getenv("STATA_MCP_SAVE_HELP", 'true').lower() == "true"
 
 # Set stata_cli
 try:
@@ -211,20 +212,18 @@ if IS_UNIX:
 
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
-        uri="help://stata/{cmd}?is_save={is_save}",
+        uri="help://stata/{cmd}",
         name="help",
         description="Get help for a Stata command"
     )
     @stata_mcp.prompt(name="help", description="Get help for a Stata command")
     @stata_mcp.tool(name="help", description="Get help for a Stata command")
-    def help(cmd: str,
-             is_save: bool = True) -> str:
+    def help(cmd: str) -> str:
         """
         Execute the Stata 'help' command and return its output.
 
         Args:
             cmd (str): The name of the Stata command to query, e.g., "regress" or "describe".
-            is_save (bool): whether save help content into files.
 
         Returns:
             str: The help text returned by Stata for the specified command,
@@ -233,7 +232,7 @@ if IS_UNIX:
         try:
             help_result = help_cls.help(cmd)
             logging.info(f"Successfully retrieved help for command: {cmd}")
-            if is_save:
+            if IS_SAVE_HELP:
                 help_file = (tmp_base_path / f"help__{cmd}.txt").as_posix()
                 with open(help_file, "w", encoding="utf-8") as help_file:
                     help_file.write(help_result)
