@@ -2,6 +2,34 @@
 
 
 <details>
+<summary>Click to expand v1.13.14 details</summary>
+
+## [1.13.14] - 2025-12-27
+
+### Added
+- **Help Command Cache**: Implemented local file caching for Stata help command responses
+  - Automatically checks for cached help files before calling Stata
+  - Cache files saved with format `help__{command}.txt` in temporary directory
+  - Significantly reduces response time for repeated help requests
+  - Improves efficiency by avoiding redundant Stata executions
+
+- **Data Info Content-Based Caching**: Implemented smart caching mechanism for data information
+  - Uses MD5 hash of file content to generate unique cache identifiers
+  - Cache filename format: `data_info__{name}_{ext}__hash_{hash}.json`
+  - Ensures same filename and content produce identical cache files
+  - Checks cache before processing, returns cached result if available
+  - Supports `HASH_LENGTH` environment variable to customize hash length (default: 12)
+  - Proper exception handling for corrupted or missing cache files
+
+### Performance
+- Dramatically improved response times for repeated operations on same data files
+- Reduced redundant Stata help command executions
+- Optimized data info retrieval workflow with cache-first approach
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.13 details</summary>
 
 ## [1.13.13] - 2025-12-25
