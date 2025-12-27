@@ -7,6 +7,8 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
+import hashlib
+import json
 import logging
 import logging.handlers
 import os
@@ -342,16 +344,40 @@ def get_data_info(data_path: str | Path,
     data_path = Path(data_path).expanduser().resolve()
     data_name = data_path.stem
     data_extension = data_path.suffix.lower().strip(".")
+
+    # Calculate content hash for cache identification
+    HASH_LENGTH = os.getenv("HASH_LENGTH", 12)
+    content_hash = hashlib.md5(data_path.read_bytes()).hexdigest()[:HASH_LENGTH]
+
+    # Build cache file path based on filename and content hash
+    # This ensures: same filename + same content = same cache file
+    saved_file_path = (
+        tmp_base_path / f"data_info__{data_name}_{data_extension}__hash_{content_hash}.json"
+    )
+
+    # Try to load from cache first
+    try:
+        with open(saved_file_path, "r", encoding="utf-8") as f:
+            cached_result = json.load(f)
+        logging.info(f"Successfully loaded cached data info for: {data_name}")
+        # Return cached result as JSON string to match expected format
+        return json.dumps(cached_result, ensure_ascii=False, indent=2)
+    except FileNotFoundError:
+        logging.info(f"No cache found for {data_name}.")
+        # Cache not found, proceed with file type check and data processing
+    except json.JSONDecodeError as e:
+        logging.warning(f"Cache file corrupted for {data_name}: {e}")
+        # Cache corrupted, proceed with regeneration
+    except Exception as e:
+        logging.warning(f"Error reading cache for {data_name}: {e}.")
+        # Other error, proceed with regeneration
+
+    # Only check file type and process if cache was not found/loaded
     data_info_cls = CLASS_MAPPING.get(data_extension, None)
 
     if not data_info_cls:
         logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
         return f"Unsupported file extension now: {data_extension}"
-
-    # save the data description into tmp-dir
-    saved_file_path = (
-        tmp_base_path / f"{data_name}.json"
-    ).as_posix()  # change to type <str>
 
     summary_result = data_info_cls(
         data_path=data_path,
