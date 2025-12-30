@@ -85,7 +85,6 @@ if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
 
 # Define IS_UNIX for cleaner conditional logic
 IS_UNIX = SYSTEM_OS.lower() != "windows"
-IS_SAVE_HELP = os.getenv("STATA_MCP_SAVE_HELP", 'true').lower() == "true"
 
 # Set stata_cli
 try:
@@ -224,7 +223,9 @@ def stata_analysis_strategy(lang: str = None) -> str:
 
 if IS_UNIX:
     # Config help class
-    help_cls = Help(STATA_CLI, cache_dir=STATA_MCP_DIRECTORY / "help", project_tmp_dir=tmp_base_path)
+    help_cls = Help(stata_cli=STATA_CLI,
+                    project_tmp_dir=tmp_base_path,
+                    cache_dir=STATA_MCP_DIRECTORY / "help")
 
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
@@ -232,7 +233,6 @@ if IS_UNIX:
         name="help",
         description="Get help for a Stata command"
     )
-    @stata_mcp.prompt(name="help", description="Get help for a Stata command")
     @stata_mcp.tool(name="help", description="Get help for a Stata command")
     def help(cmd: str) -> str:
         """
@@ -247,31 +247,10 @@ if IS_UNIX:
 
         Notes:
             If the returned content starts with 'Cached result for {cmd}', but the output shows the command
-            doesn't exist or you believe the cached content is incorrect, and you're certain the command
-            exists, set the environment variable STATA_MCP_CACHE_HELP to false
+            doesn't exist or you believe the cached content is incorrect, and you're certain the command exists,
+            set the environment variable STATA_MCP_CACHE_HELP to false. STATA_MCP_SAVE_HELP is same working method.
         """
-        help_file = (tmp_base_path / f"help__{cmd}.txt")
-        try:
-            with open(help_file, "r", encoding="utf-8") as f:
-                content = f.read()
-            if content:
-                logging.info(f"Successfully retrieved help for command: {cmd} from local storage.")
-                return content
-        except FileNotFoundError:
-            pass
-        try:
-            help_result = help_cls.help(cmd)
-            logging.info(f"Successfully retrieved help for command: {cmd}.")
-            if IS_SAVE_HELP:
-                with open(help_file, "w", encoding="utf-8") as help_file:
-                    help_file.write(help_result)
-                help_result = help_result + f"\n{cmd} help file: {help_file}"
-            return help_result
-        except Exception as e:
-            logging.error(f"Failed to retrieve help for command: {cmd}.")
-            logging.debug(str(e))
-            return f"No help found for command: {cmd}"
-
+        return help_cls.help(cmd)
 
 @stata_mcp.tool(
     name="read_file",
