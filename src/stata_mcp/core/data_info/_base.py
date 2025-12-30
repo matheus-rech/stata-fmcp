@@ -98,20 +98,26 @@ class DataInfoBase(ABC):
                         "type": "float",  # it signed as float no matter the value type is int or float
                         "obs": 1314,
                         "summary": {
+                            "n": 1314,
                             "mean": 52.1,
-                            "se": 10.3386,
+                            "se": 0.285,
                             "min": 18,
-                            "max": 100
+                            "max": 100,
+                            "skewness": 0.15,
+                            "kurtosis": 2.3
                         }
                     },
                     "male": {
                         "type": "float",  # Note: no bool type! It is signed with 0 and 1.
                         "obs": 1111,  # Note: maybe some obs do not have value (NA), this is not be counted.
                         "summary": {
+                            "n": 1111,
                             "mean": 0.49955,
-                            "se": 0.500225,
+                            "se": 0.015,
                             "min": 0,
-                            "max": 1
+                            "max": 1,
+                            "skewness": 0.002,
+                            "kurtosis": 1.99
                         }
                     }
                     "var_name": {}
