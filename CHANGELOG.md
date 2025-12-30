@@ -2,6 +2,27 @@
 
 
 <details>
+<summary>Click to expand v1.13.15 details</summary>
+
+## [1.13.15] - 2025-12-30
+
+### Added
+- **Enhanced Summary Statistics**: Extended data info summary with three additional statistical measures
+  - Added sample size (n) to indicate valid observation count for each variable
+  - Added skewness (3rd moment) to measure distribution asymmetry
+  - Added kurtosis (4th moment/excess kurtosis) to measure distribution tailedness
+  - Provides more comprehensive statistical description for numerical variables
+  - Updated docstring examples with real auto.dta dataset outputs
+
+### Changed
+- Updated `get_data_info` tool to return 7 statistics instead of 4
+- Enhanced docstring examples in both `_base.py` and `mcp_servers.py`
+- Improved statistical analysis capabilities for data exploration
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.14 details</summary>
 
 ## [1.13.14] - 2025-12-27
