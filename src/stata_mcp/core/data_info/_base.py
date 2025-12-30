@@ -20,7 +20,7 @@ import pandas as pd
 
 class DataInfoBase(ABC):
     def __init__(self,
-                 data_path: str | Path,
+                 data_path: str | PathLike | Path,
                  vars_list: List[str] | str = None,
                  *,
                  encoding: str = "utf-8",
@@ -279,14 +279,16 @@ class DataInfoBase(ABC):
             series: pandas Series with NA values removed
 
         Returns:
-            Dict[str, float]: Summary statistics including mean, se, min, max
+            Dict[str, float]: Summary statistics including mean, se, min, max, skewness, kurtosis
         """
         if len(series) == 0:
             return {
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
-                "max": np.nan
+                "max": np.nan,
+                "skewness": np.nan,
+                "kurtosis": np.nan
             }
 
         # Convert to numeric to handle any remaining type issues
@@ -297,7 +299,9 @@ class DataInfoBase(ABC):
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
-                "max": np.nan
+                "max": np.nan,
+                "skewness": np.nan,
+                "kurtosis": np.nan
             }
 
         mean_val = float(numeric_series.mean())
@@ -309,5 +313,7 @@ class DataInfoBase(ABC):
             "mean": mean_val,
             "se": se_val,
             "min": float(numeric_series.min()),
-            "max": float(numeric_series.max())
+            "max": float(numeric_series.max()),
+            "skewness": float(numeric_series.skew()),
+            "kurtosis": float(numeric_series.kurt())
         }
