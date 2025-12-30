@@ -29,6 +29,7 @@ from .utils.Prompt import pmp
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
+STATA_MCP_DIRECTORY = Path.home() / ".statamcp"
 IS_DEBUG = False
 if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     # Configure logging
@@ -50,7 +51,7 @@ if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
         if stata_mcp_dot_log_file_path:
             stata_mcp_dot_log_file_path = Path(stata_mcp_dot_log_file_path).expanduser().absolute()
         else:
-            stata_mcp_dot_log_file_path = Path.home() / ".statamcp/stata_mcp_debug.log"
+            stata_mcp_dot_log_file_path = STATA_MCP_DIRECTORY / "stata_mcp_debug.log"
         stata_mcp_dot_log_file_path.parent.mkdir(exist_ok=True, parents=True)
 
         # Use RotatingFileHandler to limit file size and implement log rotation
@@ -223,7 +224,7 @@ def stata_analysis_strategy(lang: str = None) -> str:
 
 if IS_UNIX:
     # Config help class
-    help_cls = Help(STATA_CLI)
+    help_cls = Help(STATA_CLI, cache_dir=STATA_MCP_DIRECTORY / "help", project_tmp_dir=tmp_base_path)
 
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
@@ -243,6 +244,11 @@ if IS_UNIX:
         Returns:
             str: The help text returned by Stata for the specified command,
                  or a message indicating that no help was found.
+
+        Notes:
+            If the returned content starts with 'Cached result for {cmd}', but the output shows the command
+            doesn't exist or you believe the cached content is incorrect, and you're certain the command
+            exists, set the environment variable STATA_MCP_CACHE_HELP to false
         """
         help_file = (tmp_base_path / f"help__{cmd}.txt")
         try:
@@ -255,7 +261,7 @@ if IS_UNIX:
             pass
         try:
             help_result = help_cls.help(cmd)
-            logging.info(f"Successfully retrieved help for command: {cmd} from Stata.")
+            logging.info(f"Successfully retrieved help for command: {cmd}.")
             if IS_SAVE_HELP:
                 with open(help_file, "w", encoding="utf-8") as help_file:
                     help_file.write(help_result)
