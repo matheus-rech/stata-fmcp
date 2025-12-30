@@ -279,10 +279,11 @@ class DataInfoBase(ABC):
             series: pandas Series with NA values removed
 
         Returns:
-            Dict[str, float]: Summary statistics including mean, se, min, max, skewness, kurtosis
+            Dict[str, float]: Summary statistics including n, mean, se, min, max, skewness, kurtosis
         """
         if len(series) == 0:
             return {
+                "n": 0,
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
@@ -296,6 +297,7 @@ class DataInfoBase(ABC):
 
         if len(numeric_series) == 0:
             return {
+                "n": 0,
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
@@ -310,6 +312,7 @@ class DataInfoBase(ABC):
         se_val = std_val / np.sqrt(n) if n > 0 else np.nan
 
         return {
+            "n": n,
             "mean": mean_val,
             "se": se_val,
             "min": float(numeric_series.min()),
