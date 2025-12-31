@@ -84,7 +84,7 @@ if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
     sys.exit(f"Unknown System: {SYSTEM_OS}")
 
 # Define IS_UNIX for cleaner conditional logic
-IS_UNIX = SYSTEM_OS.lower() != "windows"
+IS_UNIX = SYSTEM_OS.lower() in ["darwin", "linux"]
 
 # Set stata_cli
 try:
