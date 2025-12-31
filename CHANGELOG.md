@@ -2,6 +2,53 @@
 
 
 <details>
+<summary>Click to expand v1.13.16 details</summary>
+
+## [1.13.16] - 2025-12-31
+
+### Added
+- **Help Command Cache**: Implemented local file caching for Stata help command responses
+  - Automatically checks for cached help files before calling Stata
+  - Cache files saved with format `help__{command}.txt` in temporary directory
+  - Significantly reduces response time for repeated help requests
+  - Improves efficiency by avoiding redundant Stata executions
+
+### Changed
+- **Centralized Cache Directory**: Enhanced help system with centralized cache management
+  - Added STATA_MCP_DIRECTORY constant for ~/.statamcp centralized directory
+  - Help cache now stored in ~/.statamcp/help/ for better organization
+  - Improved cache directory structure with dedicated help subdirectory
+  - Better file management with centralized cache location
+
+- **Help System Refactoring**: Moved help implementation to dedicated module
+  - Extracted help logic from mcp_servers.py to stata_help.py
+  - Added Help class for better code organization and maintainability
+  - Improved separation of concerns with modular help implementation
+  - Enhanced code structure for easier maintenance and testing
+
+- **Documentation Language**: Updated help function documentation from Chinese to English
+  - Translated Notes section in help function docstring to English
+  - Improved international accessibility for English-speaking users
+  - Consistent English documentation across the codebase
+
+- **Platform Detection**: Enhanced IS_UNIX detection with explicit platform check
+  - Replaced `SYSTEM_OS.lower() != "windows"` with explicit platform check
+  - More reliable platform detection across different operating systems
+  - Improved code clarity and maintainability
+
+- **Code Quality**: Improved code formatting and style consistency
+  - Applied linting rules to ensure consistent code style
+  - Better code readability with proper formatting
+
+### Performance
+- Dramatically improved response times for repeated help command requests
+- Reduced redundant Stata help command executions
+- Optimized help system workflow with cache-first approach
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.15 details</summary>
 
 ## [1.13.15] - 2025-12-30
