@@ -2,6 +2,46 @@
 
 
 <details>
+<summary>Click to expand v1.13.17 details</summary>
+
+## [1.13.17] - 2026-01-01
+
+### Added
+- **Excel File Support**: Complete support for Excel file formats (.xlsx, .xls) in get_data_info tool
+  - New `XlsxDataInfo` class for handling Excel workbook metadata and statistics
+  - Automatic detection and processing of Excel files with openpyxl integration
+  - Support for both .xlsx and .xls file formats with comprehensive error handling
+  - Enhanced data type detection for Excel-derived datasets
+  - Improved file format validation for Excel workbooks
+
+- **Enhanced Format Support**: Extended data_info tool with additional delimiter-separated formats
+  - Added TSV (Tab-Separated Values) file format support
+  - Added PSV (Pipe-Separated Values) file format support
+  - Unified CSV/TSV/PSV handling in CsvDataInfo with automatic delimiter detection
+  - Extended file extension validation for new formats
+  - Improved data processing pipeline for varied text-based formats
+
+### Changed
+- **MCP Servers Update**: Enhanced mcp_servers.py with comprehensive format support
+  - Updated get_data_info tool to support Excel, TSV, and PSV formats
+  - Improved file type detection and routing logic
+  - Enhanced error messages for unsupported file formats
+  - Better integration of new data format handlers
+
+- **Data Info Architecture**: Improved extensibility for additional file formats
+  - Enhanced base data_info classes for better format handling
+  - Streamlined file extension validation across all formats
+  - Improved type detection for Excel and delimiter-separated files
+
+### Technical
+- **New Dependencies**: Added `openpyxl>=3.1.5` for Excel file processing
+- **Code Quality**: Enhanced file format detection with cleaner separation of concerns
+- **Type Safety**: Improved type annotations for Excel and delimiter-separated file handling
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.16 details</summary>
 
 ## [1.13.16] - 2025-12-31
