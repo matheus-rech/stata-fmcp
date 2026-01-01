@@ -34,6 +34,9 @@ class DataInfoBase(ABC):
         self.cache_dir = Path(cache_dir) if cache_dir else None
         self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
 
+        # Get the file suffix
+        self.suffix = Path(self.data_path).suffix
+
     # Properties
     @property
     def df(self) -> pd.DataFrame:
