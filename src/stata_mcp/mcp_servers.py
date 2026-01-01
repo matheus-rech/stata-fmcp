@@ -252,6 +252,7 @@ if IS_UNIX:
         """
         return help_cls.help(cmd)
 
+
 @stata_mcp.tool(
     name="read_file",
     description="Reads a file and returns its content as a string"
@@ -293,7 +294,7 @@ def get_data_info(data_path: str | Path,
 
     Args:
         data_path (str): the data file's absolutely path.
-            Current, only allow [dta, csv, xlsx, xls] file.
+            Current, only allow [dta, csv, tsv, psv, xlsx, xls] file.
         vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg),
             if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
@@ -325,6 +326,8 @@ def get_data_info(data_path: str | Path,
     CLASS_MAPPING = {
         "dta": DtaDataInfo,
         "csv": CsvDataInfo,
+        "tsv": CsvDataInfo,
+        "psv": CsvDataInfo,
         "xlsx": ExcelDataInfo,
         "xls": ExcelDataInfo,
     }
