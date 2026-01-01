@@ -20,7 +20,7 @@ from typing import Dict, List, Optional, Union
 
 from mcp.server.fastmcp import FastMCP, Icon, Image
 
-from .core.data_info import CsvDataInfo, DtaDataInfo
+from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo, StataFinder
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
@@ -293,7 +293,7 @@ def get_data_info(data_path: str | Path,
 
     Args:
         data_path (str): the data file's absolutely path.
-            Current, only allow [dta, csv] file.
+            Current, only allow [dta, csv, xlsx, xls] file.
         vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg),
             if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
@@ -325,6 +325,8 @@ def get_data_info(data_path: str | Path,
     CLASS_MAPPING = {
         "dta": DtaDataInfo,
         "csv": CsvDataInfo,
+        "xlsx": ExcelDataInfo,
+        "xls": ExcelDataInfo,
     }
 
     data_path = Path(data_path).expanduser().resolve()
