@@ -6,7 +6,7 @@
         "stata-mcp"
       ],
       "env": {
-        "stata_cli": "stata-mp"
+        "STATA_CLI": "stata-mp"
       }
     }
   }
