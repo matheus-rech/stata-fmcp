@@ -26,19 +26,23 @@ theme:
 nav:
   - Home: index.md
   - Overview: overview.md
-  - Usage: usage.md
+  - Quickly Start: usage.md
   - Clients: clients.md
   - Tools: tools.md
+  - Resources: resources.md
   - Prompts: prompts.md
 
   - Agents:
       - Summary: agents/index.md
       - Claude Code: agents/claude_code.md
       - Codex: agents/codex.md
+      - Universal: agents/universal.md
 
-  - Core:
+  - CoreTech:
       - Stata Finder: core/stata/finder.md
       - Stata Runner: core/stata/do.md
+      - Stata Help: core/stata/help.md
+      - Stata package: core/stata/package.md
 
 repo_name: stata-mcp
 repo_url: https://github.com/sepinetam/stata-mcp
