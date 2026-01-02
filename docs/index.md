@@ -5,7 +5,7 @@
 ## Quickly Start
 
 > Requirements: [uv](https://docs.astral.sh/uv/getting-started/installation/) or python 3.11+  
-> If you don't have uv but python, you can install it with `pip install uv`.  
+> If you don't have `uv` but `python`, you can install it with `pip install uv`.  
 
 First, you should check whether your device is supported by stata-mcp.  
 ```bash
