@@ -8,7 +8,9 @@
 # @File   : _base.py
 
 import json
+import tomllib
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, List
@@ -18,7 +20,81 @@ import numpy as np
 import pandas as pd
 
 
+@dataclass
+class Series:
+    data: pd.Series
+
+    def get_summary(self) -> Dict[str, Any]:
+        ...
+
+class StringSeries(Series):
+    @property
+    def obs(self) -> int:
+        return self.data.size
+
+
+class NumericSeries(Series):
+    def get_summary(self) -> Dict[str, Any]:
+        return {
+            "obs": self.obs,
+            "mean": self.mean,
+            "stderr": self.stderr,
+            "min": self.min,
+            "max": self.max,
+            "q1": self.q1,
+            "med": self.med,
+            "q3": self.q3,
+            "skewness": self.skewness,
+            "kurtosis": self.kurtosis,
+        }
+
+    @property
+    def obs(self) -> int:
+        return self.data.size
+
+    @property
+    def min(self) -> float:
+        return self.data.min()
+
+    @property
+    def max(self) -> float:
+        return self.data.max()
+
+    @property
+    def med(self) -> float:
+        return self.data.median()
+
+    @property
+    def q1(self) -> float:
+        return self.data.quantile(0.25)
+
+    @property
+    def q3(self) -> float:
+        return self.data.quantile(0.75)
+
+    @property
+    def mean(self) -> float:
+        return self.data.mean()
+
+    @property
+    def stderr(self) -> float:
+        return np.std(self.data, ddof=1) / np.sqrt(self.obs)
+
+    @property
+    def skewness(self) -> float:
+        return self.data.skew()
+
+    @property
+    def kurtosis(self) -> float:
+        return self.data.kurtosis()
+
+
 class DataInfoBase(ABC):
+    CFG_FILE = Path.home() / ".stata_mcp" / "config.toml"
+    DEFAULT_METRICS = ['obs', 'mean', 'stderr', 'min', 'max']
+    ALLOWED_METRICS = ['obs', 'mean', 'stderr', 'min', 'max',
+                       'q1', 'q3', 'skewness', 'kurtosis']
+
     def __init__(self,
                  data_path: str | PathLike | Path,
                  vars_list: List[str] | str = None,
@@ -36,6 +112,25 @@ class DataInfoBase(ABC):
 
         # Get the file suffix
         self.suffix = Path(self.data_path).suffix
+
+    @property
+    def metrics(self) -> List[str]:
+        try:
+            with open(self.CFG_FILE, "rb") as f:
+                config = tomllib.load(f)
+
+            additional = config.get("data_info", {}).get("metrics", []) or []
+            if not isinstance(additional, list):
+                additional = [additional]
+
+            target = (set(self.DEFAULT_METRICS) | set(additional)) & set(self.ALLOWED_METRICS)
+
+            return list(dict.fromkeys(
+                [m for m in self.DEFAULT_METRICS if m in target] +
+                [m for m in self.ALLOWED_METRICS if m in target]
+            ))
+        except (FileNotFoundError, OSError, Exception):
+            return self.DEFAULT_METRICS
 
     # Properties
     @property
@@ -278,6 +373,12 @@ class DataInfoBase(ABC):
             import random
             sampled_values = random.sample(unique_values.tolist(), 10)
             return sorted(sampled_values)
+
+    def return_nan(self) -> Dict[str, float]:
+        nan = np.nan
+        base = {"n": 0, "mean": nan, "se": nan, "min": nan, "max": nan}
+
+        return {m: nan for m in self.metrics} | base
 
     @staticmethod
     def _get_numeric_summary(series: pd.Series) -> Dict[str, float]:

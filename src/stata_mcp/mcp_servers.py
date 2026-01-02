@@ -30,6 +30,7 @@ from .utils.Prompt import pmp
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
 STATA_MCP_DIRECTORY = Path.home() / ".statamcp"
+CFG_FILE = STATA_MCP_DIRECTORY / "config.toml"
 IS_DEBUG = False
 if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     # Configure logging
