@@ -25,18 +25,18 @@ theme:
 
 nav:
   - Home: index.md
-  - Overview: overview.md
-  - Quickly Start: usage.md
-  - Clients: clients.md
-  - Tools: tools.md
-  - Resources: resources.md
-  - Prompts: prompts.md
+#  - Overview: overview.md
+#  - Quickly Start: usage.md
+#  - Clients: clients.md
+#  - Tools: tools.md
+#  - Resources: resources.md
+#  - Prompts: prompts.md
 
   - Agents:
       - Summary: agents/index.md
-      - Claude Code: agents/claude_code.md
-      - Codex: agents/codex.md
-      - Universal: agents/universal.md
+#      - Claude Code: agents/claude_code.md
+#      - Codex: agents/codex.md
+#      - Universal: agents/universal.md
 
   - CoreTech:
       - Stata Finder: core/stata/finder.md
@@ -46,4 +46,4 @@ nav:
 
 repo_name: stata-mcp
 repo_url: https://github.com/sepinetam/stata-mcp
-
+site_url: https://docs.statamcp.com
