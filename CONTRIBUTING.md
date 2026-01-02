@@ -18,4 +18,4 @@ git push
 
 ## Legal Notice
 
-By contributing to this project, you agree to the terms of the [Contributor License Agreement](docs/Rights/CLA.md). If you do not have the rights to submit the code, please do not contribute.
+By contributing to this project, you agree to the terms of the [Contributor License Agreement](source/docs/Rights/CLA.md). If you do not have the rights to submit the code, please do not contribute.

@@ -1,30 +1,24 @@
 [project]
 name = "stata-mcp"
-version = "1.13.8"
+version = "1.13.17"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
-    { name = "Song Tan", email = "sepine@statamcp.com" }
+    { name = "Song Tan", email = "sepinetam@gmail.com" }
 ]
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
+keywords = ["stata", "mcp", "econometrics", "ai", "agent"]
 dependencies = [
-    "python-dotenv>=1.1.1",
-    "mcp[cli]>=1.20.0",
+    "python-dotenv>=1.2.1",
+    "mcp[cli]>=1.16.0",
     "pandas>=2.3.0",
     "pexpect>=4.9.0",
-#    "flask>=2.3.0",
-#    "jupyter-client>=8.6.3",
-#    "stata-kernel>=1.12.2",
     "openpyxl>=3.1.5",
-#    "notebook>=7.4.5",
-#    "jupyter>=1.1.1",
-#    "pystata>=0.0.1",
-#    "langchain>=0.3.27",
     "openai-agents>=0.3.2",
     "openai>=1.109.1",
     "pathvalidate>=3.3.1",
-    "openai-api-polling>=0.1.1",
+    "openai-api-polling>=0.1.2",
 ]
 
 [project.scripts]

@@ -20,7 +20,7 @@ import pandas as pd
 
 class DataInfoBase(ABC):
     def __init__(self,
-                 data_path: str | Path,
+                 data_path: str | PathLike | Path,
                  vars_list: List[str] | str = None,
                  *,
                  encoding: str = "utf-8",
@@ -33,6 +33,9 @@ class DataInfoBase(ABC):
         self.cache_info = cache_info
         self.cache_dir = Path(cache_dir) if cache_dir else None
         self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
+
+        # Get the file suffix
+        self.suffix = Path(self.data_path).suffix
 
     # Properties
     @property
@@ -98,20 +101,26 @@ class DataInfoBase(ABC):
                         "type": "float",  # it signed as float no matter the value type is int or float
                         "obs": 1314,
                         "summary": {
+                            "n": 1314,
                             "mean": 52.1,
-                            "se": 10.3386,
+                            "se": 0.285,
                             "min": 18,
-                            "max": 100
+                            "max": 100,
+                            "skewness": 0.15,
+                            "kurtosis": 2.3
                         }
                     },
                     "male": {
                         "type": "float",  # Note: no bool type! It is signed with 0 and 1.
                         "obs": 1111,  # Note: maybe some obs do not have value (NA), this is not be counted.
                         "summary": {
+                            "n": 1111,
                             "mean": 0.49955,
-                            "se": 0.500225,
+                            "se": 0.015,
                             "min": 0,
-                            "max": 1
+                            "max": 1,
+                            "skewness": 0.002,
+                            "kurtosis": 1.99
                         }
                     }
                     "var_name": {}
@@ -279,14 +288,17 @@ class DataInfoBase(ABC):
             series: pandas Series with NA values removed
 
         Returns:
-            Dict[str, float]: Summary statistics including mean, se, min, max
+            Dict[str, float]: Summary statistics including n, mean, se, min, max, skewness, kurtosis
         """
         if len(series) == 0:
             return {
+                "n": 0,
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
-                "max": np.nan
+                "max": np.nan,
+                "skewness": np.nan,
+                "kurtosis": np.nan
             }
 
         # Convert to numeric to handle any remaining type issues
@@ -294,10 +306,13 @@ class DataInfoBase(ABC):
 
         if len(numeric_series) == 0:
             return {
+                "n": 0,
                 "mean": np.nan,
                 "se": np.nan,
                 "min": np.nan,
-                "max": np.nan
+                "max": np.nan,
+                "skewness": np.nan,
+                "kurtosis": np.nan
             }
 
         mean_val = float(numeric_series.mean())
@@ -306,8 +321,11 @@ class DataInfoBase(ABC):
         se_val = std_val / np.sqrt(n) if n > 0 else np.nan
 
         return {
+            "n": n,
             "mean": mean_val,
             "se": se_val,
             "min": float(numeric_series.min()),
-            "max": float(numeric_series.max())
+            "max": float(numeric_series.max()),
+            "skewness": float(numeric_series.skew()),
+            "kurtosis": float(numeric_series.kurt())
         }

@@ -2,6 +2,280 @@
 
 
 <details>
+<summary>Click to expand v1.13.17 details</summary>
+
+## [1.13.17] - 2026-01-01
+
+### Added
+- **Excel File Support**: Complete support for Excel file formats (.xlsx, .xls) in get_data_info tool
+  - New `XlsxDataInfo` class for handling Excel workbook metadata and statistics
+  - Automatic detection and processing of Excel files with openpyxl integration
+  - Support for both .xlsx and .xls file formats with comprehensive error handling
+  - Enhanced data type detection for Excel-derived datasets
+  - Improved file format validation for Excel workbooks
+
+- **Enhanced Format Support**: Extended data_info tool with additional delimiter-separated formats
+  - Added TSV (Tab-Separated Values) file format support
+  - Added PSV (Pipe-Separated Values) file format support
+  - Unified CSV/TSV/PSV handling in CsvDataInfo with automatic delimiter detection
+  - Extended file extension validation for new formats
+  - Improved data processing pipeline for varied text-based formats
+
+### Changed
+- **MCP Servers Update**: Enhanced mcp_servers.py with comprehensive format support
+  - Updated get_data_info tool to support Excel, TSV, and PSV formats
+  - Improved file type detection and routing logic
+  - Enhanced error messages for unsupported file formats
+  - Better integration of new data format handlers
+
+- **Data Info Architecture**: Improved extensibility for additional file formats
+  - Enhanced base data_info classes for better format handling
+  - Streamlined file extension validation across all formats
+  - Improved type detection for Excel and delimiter-separated files
+
+### Technical
+- **New Dependencies**: Added `openpyxl>=3.1.5` for Excel file processing
+- **Code Quality**: Enhanced file format detection with cleaner separation of concerns
+- **Type Safety**: Improved type annotations for Excel and delimiter-separated file handling
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.16 details</summary>
+
+## [1.13.16] - 2025-12-31
+
+### Added
+- **Help Command Cache**: Implemented local file caching for Stata help command responses
+  - Automatically checks for cached help files before calling Stata
+  - Cache files saved with format `help__{command}.txt` in temporary directory
+  - Significantly reduces response time for repeated help requests
+  - Improves efficiency by avoiding redundant Stata executions
+
+### Changed
+- **Centralized Cache Directory**: Enhanced help system with centralized cache management
+  - Added STATA_MCP_DIRECTORY constant for ~/.statamcp centralized directory
+  - Help cache now stored in ~/.statamcp/help/ for better organization
+  - Improved cache directory structure with dedicated help subdirectory
+  - Better file management with centralized cache location
+
+- **Help System Refactoring**: Moved help implementation to dedicated module
+  - Extracted help logic from mcp_servers.py to stata_help.py
+  - Added Help class for better code organization and maintainability
+  - Improved separation of concerns with modular help implementation
+  - Enhanced code structure for easier maintenance and testing
+
+- **Documentation Language**: Updated help function documentation from Chinese to English
+  - Translated Notes section in help function docstring to English
+  - Improved international accessibility for English-speaking users
+  - Consistent English documentation across the codebase
+
+- **Platform Detection**: Enhanced IS_UNIX detection with explicit platform check
+  - Replaced `SYSTEM_OS.lower() != "windows"` with explicit platform check
+  - More reliable platform detection across different operating systems
+  - Improved code clarity and maintainability
+
+- **Code Quality**: Improved code formatting and style consistency
+  - Applied linting rules to ensure consistent code style
+  - Better code readability with proper formatting
+
+### Performance
+- Dramatically improved response times for repeated help command requests
+- Reduced redundant Stata help command executions
+- Optimized help system workflow with cache-first approach
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.15 details</summary>
+
+## [1.13.15] - 2025-12-30
+
+### Added
+- **Enhanced Summary Statistics**: Extended data info summary with three additional statistical measures
+  - Added sample size (n) to indicate valid observation count for each variable
+  - Added skewness (3rd moment) to measure distribution asymmetry
+  - Added kurtosis (4th moment/excess kurtosis) to measure distribution tailedness
+  - Provides more comprehensive statistical description for numerical variables
+  - Updated docstring examples with real auto.dta dataset outputs
+
+### Changed
+- Updated `get_data_info` tool to return 7 statistics instead of 4
+- Enhanced docstring examples in both `_base.py` and `mcp_servers.py`
+- Improved statistical analysis capabilities for data exploration
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.14 details</summary>
+
+## [1.13.14] - 2025-12-27
+
+### Added
+- **Help Command Cache**: Implemented local file caching for Stata help command responses
+  - Automatically checks for cached help files before calling Stata
+  - Cache files saved with format `help__{command}.txt` in temporary directory
+  - Significantly reduces response time for repeated help requests
+  - Improves efficiency by avoiding redundant Stata executions
+
+- **Data Info Content-Based Caching**: Implemented smart caching mechanism for data information
+  - Uses MD5 hash of file content to generate unique cache identifiers
+  - Cache filename format: `data_info__{name}_{ext}__hash_{hash}.json`
+  - Ensures same filename and content produce identical cache files
+  - Checks cache before processing, returns cached result if available
+  - Supports `HASH_LENGTH` environment variable to customize hash length (default: 12)
+  - Proper exception handling for corrupted or missing cache files
+
+### Performance
+- Dramatically improved response times for repeated operations on same data files
+- Reduced redundant Stata help command executions
+- Optimized data info retrieval workflow with cache-first approach
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.13 details</summary>
+
+## [1.13.13] - 2025-12-25
+
+### Added
+- **StataNow Support**: Enhanced macOS StataFinder to support StataNow directory detection
+  - Added StataNow to the feature name search list with priority over Stata
+  - Improved multi-version Stata installation detection for better compatibility
+  - Returns list of found Stata installations and selects highest version via max()
+
+- **User Applications Directory**: Extended Stata search paths to include user directory
+  - Added ~/Applications to macOS search paths for user-installed Stata
+  - Maintains priority: system /Applications > user ~/Applications
+  - Better support for non-admin Stata installations
+
+### Changed
+- **Logging System Optimization**: Enhanced logging infrastructure with improved debug control
+  - Added IS_DEBUG flag for better debug mode control
+  - Moved log file to ~/.statamcp/stata_mcp_debug.log for centralized management
+  - Improved path handling with expanduser() and absolute() for reliability
+  - Added parent directory creation with proper error handling
+  - Added project name logging when using custom working directory
+
+- **MCP Server Initialization**: Reorganized initialization order for better reliability
+  - Moved MCP Server initialization after system checks
+  - Removed Claude Code-specific client handling for cross-platform compatibility
+  - Improved error message format with system information
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.12 details</summary>
+
+## [1.13.12] - 2025-12-23
+
+### Fixed
+- **Icon Fetch Timeout Issue**: Added error handling for FastMCP icon initialization to prevent server startup failures
+  - Implemented try-except block to gracefully fallback when icon URL fetch times out
+  - Ensures server can start successfully even with network connectivity issues
+  - Maintains full functionality regardless of icon loading status
+
+### Improved
+- **MCP Instructions Clarity**: Enhanced server instructions for better LLM understanding
+  - Simplified and optimized instructions text for clearer context
+  - Emphasized do-file as the minimum operation unit
+  - Clarified session management behavior (no session config)
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.11 details</summary>
+
+## [1.13.11] - 2025-12-17
+
+### Fixed
+- **Critical macOS Compatibility Issue**: Resolved MCP server startup failures for macOS users
+  - Fixed resource decorator parameter mismatch by updating URI from `help://stata/{cmd}` to `help://stata/{cmd}?is_save={is_save}`
+  - Resolved ValueError that prevented server initialization due to function signature mismatch
+  - Restored full functionality for macOS users upgrading from v1.13.9 to v1.13.10
+
+- **ADO Package Installation Logic**: Improved platform-specific package management reliability
+  - Replaced problematic try-except block with clean if-else platform separation
+  - Removed complex exception handling that could cause silent failures or inconsistent error messages
+  - Ensured stable behavior across Unix (macOS/Linux) and Windows platforms
+
+### Improved
+- **Cross-Platform Path Handling**: Enhanced file path consistency across operating systems
+  - Replaced `str(path)` with `path.as_posix()` in functions returning file paths
+  - Updated `results_doc_path`, `write_dofile`, and `append_dofile` functions for POSIX-style path consistency
+  - Improved reliability of file operations across different platforms
+
+- **Code Organization**: Better structural organization for maintainability
+  - Moved help class initialization inside IS_UNIX condition block for proper scoping
+  - Removed unnecessary `strict_mode` parameter from `write_dofile` function
+  - Enhanced code clarity and reduced potential configuration conflicts
+
+### Notes
+- This release focuses on fixing critical compatibility issues introduced in v1.13.10
+- All macOS users are strongly recommended to upgrade from v1.13.9 or earlier to this version
+- Windows users continue to benefit from the package installation improvements introduced in v1.13.10
+
+</details>
+
+<details>
+<summary>Click to expand v1.13.10 details</summary>
+
+## [1.13.10] - 2025-12-17
+
+### Added
+- **Help Function Enhancement**: Added `is_save` parameter to help function for flexible help content management
+  - New `is_save: bool = True` parameter allows users to control whether help content is saved to files
+  - Help content is now automatically saved to `tmp_base_path / f"help__{cmd}.txt"` when `is_save=True`
+  - Enhanced user experience with optional help content persistence for reference
+
+- **Windows Platform Support for ADO Package Installation**: Enabled cross-platform Stata package management
+  - Moved `ado_package_install` function from Unix-only condition block to all platforms
+  - Windows users can now install Stata packages from SSC, GitHub, and net sources
+  - Added Windows-specific error handling with fallback do-file execution for improved reliability
+  - Updated `__all__` exports to include `ado_package_install` for all platform users
+  - Enhanced return type annotation for better IDE support and code clarity
+
+### Changed
+- **Code Simplification**: Streamlined `stata_do` function log handling logic
+  - Simplified conditional log content processing with ternary operator
+  - Improved code readability without affecting business logic
+  - Maintained identical functionality while reducing code complexity
+
+### Technical
+- **Cross-Platform Compatibility**: Enhanced Windows platform support while maintaining Unix/Linux functionality
+- **Code Quality**: Improved function parameter design with better type annotations and documentation
+- **User Experience**: Expanded feature availability to all supported platforms regardless of operating system
+
+</details>
+
+
+<details>
+<summary>Click to expand v1.13.9 details</summary>
+
+## [1.13.9] - 2025-12-13
+
+### Changed
+- **MCP Server Initialization**: Simplified MCP server initialization and dependency management
+  - Adjusted MCP version requirement from >=1.20.0 to >=1.16.0 for better compatibility
+  - Removed version compatibility checks and complex error handling code
+  - Cleaned up commented dependencies in pyproject.toml for cleaner configuration
+  - Simplified FastMCP initialization with fixed icon configuration
+
+### Technical
+- **Dependency Management**: Streamlined MCP version requirements and compatibility handling
+- **Code Simplification**: Removed 53 lines of complex version checking and error handling code
+- **Initialization Performance**: Enhanced server startup performance through simplified initialization logic
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.8 details</summary>
 
 ## [1.13.8] - 2025-12-06

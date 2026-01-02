@@ -7,106 +7,30 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
+import hashlib
+import json
 import logging
 import logging.handlers
 import os
 import platform
 import sys
 from datetime import datetime
-from importlib.metadata import version
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from mcp.server.fastmcp import FastMCP, Image
-from packaging.version import Version
-from pydantic_core._pydantic_core import ValidationError
+from mcp.server.fastmcp import FastMCP, Icon, Image
 
-from .core.data_info import CsvDataInfo, DtaDataInfo
+from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo, StataFinder
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .utils.Prompt import pmp
 
-mcp_version = Version(version('mcp'))
-
-# Initialize MCP Server
-try:
-    from mcp.server.fastmcp import Icon
-
-    # Use different logic for init MCP Server
-    if mcp_version >= Version("1.16.0"):
-        # v1.16.0 requires icons-sizes as list[str]
-        stata_mcp = FastMCP(
-            name="stata-mcp",
-            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-            website_url="https://www.statamcp.com",
-            icons=[Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes=["512x512"]
-            )]
-        )
-    elif mcp_version == Version("1.15.0"):
-        # v1.15.0 requires icons-sizes as str | None
-        stata_mcp = FastMCP(
-            name="stata-mcp",
-            instructions="Stata-MCP lets you and LLMs can run Stata do-file and fetch the results",
-            website_url="https://www.statamcp.com",
-            icons=[Icon(
-                src="https://r2.statamcp.com/android-chrome-512x512.png",
-                mimeType="image/png",
-                sizes="512x512"
-            )]
-        )
-    else:
-        # Before v1.15.0, there is not an option named icons, just use the minimal config.
-        print(f"Suggest upgrade your mcp version to v{mcp_version}")
-        stata_mcp = FastMCP(name="stata-mcp")
-except ValidationError as e:
-    print(f"Unknown Error: {e}\nTry to use non-config way.")
-    try:
-        stata_mcp = FastMCP()
-    except ValidationError as e:
-        print(f"Still error: {e}! \nIf you need help, leave issues on https://github.com/sepinetam/stata-mcp/issues")
-        sys.exit(1)
-
-# Initialize optional parameters
-SYSTEM_OS = platform.system()
-
-if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
-    # Here, if unknown system -> exit.
-    sys.exit("Unknown System")
-
-# Define IS_UNIX for cleaner conditional logic
-IS_UNIX = SYSTEM_OS.lower() != "windows"
-
-# Set stata_cli
-try:
-    # find stata_cli, env first, then default path
-    finder = StataFinder()
-    STATA_CLI = finder.STATA_CLI
-except FileNotFoundError as e:
-    sys.exit(str(e))
-
-# Determine current working directory (cwd)
-client = os.getenv("STATA_MCP_CLIENT")
-
-if client == "cc":  # TODO: This is a mistake in Claude Code, as it could not get the cwd path.
-    cwd = Path.cwd()
-else:  # If not special client follow default way.
-    cwd = os.getenv("STATA_MCP_CWD", os.getenv("STATA-MCP-CWD", None))  # Keep STATA-MCP-CWD for backward compatibility.
-    if not cwd:  # If there is no CWD config in environment, use `~/Documents` as working directory.
-        cwd = Path.home() / "Documents"
-    else:
-        cwd = Path(cwd)
-
-# Use configured output path if available
-output_base_path = cwd / "stata-mcp-folder"
-output_base_path.mkdir(exist_ok=True)  # make sure this folder exists
-
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
+STATA_MCP_DIRECTORY = Path.home() / ".statamcp"
+IS_DEBUG = False
 if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
     # Configure logging
     logging_handlers = []
@@ -120,10 +44,15 @@ if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
 
     if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
         # If there is no handler, must add file-handler with rotation support.
+        IS_DEBUG = True
         stata_mcp_dot_log_file_path = os.getenv(
-            "STATA_MCP_LOG_FILE",
-            (Path.home() / ".statamcp.log").as_posix()
+            "STATA_MCP_LOG_FILE", None
         )
+        if stata_mcp_dot_log_file_path:
+            stata_mcp_dot_log_file_path = Path(stata_mcp_dot_log_file_path).expanduser().absolute()
+        else:
+            stata_mcp_dot_log_file_path = STATA_MCP_DIRECTORY / "stata_mcp_debug.log"
+        stata_mcp_dot_log_file_path.parent.mkdir(exist_ok=True, parents=True)
 
         # Use RotatingFileHandler to limit file size and implement log rotation
         # Single file max size: 10MB, backup count: 5 (total 6 files including current)
@@ -147,6 +76,49 @@ else:
     # logging.basicConfig(level=logging.CRITICAL + 1)
     logging.disable()
 
+# Initialize optional parameters
+SYSTEM_OS = platform.system()
+
+if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
+    # Here, if unknown system -> exit.
+    sys.exit(f"Unknown System: {SYSTEM_OS}")
+
+# Define IS_UNIX for cleaner conditional logic
+IS_UNIX = SYSTEM_OS.lower() in ["darwin", "linux"]
+
+# Set stata_cli
+try:
+    # find stata_cli, env first, then default path
+    finder = StataFinder()
+    STATA_CLI = finder.STATA_CLI
+except FileNotFoundError as e:
+    sys.exit(str(e))
+
+# Get working directory from environment variable (fallback: auto-detect writable directory)
+cwd = os.getenv("STATA_MCP_CWD")
+
+if not cwd:
+    # Auto-detect: try current directory first, fallback to ~/Documents
+    try:
+        cwd = Path.cwd()
+        # Test write permission by creating and deleting a temp file
+        test_file = cwd / ".stata_mcp_write_test"
+        test_file.touch()
+        test_file.unlink()
+        logging.info(f"Using {cwd} as current working directory. ")
+    except (OSError, PermissionError):
+        # Current directory not writable, use default Documents directory
+        logging.error(f"Cannot write to {cwd}. Using ~/Documents instead.")
+        cwd = Path.home() / "Documents"
+else:
+    cwd = Path(cwd)
+    proj_name = cwd.name
+    logging.info(f"Project name: {proj_name} in {cwd}") if IS_DEBUG else None  # Log project name if debug is enabled
+
+# Use configured output path if available
+output_base_path = cwd / "stata-mcp-folder"
+output_base_path.mkdir(exist_ok=True, parents=True)  # make sure this folder exists
+
 # Create a series of folder
 log_base_path = output_base_path / "stata-mcp-log"
 log_base_path.mkdir(exist_ok=True)
@@ -157,15 +129,33 @@ result_doc_path.mkdir(exist_ok=True)
 tmp_base_path = output_base_path / "stata-mcp-tmp"
 tmp_base_path.mkdir(exist_ok=True)
 
-# Config help class
-if IS_UNIX:
-    help_cls = Help(STATA_CLI)
-
 # Config gitignore in STATA_MCP_FOLDER
 if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
     with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
         f.write("*")
 
+
+# Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
+instructions = ("Stata-MCP provides a set of tools to operate Stata locally. "
+                "Typically, it writes code to do-file and executes them. "
+                "The minimum operation unit should be the do-file; there is no session config.")
+try:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions=instructions,
+        website_url="https://www.statamcp.com",
+        icons=[Icon(
+            src="https://r2.statamcp.com/android-chrome-512x512.png",
+            mimeType="image/png",
+            sizes=["512x512"]
+        )]
+    )
+except Exception:
+    stata_mcp = FastMCP(
+        name="stata-mcp",
+        instructions=instructions,
+        website_url="https://www.statamcp.com",
+    )
 
 IS_PROMPT = os.getenv("STATA_MCP_PROMPT", 'true').lower() == 'true'
 
@@ -232,13 +222,17 @@ def stata_analysis_strategy(lang: str = None) -> str:
 
 
 if IS_UNIX:
+    # Config help class
+    help_cls = Help(stata_cli=STATA_CLI,
+                    project_tmp_dir=tmp_base_path,
+                    cache_dir=STATA_MCP_DIRECTORY / "help")
+
     # As AI-Client does not support Resource at a board yet, we still keep the prompt
     @stata_mcp.resource(
         uri="help://stata/{cmd}",
         name="help",
         description="Get help for a Stata command"
     )
-    @stata_mcp.prompt(name="help", description="Get help for a Stata command")
     @stata_mcp.tool(name="help", description="Get help for a Stata command")
     def help(cmd: str) -> str:
         """
@@ -250,15 +244,13 @@ if IS_UNIX:
         Returns:
             str: The help text returned by Stata for the specified command,
                  or a message indicating that no help was found.
+
+        Notes:
+            If the returned content starts with 'Cached result for {cmd}', but the output shows the command
+            doesn't exist or you believe the cached content is incorrect, and you're certain the command exists,
+            set the environment variable STATA_MCP_CACHE_HELP to false. STATA_MCP_SAVE_HELP is same working method.
         """
-        try:
-            help_result = help_cls.help(cmd)
-            logging.info(f"Successfully retrieved help for command: {cmd}")
-            return help_result
-        except Exception as e:
-            logging.error(f"Failed to retrieve help for command: {cmd}.")
-            logging.debug(str(e))
-            return f"No help found for command: {cmd}"
+        return help_cls.help(cmd)
 
 
 @stata_mcp.tool(
@@ -302,7 +294,7 @@ def get_data_info(data_path: str | Path,
 
     Args:
         data_path (str): the data file's absolutely path.
-            Current, only allow [dta, csv] file.
+            Current, only allow [dta, csv, tsv, psv, xlsx, xls] file.
         vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg),
             if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
@@ -316,51 +308,67 @@ def get_data_info(data_path: str | Path,
         {
             'overview': {'obs': 74, 'var_numbers': 12},
             'vars_detail': {
-                'make': {'type': 'str', 'obs': 74, 'value_list': ['Buick Skylark', 'Chev. Chevette', ...]},
+                'make': {'type': 'str', 'obs': 74, 'value_list': ['AMC Spirit', 'Chev. Impala', 'Honda Civic', ...]},
                 'price': {'type': 'float', 'obs': 74,
-                          'summary': {'mean': 6165.257, 'se': np.float64(342.872), 'min': 3291.0, 'max': 15906.0}},
+                          'summary': {'n': 74, 'mean': 6165.257, 'se': 342.872, 'min': 3291.0, 'max': 15906.0,
+                                     'skewness': 1.688, 'kurtosis': 2.034}},
                 'mpg': {'type': 'float', 'obs': 74,
-                        'summary': {'mean': 21.297, 'se': np.float64(0.673), 'min': 12.0, 'max': 41.0}},
-                'rep78': {'type': 'float', 'obs': 69,
-                          'summary': {'mean': 3.406, 'se': np.float64(0.119), 'min': 1.0, 'max': 5.0}},
-                'headroom': {'type': 'float', 'obs': 74,
-                             'summary': {'mean': 2.993, 'se': np.float64(0.098), 'min': 1.5, 'max': 5.0}},
-                'trunk': {'type': 'float', 'obs': 74,
-                          'summary': {'mean': 13.757, 'se': np.float64(0.497), 'min': 5.0, 'max': 23.0}},
-                'weight': {'type': 'float', 'obs': 74,
-                           'summary': {'mean': 3019.459, 'se': np.float64(90.347), 'min': 1760.0, 'max': 4840.0}},
-                'length': {'type': 'float', 'obs': 74,
-                           'summary': {'mean': 187.932, 'se': np.float64(2.588), 'min': 142.0, 'max': 233.0}},
-                'turn': {'type': 'float', 'obs': 74,
-                         'summary': {'mean': 39.649, 'se': np.float64(0.511), 'min': 31.0, 'max': 51.0}},
-                'displacement': {'type': 'float', 'obs': 74,
-                                 'summary': {'mean': 197.297, 'se': np.float64(10.676), 'min': 79.0, 'max': 425.0}},
-                'gear_ratio': {'type': 'float', 'obs': 74,
-                               'summary': {'mean': 3.015, 'se': np.float64(0.053), 'min': 2.190, 'max': 3.890}},
+                        'summary': {'n': 74, 'mean': 21.297, 'se': 0.673, 'min': 12.0, 'max': 41.0,
+                                   'skewness': 0.968, 'kurtosis': 1.130}},
                 'foreign': {'type': 'float', 'obs': 74,
-                            'summary': {'mean': 0.297, 'se': np.float64(0.053), 'min': 0.0, 'max': 1.0}}},
-            'saved_path': '/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-tmp/auto.json'
+                           'summary': {'n': 74, 'mean': 0.297, 'se': 0.053, 'min': 0.0, 'max': 1.0,
+                                      'skewness': 0.905, 'kurtosis': -1.214}}
+            },
+            'saved_path': '~/Documents/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
         }
     """
     # Config the allowed class
     CLASS_MAPPING = {
         "dta": DtaDataInfo,
         "csv": CsvDataInfo,
+        "tsv": CsvDataInfo,
+        "psv": CsvDataInfo,
+        "xlsx": ExcelDataInfo,
+        "xls": ExcelDataInfo,
     }
 
     data_path = Path(data_path).expanduser().resolve()
     data_name = data_path.stem
     data_extension = data_path.suffix.lower().strip(".")
+
+    # Calculate content hash for cache identification
+    HASH_LENGTH = os.getenv("HASH_LENGTH", 12)
+    content_hash = hashlib.md5(data_path.read_bytes()).hexdigest()[:HASH_LENGTH]
+
+    # Build cache file path based on filename and content hash
+    # This ensures: same filename + same content = same cache file
+    saved_file_path = (
+        tmp_base_path / f"data_info__{data_name}_{data_extension}__hash_{content_hash}.json"
+    )
+
+    # Try to load from cache first
+    try:
+        with open(saved_file_path, "r", encoding="utf-8") as f:
+            cached_result = json.load(f)
+        logging.info(f"Successfully loaded cached data info for: {data_name}")
+        # Return cached result as JSON string to match expected format
+        return json.dumps(cached_result, ensure_ascii=False, indent=2)
+    except FileNotFoundError:
+        logging.info(f"No cache found for {data_name}.")
+        # Cache not found, proceed with file type check and data processing
+    except json.JSONDecodeError as e:
+        logging.warning(f"Cache file corrupted for {data_name}: {e}")
+        # Cache corrupted, proceed with regeneration
+    except Exception as e:
+        logging.warning(f"Error reading cache for {data_name}: {e}.")
+        # Other error, proceed with regeneration
+
+    # Only check file type and process if cache was not found/loaded
     data_info_cls = CLASS_MAPPING.get(data_extension, None)
 
     if not data_info_cls:
         logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
         return f"Unsupported file extension now: {data_extension}"
-
-    # save the data description into tmp-dir
-    saved_file_path = (
-        tmp_base_path / f"{data_name}.json"
-    ).as_posix()  # change to type <str>
 
     summary_result = data_info_cls(
         data_path=data_path,
@@ -401,7 +409,8 @@ def results_doc_path() -> str:
 
     Returns:
         str: The complete path of the newly created result document directory, formatted as:
-            `<result_doc_path>/<YYYYMMDDHHMMSS>`, where the timestamp portion is generated from the system time when the function is executed
+            `<result_doc_path>/<YYYYMMDDHHMMSS>`,
+            where the timestamp portion is generated from the system time when the function is executed
 
     Notes:
         (The following content is not needed for LLM to understand)
@@ -412,14 +421,14 @@ def results_doc_path() -> str:
     """
     path = result_doc_path / datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
     path.mkdir(exist_ok=True)
-    return str(path)
+    return path.as_posix()
 
 
 @stata_mcp.tool(
     name="write_dofile",
     description="write the stata-code to dofile"
 )
-def write_dofile(content: str, encoding: str = None, strict_mode: bool = False) -> str:
+def write_dofile(content: str, encoding: str = None) -> str:
     """
     Write stata code to a dofile and return the do-file path.
 
@@ -451,7 +460,7 @@ def write_dofile(content: str, encoding: str = None, strict_mode: bool = False) 
         logging.info(f"Successful write dofile to {file_path}")
     except Exception as e:
         logging.error(f"Failed to write dofile to {file_path}: {str(e)}")
-    return str(file_path)
+    return file_path.as_posix()
 
 
 @stata_mcp.tool(
@@ -517,85 +526,85 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
         f.write(content)
 
     logging.info(f"Successfully wrote dofile to {new_file_path}")
-    return str(new_file_path)
+    return new_file_path.as_posix()
 
 
-if IS_UNIX:
-    @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
-    def ado_package_install(package: str,
-                            source: str = "ssc",
-                            is_replace: bool = True,
-                            package_source_from: str = None):
-        """
-        Install a package from SSC or GitHub
+@stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
+def ado_package_install(package: str,
+                        source: str = "ssc",
+                        is_replace: bool = True,
+                        package_source_from: str = None) -> str:
+    """
+    Install a package from SSC or GitHub
 
-        Args:
-            package (str): The name of the package to be installed.
-                           for SSC, use package name;
-                           for GitHub, use "username/reponame" format.
-            source (str): The source to install from. Options are "ssc" (default) or "GitHub".
-            is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
-            package_source_from (str): The directory or url of the package from, only works if source == 'net'
+    Args:
+        package (str): The name of the package to be installed.
+                       for SSC, use package name;
+                       for GitHub, use "username/reponame" format.
+        source (str): The source to install from. Options are "ssc" (default) or "GitHub".
+        is_replace (bool): Whether to force replacement of an existing installation. Defaults to True.
+        package_source_from (str): The directory or url of the package from, only works if source == 'net'
 
-        Returns:
-            str: The execution log returned by Stata after running the installation.
+    Returns:
+        str: The execution log returned by Stata after running the installation.
 
-        Examples:
-            >>> ado_package_install(package="outreg2", source="ssc")
-            >>> # this would install outreg2 from ssc
-            >>> ado_package_install(package="sepinetam/texiv", source="github")
-            >>> # this would install texiv from https://github.com/sepinetam/texiv
-            -------------------------------------------------------------------------------
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-            log type:  text
-            opened on:  12 Oct 2025, 18:54:47
+    Examples:
+        >>> ado_package_install(package="outreg2", source="ssc")
+        >>> # this would install outreg2 from ssc
+        >>> ado_package_install(package="sepinetam/texiv", source="github")
+        >>> # this would install texiv from https://github.com/sepinetam/texiv
+        -------------------------------------------------------------------------------
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+        log type:  text
+        opened on:  12 Oct 2025, 18:54:47
 
-            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
+        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012185447.do"
 
-            . ssc install outreg2, replace
-            checking outreg2 consistency and verifying not already installed...
-            all files already exist and are up to date.
+        . ssc install outreg2, replace
+        checking outreg2 consistency and verifying not already installed...
+        all files already exist and are up to date.
 
-            .
-            end of do-file
+        .
+        end of do-file
 
-            . log close
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
-            log type:  text
-            closed on:  12 Oct 2025, 18:54:55
-            -------------------------------------------------------------------------------
+        . log close
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012185447.log
+        log type:  text
+        closed on:  12 Oct 2025, 18:54:55
+        -------------------------------------------------------------------------------
 
-            >>> ado_package_install(command="a_fake_command")
-            -------------------------------------------------------------------------------
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-            log type:  text
-            opened on:  12 Oct 2025, 19:01:59
+        >>> ado_package_install(command="a_fake_command")
+        -------------------------------------------------------------------------------
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+        log type:  text
+        opened on:  12 Oct 2025, 19:01:59
 
-            . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
+        . do "/Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-dofile/20251012190159.do"
 
-            . ssc install a_fake_command, replace
-            ssc install: "a_fake_command" not found at SSC, type search a_fake_command
-            (To find all packages at SSC that start with a, type ssc describe a)
-            r(601);
+        . ssc install a_fake_command, replace
+        ssc install: "a_fake_command" not found at SSC, type search a_fake_command
+        (To find all packages at SSC that start with a, type ssc describe a)
+        r(601);
 
-            end of do-file
+        end of do-file
 
-            r(601);
+        r(601);
 
-            . log close
-            name:  <unnamed>
-            log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
-            log type:  text
-            closed on:  12 Oct 2025, 19:02:00
-            -------------------------------------------------------------------------------
+        . log close
+        name:  <unnamed>
+        log:  /Users/sepinetam/Documents/stata-mcp-folder/stata-mcp-log/20251012190159.log
+        log type:  text
+        closed on:  12 Oct 2025, 19:02:00
+        -------------------------------------------------------------------------------
 
-        Notes:
-            Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
-            and may not be required if the package is already present.
-        """
+    Notes:
+        Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
+        and may not be required if the package is already present.
+    """
+    if IS_UNIX:
         SOURCE_MAPPING: Dict = {
             "github": GITHUB_Install,
             "net": NET_Install,
@@ -616,6 +625,11 @@ if IS_UNIX:
             logging.debug(f"Full installation message: {install_msg}")
 
         return install_msg
+    else:
+        from_message = f"from({package_source_from})" if (package_source_from and source == "net") else ""
+        replace_str = "replace" if is_replace else ""
+        tmp_file = write_dofile(f"{source} install {package}, {replace_str} {from_message}")
+        return stata_do(tmp_file, is_read_log=True).get("log_content")
 
 
 @stata_mcp.tool(name="load_figure")
@@ -762,19 +776,11 @@ def stata_do(dofile_path: str,
         return {"error": str(e)}
 
     # Return log content based on user preference
-    if is_read_log:
-        # Read and include log file content in response
-        log_content = stata_executor.read_log(log_file_path)
-        return {
-            "log_file_path": log_file_path,
-            "log_content": log_content
-        }
-    else:
-        # Return only the log file path
-        return {
-            "log_file_path": log_file_path,
-            "log_content": None
-        }
+    log_content = stata_executor.read_log(log_file_path) if is_read_log else "Not read log"
+    return {
+        "log_file_path": log_file_path,
+        "log_content": log_content
+    }
 
 
 __all__ = [
@@ -790,10 +796,10 @@ __all__ = [
     "mk_dir",
     "load_figure",
     "read_file",
+    "ado_package_install",
 ]
 
 if IS_UNIX:
     __all__.extend([
-        "ado_package_install",
         "help"
     ])

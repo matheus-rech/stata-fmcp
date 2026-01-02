@@ -25,10 +25,10 @@ class CsvDataInfo(DataInfoBase):
                  cache_dir: str | Path = None,
                  **kwargs):
         """
-        Initialize CSV data info handler.
+        Initialize {csv, tsv, psv} data info handler.
 
         Args:
-            data_path: Path to the CSV file
+            data_path: Path to the data file
             vars_list: List of variables to analyze, or single variable name
             encoding: File encoding (default: utf-8)
             cache_info: Whether to cache data information (default: True)
@@ -44,6 +44,11 @@ class CsvDataInfo(DataInfoBase):
             cache_dir=cache_dir,
             **kwargs
         )
+        if "sep" in kwargs and kwargs.get("sep") is None:
+            if self.suffix.lower() == ".tsv":
+                self.kwargs["sep"] = "\t"
+            elif self.suffix.lower() == ".psv":
+                self.kwargs["sep"] = "|"
 
     def _read_data(self) -> pd.DataFrame:
         """
@@ -66,9 +71,9 @@ class CsvDataInfo(DataInfoBase):
             raise FileNotFoundError(f"CSV file not found: {file_path}")
 
         # Check if it's a CSV file
-        valid_extensions = {'.csv', '.txt', '.tsv'}
-        if file_path.suffix.lower() not in valid_extensions:
-            raise ValueError(f"File must have extension in {valid_extensions}, got: {file_path.suffix}")
+        valid_extensions = {'.csv', '.txt', '.tsv', '.psv'}
+        if self.suffix.lower() not in valid_extensions:
+            raise ValueError(f"File must have extension in {valid_extensions}, got: {self.suffix}")
 
         try:
             # Auto-detect header if not explicitly specified

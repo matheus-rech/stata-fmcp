@@ -13,8 +13,6 @@
 
 [![en](https://img.shields.io/badge/lang-English-red.svg)](README.md)
 [![cn](https://img.shields.io/badge/语言-中文-yellow.svg)](source/docs/README/cn/README.md)
-[![fr](https://img.shields.io/badge/langue-Français-blue.svg)](source/docs/README/fr/README.md)
-[![sp](https://img.shields.io/badge/Idioma-Español-green.svg)](source/docs/README/sp/README.md)
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![PyPI Downloads](https://static.pepy.tech/badge/stata-mcp)](https://pepy.tech/projects/stata-mcp)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -22,23 +20,23 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
 
 ---
-**News**: 
-- Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)
-- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).
-- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).
-- Update `StataFinder`, but it is not stable, please config your `STATA_CLI` into your environment.
+**News**:
+- Use Stata-MCP in Claude Code, look [here](#use-stata-mcp-in-claude-code)  
+- Try to use agent mode as tool? Now it is supported more easily [here](source/docs/Usages/agent_as/agent_as_tool.md).  
+- Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).  
+- Update `StataFinder`, it could locate your Stata executable file automatically. 
 
 Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
-> Looking for others?
->
+> Looking for others?  
+> **MCP or AI about Stata**
+> - A session based MCP server for Stata, [mcp-stata](https://github.com/tmonk/mcp-stata)
+> - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
+> 
+> **Datasets and Informations**  
 > - [STOP Dataset](https://opendata.ai4cssci.com): StataMCP-Team Opendata Project 📊, we have open-sourced a comprehensive dataset collection for social science research, aiming to enable the future of AI-driven and data-powered research paradigms.  
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): If you want to fetch the newest information about DID (Difference-in-Difference), click [here](https://asjadnaqvi.github.io/DiD/). Now there is a Chinese translation by [Sepine Tam](https://github.com/sepine) and [StataMCP-Team](https://github.com/statamcp-team) 🎉
-> - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md)
-> - [NBER-MCP](https://github.com/sepinetam/NBER-MCP) & [AER-MCP](https://github.com/sepinetam/AER-MCP) 🔧 under construction
-> - [Econometrics-Agent](https://github.com/FromCSUZhou/Econometrics-Agent)
-> - [TexIV](https://github.com/sepinetam/TexIV): A machine learning-driven framework that transforms text data into usable variables for empirical research using advanced NLP and ML techniques
-> - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
+> - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md) and [nbstata](https://github.com/hugetim/nbstata)
 
 ## 💡 Quick Start
 ### Use Stata-MCP in Claude Code
@@ -48,9 +46,10 @@ Before using it, please make sure you have ever install `Claude Code`, if you do
 
 You can open your terminal and `cd` to your working directory, and run:
 ```bash
-claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
-``` 
-I am not sure whether it works on Windows, as I do not have a Windows device for test it.
+claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --directory $(pwd) stata-mcp
+```
+
+In your working directory, you can find a file named `.mcp.json`, your mcp config will be placed here. 
 
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
 
