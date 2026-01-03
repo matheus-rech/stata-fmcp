@@ -6,8 +6,10 @@
 # @Author : Sepine Tam (谭淞)
 # @Email  : sepinetam@gmail.com
 # @File   : _base.py
+
 import hashlib
 import json
+import logging
 import os
 import tomllib
 from abc import ABC, abstractmethod
@@ -34,6 +36,7 @@ DataInfo
     3. 通过summary函数获取到整个的描述性统计
 """
 
+
 @dataclass
 class Series:
     data: pd.Series
@@ -41,28 +44,37 @@ class Series:
     def get_summary(self) -> Dict[str, Any]:
         ...
 
+
+@dataclass
 class StringSeries(Series):
+    max_display: int = 10
+
     def get_summary(self) -> Dict[str, Any]:
-        non_na_series = self.data.dropna()
-        unique_values = non_na_series.unique()
-
-        value_list = (
-            sorted(unique_values.tolist())
-            if len(unique_values) <= 10
-            else sorted(np.random.choice(unique_values, 10, replace=False).tolist())
-        )
-
         return {
-            "obs": len(non_na_series),
-            "value_list": value_list
+            "obs": self.obs,
+            "value_list": self.value_list
         }
 
     @property
     def obs(self) -> int:
-        return self.data.size
+        return int(self.data.size)
+
+    @property
+    def value_list(self) -> List[str]:
+        unique_values = self.data.unique()
+
+        value_list = (
+            sorted(unique_values.tolist())
+            if len(unique_values) <= self.max_display
+            else sorted(np.random.choice(unique_values, self.max_display, replace=False).tolist())
+        )
+        return value_list
 
 
+@dataclass
 class NumericSeries(Series):
+    max_decimal_places: int = 3
+
     def get_summary(self) -> Dict[str, Any]:
         return {
             "obs": self.obs,
@@ -79,43 +91,43 @@ class NumericSeries(Series):
 
     @property
     def obs(self) -> int:
-        return self.data.size
+        return int(self.data.size)
 
     @property
     def min(self) -> float:
-        return self.data.min()
+        return round(float(self.data.min()), self.max_decimal_places)
 
     @property
     def max(self) -> float:
-        return self.data.max()
+        return round(float(self.data.max()), self.max_decimal_places)
 
     @property
     def med(self) -> float:
-        return self.data.median()
+        return round(float(self.data.median()), self.max_decimal_places)
 
     @property
     def q1(self) -> float:
-        return self.data.quantile(0.25)
+        return round(float(self.data.quantile(0.25)), self.max_decimal_places)
 
     @property
     def q3(self) -> float:
-        return self.data.quantile(0.75)
+        return round(float(self.data.quantile(0.75)), self.max_decimal_places)
 
     @property
     def mean(self) -> float:
-        return self.data.mean()
+        return round(float(self.data.mean()), self.max_decimal_places)
 
     @property
     def stderr(self) -> float:
-        return np.std(self.data, ddof=1) / np.sqrt(self.obs)
+        return round(float(np.std(self.data, ddof=1) / np.sqrt(self.obs)), self.max_decimal_places)
 
     @property
     def skewness(self) -> float:
-        return self.data.skew()
+        return round(float(self.data.skew()), self.max_decimal_places)
 
     @property
     def kurtosis(self) -> float:
-        return self.data.kurtosis()
+        return round(float(self.data.kurtosis()), self.max_decimal_places)
 
 
 class DataInfoBase(ABC):
@@ -125,14 +137,6 @@ class DataInfoBase(ABC):
                        # Additional metrics
                        'q1', 'q3', 'skewness', 'kurtosis']
 
-    @staticmethod
-    def _is_url(data_path) -> bool:
-        try:
-            result = urlparse(str(data_path))
-            return all([result.scheme, result.netloc])
-        except Exception:
-            return False
-
     def __init__(self,
                  data_path: str | PathLike | Path,
                  vars_list: List[str] | str = None,
@@ -140,6 +144,7 @@ class DataInfoBase(ABC):
                  encoding: str = "utf-8",
                  is_cache: bool = True,
                  cache_dir: str | Path = None,
+                 string_keep_number: int = None,
                  decimal_places: int = None,
                  hash_length: int = None,
                  **kwargs):
@@ -163,11 +168,13 @@ class DataInfoBase(ABC):
         self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".stata_mcp" / ".cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
+        self.string_keep_number = string_keep_number or int(os.getenv("STATA_MCP_DATA_INFO_STRING_KEEP_NUMBER", 10))
         self.decimal_places = decimal_places or int(os.getenv("STATA_MCP_DATA_INFO_DECIMAL_PLACES", 3))
         self.HASH_LENGTH = hash_length or os.getenv("HASH_LENGTH", 12)
 
         self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
 
+    # Properties
     @property
     def hash(self) -> str:
         # TODO: 如果是URL的话不能直接read_bytes，低priority
@@ -185,11 +192,11 @@ class DataInfoBase(ABC):
         if self.is_url:
             return self.data_path.split("/")[-1].split('.')[-1]
         else:
-            return self.data_path.suffix
+            return self.data_path.suffix.strip(".")
 
     @property
     def cached_file(self) -> Path:
-        return self.cache_dir / f"data_info__{self.name}_{self.suffix}__hash_{self.hash[:self.HASH_LENGTH]}.json"
+        return self.cache_dir / f"data_info__{self.name}_{self.suffix.strip('.')}__hash_{self.hash[:self.HASH_LENGTH]}.json"
 
     @property
     def metrics(self) -> List[str]:
@@ -210,7 +217,6 @@ class DataInfoBase(ABC):
         except (FileNotFoundError, OSError, Exception):
             return self.DEFAULT_METRICS
 
-    # Properties
     @property
     def df(self) -> pd.DataFrame:
         """Get the data as a pandas DataFrame."""
@@ -224,10 +230,15 @@ class DataInfoBase(ABC):
     @property
     def info(self) -> Dict[str, Any]:
         """Get comprehensive information about the data."""
-        return {
-            "source": self.data_path,
-            "summary": self.summary(),
-        }
+        summary = self.summary()
+        return self._filter(summary)
+
+    @property
+    def data_source(self) -> str:
+        if self.is_url:
+            return str(self.data_path)
+        else:
+            return self.data_path.as_posix()
 
     # Abstract methods (must be implemented by subclasses)
     @abstractmethod
@@ -236,8 +247,7 @@ class DataInfoBase(ABC):
         ...
 
     # Public methods
-    def summary(self,
-                saved_path: str | PathLike = None) -> Dict[str, Any]:
+    def summary(self) -> Dict[str, Any]:
         """
         Provide a summary of the data.
 
@@ -296,43 +306,84 @@ class DataInfoBase(ABC):
         df = self.df
         selected_vars = self.vars_list
 
-        # 基本概览信息
+        # Basic information
         overview = {
+            "source": self.data_source,
             "obs": len(df),
-            "var_numbers": len(selected_vars)
+            "var_numbers": len(selected_vars),
+            "var_list": selected_vars,
         }
-
-        # 详细变量信息
+        info_config = {
+            "metrics": self.metrics,
+            "max_display": self.string_keep_number,
+            "decimal_places": self.decimal_places
+        }
         vars_detail = {}
 
         for var_name in selected_vars:
             var_series = df[var_name]
-            var_info = DataInfoBase._get_variable_info(var_series)
+            series_obj = self._get_variable_info(var_series)
+
+            # Determine variable type for the info dict
+            var_type = "str" if isinstance(series_obj, StringSeries) else "float"
+
+            # Build variable info dictionary
+            var_info = {
+                "type": var_type,
+                "var": var_name,
+                "summary": series_obj.get_summary()
+            }
+
             vars_detail[var_name] = var_info
 
         summary_result = {
             "overview": overview,
-            "vars_detail": vars_detail
+            "info_config": info_config,
+            "vars_detail": vars_detail,
+            "saved_path": self.cached_file.as_posix() if self.is_cache else "Result is not saved."
         }
 
-        if saved_path:
-            # If there is `saved_path`, save the summary into that file with json format.
-            summary_result["saved_path"] = str(saved_path)
-            self.save_to_json(summary_result, saved_path)
+        if self.is_cache:
+            self.save_to_json(summary_result)
 
         return summary_result
 
-    @staticmethod
-    def save_to_json(summary_result: Dict[str, Any],
-                     save_path: str) -> bool:
+    def save_to_json(self, summary: Dict[str, Any]) -> bool:
+        saved_path = self.cached_file
         try:
-            with open(save_path, "w", encoding="utf-8") as f:
-                f.write(json.dumps(summary_result, ensure_ascii=False, indent=4))
+            with open(saved_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps(summary, ensure_ascii=False, indent=4))
             return True
-        except Exception:
+        except Exception as e:
+            logging.error(f"Error saving summary to JSON: {str(e)}")
             return False
 
     # Private helper methods
+    def _filter(self, summary: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Filter the summary result to the animation format.
+
+        Key Points:
+            1. keep self.metrics for numerical vars;
+            2. keep self.string_keep_number values for string vars.
+
+        Args:
+            summary (Dict): the summary result <- self.summary()
+
+        Returns:
+            Dict: filtered summary
+        """
+        var_list = summary.get("vars_detail", {}).keys()
+        for var_name in var_list:
+            var_detail = summary.get("vars_detail", {}).get(var_name)
+            if var_detail.get("type") == "float":
+                # Filter numerical vars based on self.metrics
+                var_summary = var_detail["summary"]
+                filtered_summary = {k: var_summary[k] for k in self.metrics if k in var_summary}
+                summary["vars_detail"][var_name]["summary"].update(filtered_summary)
+
+        return summary
+
     def _get_selected_vars(self, vars: List[str] | str = None) -> List[str]:
         """
         Get the list of selected variables.
@@ -370,42 +421,32 @@ class DataInfoBase(ABC):
         return vars
 
     # Helper methods for summary
-    @staticmethod
-    def _get_variable_info(var_series: pd.Series) -> Dict[str, Any]:
+    def _get_variable_info(self, var_series: pd.Series) -> Series:
         """
-        Get detailed information for a single variable.
+        Create a Series object (StringSeries or NumericSeries) for a variable.
 
         Args:
             var_series: pandas Series containing the variable data
 
         Returns:
-            Dict[str, Any]: Variable information including type, observations, and summary statistics
+            Series: StringSeries or NumericSeries object
         """
         # Remove NA values for analysis
         non_na_series = var_series.dropna()
-        non_na_count = len(non_na_series)
 
         # Determine variable type
         var_type = DataInfoBase._determine_variable_type(non_na_series)
 
-        # Basic variable info
-        var_info = {
-            "type": var_type,
-            "obs": non_na_count
-        }
-
-        # Add type-specific information
+        # Create appropriate Series object
         if var_type == "str":
-            var_info["value_list"] = DataInfoBase._get_string_value_list(non_na_series)
+            return StringSeries(data=non_na_series, max_display=self.string_keep_number)
         else:  # float type
-            var_info["summary"] = DataInfoBase._get_numeric_summary(non_na_series)
-
-        return var_info
+            return NumericSeries(data=non_na_series, max_decimal_places=self.decimal_places)
 
     @staticmethod
     def _determine_variable_type(series: pd.Series) -> str:
         """
-        Determine the type of a variable.
+        Determine the type of variable.
 
         Args:
             series: pandas Series with NA values removed
@@ -425,64 +466,9 @@ class DataInfoBase(ABC):
             return "str"
 
     @staticmethod
-    def _get_string_value_list(series: pd.Series) -> List[str]:
-        """
-        Get a list of unique string values (up to 10 random values).
-
-        Args:
-            series: pandas Series with NA values removed
-
-        Returns:
-            List[str]: List of up to 10 unique string values
-        """
-        unique_values = series.unique()
-
-        if len(unique_values) <= 10:
-            return sorted(unique_values.tolist())
-        else:
-            # Randomly sample 10 values if there are more than 10
-            import random
-            sampled_values = random.sample(unique_values.tolist(), 10)
-            return sorted(sampled_values)
-
-    @staticmethod
-    def return_nan() -> Dict[str, float]:
-        nan = np.nan
-        base = {"obs": 0, "mean": nan, "stderr": nan, "min": nan, "max": nan}
-
-        return {m: nan for m in DataInfoBase.ALLOWED_METRICS} | base
-
-    @staticmethod
-    def _get_numeric_summary(series: pd.Series) -> Dict[str, float]:
-        """
-        Calculate summary statistics for numeric variables.
-
-        Args:
-            series: pandas Series with NA values removed
-
-        Returns:
-            Dict[str, float]: Summary statistics including n, mean, se, min, max, skewness, kurtosis
-        """
-        if len(series) == 0:
-            return DataInfoBase.return_nan()
-
-        # Convert to numeric to handle any remaining type issues
-        numeric_series = pd.to_numeric(series, errors='coerce').dropna()
-
-        if len(numeric_series) == 0:
-            return DataInfoBase.return_nan()
-
-        mean_val = float(numeric_series.mean())
-        std_val = float(numeric_series.std())
-        obs = len(numeric_series)
-        stderr_val = std_val / np.sqrt(obs) if obs > 0 else np.nan
-
-        return {
-            "obs": obs,
-            "mean": mean_val,
-            "stderr": stderr_val,
-            "min": float(numeric_series.min()),
-            "max": float(numeric_series.max()),
-            "skewness": float(numeric_series.skew()),
-            "kurtosis": float(numeric_series.kurt())
-        }
+    def _is_url(data_path) -> bool:
+        try:
+            result = urlparse(str(data_path))
+            return all([result.scheme, result.netloc])
+        except Exception:
+            return False

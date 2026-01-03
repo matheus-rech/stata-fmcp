@@ -7,8 +7,6 @@
 # @Email  : sepinetam@gmail.com
 # @File   : mcp_servers.py
 
-import hashlib
-import json
 import logging
 import logging.handlers
 import os
@@ -334,67 +332,26 @@ def get_data_info(data_path: str | Path,
     }
 
     data_path = Path(data_path).expanduser().resolve()
-    data_name = data_path.stem
     data_extension = data_path.suffix.lower().strip(".")
 
-    # Calculate content hash for cache identification
-    HASH_LENGTH = os.getenv("HASH_LENGTH", 12)
-    content_hash = hashlib.md5(data_path.read_bytes()).hexdigest()[:HASH_LENGTH]
-
-    # Build cache file path based on filename and content hash
-    # This ensures: same filename + same content = same cache file
-    saved_file_path = (
-        tmp_base_path / f"data_info__{data_name}_{data_extension}__hash_{content_hash}.json"
-    )
-
-    # Try to load from cache first
-    try:
-        with open(saved_file_path, "r", encoding="utf-8") as f:
-            cached_result = json.load(f)
-        logging.info(f"Successfully loaded cached data info for: {data_name}")
-        # Return cached result as JSON string to match expected format
-        return json.dumps(cached_result, ensure_ascii=False, indent=2)
-    except FileNotFoundError:
-        logging.info(f"No cache found for {data_name}.")
-        # Cache not found, proceed with file type check and data processing
-    except json.JSONDecodeError as e:
-        logging.warning(f"Cache file corrupted for {data_name}: {e}")
-        # Cache corrupted, proceed with regeneration
-    except Exception as e:
-        logging.warning(f"Error reading cache for {data_name}: {e}.")
-        # Other error, proceed with regeneration
-
-    # Only check file type and process if cache was not found/loaded
     data_info_cls = CLASS_MAPPING.get(data_extension, None)
 
     if not data_info_cls:
         logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
         return f"Unsupported file extension now: {data_extension}"
 
-    summary_result = data_info_cls(
-        data_path=data_path,
-        vars_list=vars_list,
-        encoding=encoding
-    ).summary(saved_file_path)
-
-    # filter的部分有一些问题，等后续再改吧。
-    # 相关注释和实现
-    # info_filter: Optional[List[str]] = None,
-    # info_filter (Optional[List[str]]): the part what you want to reach, (default is None, means all parts).
-    #     for the arg, suggest to use None,
-    #     at present, parts including ["overview", "vars_detail"]
-
-    # # default_filter是所有存在的key
-    # default_filter = ["overview", "vars_detail"]
-    #
-    # if info_filter is None:
-    #     _filter = default_filter
-    # else:
-    #     _filter = [filter_i for filter_i in info_filter if filter_i in default_filter]
-    # filtered_summary = {key: value for key, value in summary_result.items() if key in _filter}
-
-    logging.info(f"Successfully generated data summary for {data_path}, saved to {saved_file_path}")
-    return str(summary_result)
+    data_info = data_info_cls(data_path, vars_list, encoding=encoding, cache_dir=tmp_base_path)
+    try:
+        info = data_info.info
+        if data_info.is_cache:
+            saved_path = info.get("saved_path", None)
+            logging.info(f"Successfully generated data summary for {data_path}, saved to {saved_path}")
+        else:
+            logging.info(f"Successfully generated data summary for {data_path}")
+        return str(info)
+    except Exception as e:
+        logging.error(f"Failed to generate data summary for {data_path}: {str(e)}")
+        return f"Failed to generate data summary for {data_path}: {str(e)}"
 
 
 @stata_mcp.prompt()

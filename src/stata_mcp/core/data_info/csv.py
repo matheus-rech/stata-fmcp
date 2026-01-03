@@ -8,7 +8,6 @@
 # @File   : csv.py
 
 from pathlib import Path
-from typing import List
 
 import pandas as pd
 
@@ -16,40 +15,6 @@ from ._base import DataInfoBase
 
 
 class CsvDataInfo(DataInfoBase):
-    def __init__(self,
-                 data_path: str | Path,
-                 vars_list: List[str] | str = None,
-                 *,
-                 encoding: str = "utf-8",
-                 cache_info: bool = True,
-                 cache_dir: str | Path = None,
-                 **kwargs):
-        """
-        Initialize {csv, tsv, psv} data info handler.
-
-        Args:
-            data_path: Path to the data file
-            vars_list: List of variables to analyze, or single variable name
-            encoding: File encoding (default: utf-8)
-            cache_info: Whether to cache data information (default: True)
-            cache_dir: Directory for caching (default: None)
-            **kwargs: Additional pandas.read_csv() arguments (sep, header, etc.)
-        """
-        # Initialize base class with kwargs
-        super().__init__(
-            data_path=data_path,
-            vars_list=vars_list,
-            encoding=encoding,
-            cache_info=cache_info,
-            cache_dir=cache_dir,
-            **kwargs
-        )
-        if "sep" in kwargs and kwargs.get("sep") is None:
-            if self.suffix.lower() == ".tsv":
-                self.kwargs["sep"] = "\t"
-            elif self.suffix.lower() == ".psv":
-                self.kwargs["sep"] = "|"
-
     def _read_data(self) -> pd.DataFrame:
         """
         Read CSV file into pandas DataFrame.
@@ -63,6 +28,8 @@ class CsvDataInfo(DataInfoBase):
             FileNotFoundError: If the file does not exist
             ValueError: If the file is not a valid CSV file
         """
+        self._before_read()
+
         # Convert to Path object if it's a string
         file_path = Path(self.data_path)
 
@@ -140,3 +107,10 @@ class CsvDataInfo(DataInfoBase):
 
         except Exception as e:
             raise ValueError(f"Error reading CSV file {file_path}: {str(e)}")
+
+    def _before_read(self):
+        if "sep" in self.kwargs and self.kwargs.get("sep") is None:
+            if self.suffix.lower() == ".tsv":
+                self.kwargs["sep"] = "\t"
+            elif self.suffix.lower() == ".psv":
+                self.kwargs["sep"] = "|"
