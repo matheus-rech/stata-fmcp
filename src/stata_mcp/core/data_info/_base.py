@@ -8,6 +8,7 @@
 # @File   : _base.py
 
 import json
+import os
 import tomllib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -108,6 +109,7 @@ class DataInfoBase(ABC):
     CFG_FILE = Path.home() / ".stata_mcp" / "config.toml"
     DEFAULT_METRICS = ['obs', 'mean', 'stderr', 'min', 'max']
     ALLOWED_METRICS = ['obs', 'mean', 'stderr', 'min', 'max',
+                       # Additional metrics
                        'q1', 'q3', 'skewness', 'kurtosis']
 
     def __init__(self,
@@ -117,12 +119,14 @@ class DataInfoBase(ABC):
                  encoding: str = "utf-8",
                  cache_info: bool = True,
                  cache_dir: str | Path = None,
+                 decimal_places: int = None,
                  **kwargs):
         self.data_path = data_path
         self.encoding = encoding
         self._pre_vars_list = vars_list
         self.cache_info = cache_info
         self.cache_dir = Path(cache_dir) if cache_dir else None
+        self.decimal_places = decimal_places or int(os.getenv("STATA_MCP_DATA_INFO_DECIMAL_PLACES", 3))
         self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
 
         # Get the file suffix
