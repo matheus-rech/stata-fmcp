@@ -28,6 +28,21 @@ class Series:
         ...
 
 class StringSeries(Series):
+    def get_summary(self) -> Dict[str, Any]:
+        non_na_series = self.data.dropna()
+        unique_values = non_na_series.unique()
+
+        value_list = (
+            sorted(unique_values.tolist())
+            if len(unique_values) <= 10
+            else sorted(np.random.choice(unique_values, 10, replace=False).tolist())
+        )
+
+        return {
+            "obs": len(non_na_series),
+            "value_list": value_list
+        }
+
     @property
     def obs(self) -> int:
         return self.data.size
@@ -374,11 +389,12 @@ class DataInfoBase(ABC):
             sampled_values = random.sample(unique_values.tolist(), 10)
             return sorted(sampled_values)
 
-    def return_nan(self) -> Dict[str, float]:
+    @staticmethod
+    def return_nan() -> Dict[str, float]:
         nan = np.nan
-        base = {"n": 0, "mean": nan, "se": nan, "min": nan, "max": nan}
+        base = {"obs": 0, "mean": nan, "stderr": nan, "min": nan, "max": nan}
 
-        return {m: nan for m in self.metrics} | base
+        return {m: nan for m in DataInfoBase.ALLOWED_METRICS} | base
 
     @staticmethod
     def _get_numeric_summary(series: pd.Series) -> Dict[str, float]:
@@ -392,39 +408,23 @@ class DataInfoBase(ABC):
             Dict[str, float]: Summary statistics including n, mean, se, min, max, skewness, kurtosis
         """
         if len(series) == 0:
-            return {
-                "n": 0,
-                "mean": np.nan,
-                "se": np.nan,
-                "min": np.nan,
-                "max": np.nan,
-                "skewness": np.nan,
-                "kurtosis": np.nan
-            }
+            return DataInfoBase.return_nan()
 
         # Convert to numeric to handle any remaining type issues
         numeric_series = pd.to_numeric(series, errors='coerce').dropna()
 
         if len(numeric_series) == 0:
-            return {
-                "n": 0,
-                "mean": np.nan,
-                "se": np.nan,
-                "min": np.nan,
-                "max": np.nan,
-                "skewness": np.nan,
-                "kurtosis": np.nan
-            }
+            return DataInfoBase.return_nan()
 
         mean_val = float(numeric_series.mean())
         std_val = float(numeric_series.std())
-        n = len(numeric_series)
-        se_val = std_val / np.sqrt(n) if n > 0 else np.nan
+        obs = len(numeric_series)
+        stderr_val = std_val / np.sqrt(obs) if obs > 0 else np.nan
 
         return {
-            "n": n,
+            "obs": obs,
             "mean": mean_val,
-            "se": se_val,
+            "stderr": stderr_val,
             "min": float(numeric_series.min()),
             "max": float(numeric_series.max()),
             "skewness": float(numeric_series.skew()),
