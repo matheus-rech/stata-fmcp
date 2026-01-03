@@ -299,26 +299,47 @@ def get_data_info(data_path: str | Path,
             if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
 
     Returns:
-        str: the return result is a type <str> but looks like a type <dict>, including the `info_filter` as keys.
-            there is a more details which saved all the information about the data, visit the value of `saved_path`.
+        str: JSON string containing data summary with following structure:
+            - overview: Basic information including source, obs, var_numbers, var_list
+            - info_config: Configuration settings (metrics, max_display, decimal_places)
+            - vars_detail: Detailed statistics for each variable
+            - saved_path: Path to cached JSON file
 
     Examples:
         >>> get_data_info("/Applications/Stata/auto.dta")
         {
-            'overview': {'obs': 74, 'var_numbers': 12},
-            'vars_detail': {
-                'make': {'type': 'str', 'obs': 74, 'value_list': ['AMC Spirit', 'Chev. Impala', 'Honda Civic', ...]},
-                'price': {'type': 'float', 'obs': 74,
-                          'summary': {'n': 74, 'mean': 6165.257, 'se': 342.872, 'min': 3291.0, 'max': 15906.0,
-                                     'skewness': 1.688, 'kurtosis': 2.034}},
-                'mpg': {'type': 'float', 'obs': 74,
-                        'summary': {'n': 74, 'mean': 21.297, 'se': 0.673, 'min': 12.0, 'max': 41.0,
-                                   'skewness': 0.968, 'kurtosis': 1.130}},
-                'foreign': {'type': 'float', 'obs': 74,
-                           'summary': {'n': 74, 'mean': 0.297, 'se': 0.053, 'min': 0.0, 'max': 1.0,
-                                      'skewness': 0.905, 'kurtosis': -1.214}}
+            'overview': {
+                'source': '/Applications/Stata/auto.dta',
+                'obs': 74,
+                'var_numbers': 12,
+                'var_list': ['make', 'price', 'mpg', ...]
             },
-            'saved_path': '~/Documents/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
+            'info_config': {
+                'metrics': ['obs', 'mean', 'stderr', 'min', 'max'],
+                'max_display': 10,
+                'decimal_places': 3
+            },
+            'vars_detail': {
+                'make': {
+                    'type': 'str',
+                    'var': 'make',
+                    'summary': {'obs': 74, 'value_list': ['AMC Pacer', 'Buick Century', ...]}
+                },
+                'price': {
+                    'type': 'float',
+                    'var': 'price',
+                    'summary': {'obs': 74, 'mean': 6165.257, 'stderr': 342.872, 'min': 3291.0, 'max': 15906.0,
+                               'q1': 4220.25, 'med': 5006.5, 'q3': 6332.25, 'skewness': 1.688, 'kurtosis': 2.034}
+                },
+                'mpg': {
+                    'type': 'float',
+                    'var': 'mpg',
+                    'summary': {'obs': 74, 'mean': 21.297, 'stderr': 0.673, 'min': 12.0, 'max': 41.0,
+                               'q1': 18.0, 'med': 20.0, 'q3': 24.75, 'skewness': 0.968, 'kurtosis': 1.13}
+                },
+                ...
+            },
+            'saved_path': '$proj/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
         }
     """
     # Config the allowed class
