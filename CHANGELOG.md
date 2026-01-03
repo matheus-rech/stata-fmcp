@@ -2,6 +2,49 @@
 
 
 <details>
+<summary>Click to expand v1.13.18 details</summary>
+
+## [1.13.18] - 2026-01-03
+
+### Changed
+- **Data Info Refactor**: Simplified get_data_info function and improved architecture
+  - Moved cache logic from function level to class level for better maintainability
+  - Removed redundant cache lookup in get_data_info tool
+  - Enhanced error handling and logging throughout data_info module
+  - Improved code organization with clearer separation of concerns
+
+- **Series Classes Enhancement**: Converted to dataclass for better structure
+  - Refactored StringSeries and NumericSeries to use @dataclass decorator
+  - Added configurable decimal_places parameter for numeric precision control
+  - Added string_keep_number parameter to control value list display
+  - Improved property-based implementation with type annotations
+
+- **Enriched Data Output**: Enhanced get_data_info return structure
+  - Added source field to overview section showing data file path
+  - Added var_list to overview showing all variable names
+  - Added info_config section with metrics, max_display, and decimal_places settings
+  - Enhanced vars_detail with var field for each variable
+  - Improved saved_path reporting for cache files
+
+### Added
+- **Environment Variable Configuration**: Added support for data_info customization
+  - STATA_MCP_DATA_INFO_DECIMAL_PLACES: Control decimal precision (default: 3)
+  - STATA_MCP_DATA_INFO_STRING_KEEP_NUMBER: Control string value display (default: 10)
+
+- **Documentation**: Updated get_data_info docstring with complete examples
+  - Added detailed return value structure documentation
+  - Added comprehensive examples showing string and numeric variable output
+  - Improved clarity with full statistical output display
+
+### Technical
+- **Configuration Management**: Centralized settings with environment variable support
+- **Code Quality**: Improved type safety and code organization
+- **Documentation**: Enhanced inline documentation and examples
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.17 details</summary>
 
 ## [1.13.17] - 2026-01-01
