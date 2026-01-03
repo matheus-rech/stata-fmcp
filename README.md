@@ -38,7 +38,7 @@ Finding our **newest research**? Click [here](source/reports/README.md) or visit
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): If you want to fetch the newest information about DID (Difference-in-Difference), click [here](https://asjadnaqvi.github.io/DiD/). Now there is a Chinese translation by [Sepine Tam](https://github.com/sepine) and [StataMCP-Team](https://github.com/statamcp-team) 🎉
 > - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md) and [nbstata](https://github.com/hugetim/nbstata)
 
-## 💡 Quick Start
+## 💡 Quickly Start
 ### Use Stata-MCP in Claude Code
 We can use Stata-MCP in Claude Code as its prefect agentic ability. 
 
