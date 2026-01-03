@@ -6,7 +6,7 @@
 # @Author : Sepine Tam (谭淞)
 # @Email  : sepinetam@gmail.com
 # @File   : _base.py
-
+import hashlib
 import json
 import os
 import tomllib
@@ -20,6 +20,19 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 
+"""
+DataInfo
+->  Args <core>:
+        data_path (str | Path): 数据文件的位置（一定是绝对路径）
+        vars_list: List[str]: 要获取信息的变量列表
+
+核心任务：获取数据的描述性统计信息来了解数据，分字符串类型和数字类型。
+
+核心流程：
+    1. 拿到数据后跑一遍init，
+    2. 通过df来把整个数据文件都放到df里
+    3. 通过summary函数获取到整个的描述性统计
+"""
 
 @dataclass
 class Series:
@@ -112,25 +125,71 @@ class DataInfoBase(ABC):
                        # Additional metrics
                        'q1', 'q3', 'skewness', 'kurtosis']
 
+    @staticmethod
+    def _is_url(data_path) -> bool:
+        try:
+            result = urlparse(str(data_path))
+            return all([result.scheme, result.netloc])
+        except Exception:
+            return False
+
     def __init__(self,
                  data_path: str | PathLike | Path,
                  vars_list: List[str] | str = None,
                  *,
                  encoding: str = "utf-8",
-                 cache_info: bool = True,
+                 is_cache: bool = True,
                  cache_dir: str | Path = None,
                  decimal_places: int = None,
+                 hash_length: int = None,
                  **kwargs):
+        if isinstance(data_path, str):
+            self.is_url = self._is_url(data_path)
+            if not self.is_url:  # if it is a local file, convert it to a Path object
+                data_path = Path(data_path)
+            self.data_path = data_path
+        elif isinstance(data_path, (Path, PathLike)):
+            self.is_url = False
+            data_path = Path(data_path)
+        else:
+            raise TypeError("data_path must be a string or PathLike object.")
+
         self.data_path = data_path
+
         self.encoding = encoding
         self._pre_vars_list = vars_list
-        self.cache_info = cache_info
-        self.cache_dir = Path(cache_dir) if cache_dir else None
+
+        self.is_cache = is_cache
+        self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".stata_mcp" / ".cache"
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
         self.decimal_places = decimal_places or int(os.getenv("STATA_MCP_DATA_INFO_DECIMAL_PLACES", 3))
+        self.HASH_LENGTH = hash_length or os.getenv("HASH_LENGTH", 12)
+
         self.kwargs = kwargs  # Store additional keyword arguments for subclasses to use
 
-        # Get the file suffix
-        self.suffix = Path(self.data_path).suffix
+    @property
+    def hash(self) -> str:
+        # TODO: 如果是URL的话不能直接read_bytes，低priority
+        return hashlib.md5(self.data_path.read_bytes()).hexdigest()
+
+    @property
+    def name(self) -> str:
+        if self.is_url:
+            return self.data_path.split("/")[-1].split('.')[0]
+        else:
+            return self.data_path.stem
+
+    @property
+    def suffix(self) -> str:
+        if self.is_url:
+            return self.data_path.split("/")[-1].split('.')[-1]
+        else:
+            return self.data_path.suffix
+
+    @property
+    def cached_file(self) -> Path:
+        return self.cache_dir / f"data_info__{self.name}_{self.suffix}__hash_{self.hash[:self.HASH_LENGTH]}.json"
 
     @property
     def metrics(self) -> List[str]:
@@ -166,16 +225,9 @@ class DataInfoBase(ABC):
     def info(self) -> Dict[str, Any]:
         """Get comprehensive information about the data."""
         return {
+            "source": self.data_path,
             "summary": self.summary(),
         }
-
-    @property
-    def is_url(self) -> bool:
-        try:
-            result = urlparse(str(self.data_path))
-            return all([result.scheme, result.netloc])
-        except Exception:
-            return False
 
     # Abstract methods (must be implemented by subclasses)
     @abstractmethod
