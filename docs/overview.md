@@ -179,10 +179,10 @@ agent.run()  # Starts interactive REPL
 
 ## Advanced Features
 
-### **Sandbox System**
+### **Sandbox System** (not support now)
 Alternative execution backend using Jupyter kernels for environments without Stata licenses or for testing purposes.
 
-### **Multi-Language Support**
+### **Multi-Language Support** (not support now)
 Configurable language settings for localized error messages and documentation.
 
 ## Citation and Acknowledgments
