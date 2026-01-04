@@ -183,10 +183,7 @@ agent.run()  # Starts interactive REPL
 Alternative execution backend using Jupyter kernels for environments without Stata licenses or for testing purposes.
 
 ### **Multi-Language Support**
-Configurable language settings (`lang`: "en"|"cn") for localized error messages and documentation.
-
-### **Custom Output Paths**
-The `results_doc_path` prompt enables coordination with Stata's `outreg2`, `esttab`, and similar commands for deterministic output file management.
+Configurable language settings for localized error messages and documentation.
 
 ## Citation and Acknowledgments
 
