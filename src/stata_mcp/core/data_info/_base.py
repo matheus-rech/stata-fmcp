@@ -251,9 +251,6 @@ class DataInfoBase(ABC):
         """
         Provide a summary of the data.
 
-        Args:
-            saved_path (str): If you want to save the result into a json, config this arg with absloute path.
-
         Returns:
             Dict[str, Any]: the summary of provided data (vars)
 
@@ -303,6 +300,10 @@ class DataInfoBase(ABC):
                 }
             }
         """
+        if self.is_cache:
+            cached_summary = self.load_cached_summary()
+            if cached_summary:
+                return self._filter(cached_summary)
         df = self.df
         selected_vars = self.vars_list
 
@@ -312,6 +313,7 @@ class DataInfoBase(ABC):
             "obs": len(df),
             "var_numbers": len(selected_vars),
             "var_list": selected_vars,
+            "hash": self.hash,
         }
         info_config = {
             "metrics": self.metrics,
@@ -358,6 +360,36 @@ class DataInfoBase(ABC):
             logging.error(f"Error saving summary to JSON: {str(e)}")
             return False
 
+    def load_cached_summary(self) -> Dict[str, Any] | None:
+        """
+        Load summary from cache if available and matching the requested variables.
+
+        Returns:
+            Dict[str, Any] | None: Filtered summary from cache or None when unavailable.
+        """
+        if not self.cached_file.exists():
+            return None
+
+        try:
+            with open(self.cached_file, "r", encoding="utf-8") as f:
+                cached_summary = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            logging.error(f"Error loading cached summary: {str(e)}")
+            return None
+
+        cached_hash = cached_summary.get("overview", {}).get("hash")
+        if cached_hash != self.hash:
+            return None
+
+        cached_var_list = cached_summary.get("overview", {}).get("var_list")
+        if not cached_var_list:
+            return None
+
+        if not set(self.vars_list).issubset(set(cached_var_list)):
+            return None
+
+        return self._filter_var(cached_summary)
+
     # Private helper methods
     def _filter(self, summary: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -381,6 +413,19 @@ class DataInfoBase(ABC):
                 var_summary = var_detail["summary"]
                 filtered_summary = {k: var_summary[k] for k in self.metrics if k in var_summary}
                 summary["vars_detail"][var_name]["summary"].update(filtered_summary)
+
+        return summary
+
+    def _filter_var(self, summary: Dict[str, Any]) -> Dict[str, Any]:
+        """Filter cached summary to keep only variables in self.vars_list."""
+        target_vars = self.vars_list or []
+        cached_vars = summary.get("vars_detail", {})
+        filtered_vars_detail = {var: cached_vars[var] for var in target_vars if var in cached_vars}
+
+        summary["vars_detail"] = filtered_vars_detail
+        if "overview" in summary:
+            summary["overview"]["var_list"] = list(target_vars)
+            summary["overview"]["var_numbers"] = len(summary["overview"]["var_list"])
 
         return summary
 
