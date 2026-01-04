@@ -103,6 +103,7 @@ For frequently accessed commands (e.g., `regress`, `xtreg`), enable `STATA_MCP_C
 - The resource URI pattern `help://stata/{cmd}` enables programmatic access via MCP resource protocol
 
 **Environment Variables**:
+
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `STATA_MCP_CACHE_HELP` | `false` | Enable global caching at `~/.statamcp/help/` |
