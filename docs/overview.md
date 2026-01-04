@@ -51,11 +51,12 @@ Operates as a stdio/HTTP/SSE server, responding to tool invocation requests from
 | `mk_dir` | Secure directory creation with validation |
 
 #### **Agent Mode** (`--agent` flag)
-LangChain-based autonomous agent for interactive analysis:
-- Conversational interface for multi-turn analysis sessions
-- Persistent data context across interactions
-- Custom working directory support
-- Model-agnostic architecture (supports any LLM with LangChain integration)
+Interactive REPL agent for conversational analysis:
+- Read-Eval-Print Loop (REPL) interface for multi-turn sessions
+- SQLite-based session management for conversation history
+- Custom working directory support via `--agent <path>`
+- Environment variables for model configuration (`STATA_MCP_MODEL`, `STATA_MCP_API_KEY`)
+- Supports any OpenAI-compatible API endpoint
 
 ## Data Processing Pipeline
 
@@ -126,22 +127,38 @@ MCP-compliant clients (Claude Code, Cline, Continue) register Stata-MCP as a ser
 ```
 
 ### **In Python Agents**
-Direct Python integration via the `StataAgent` class:
+Stata-MCP agents can be embedded as tools within other agent workflows:
 
 ```python
-from stata_mcp.mode import StataAgent
+from stata_mcp.agent_as import StataAgent
+from agents import Agent, Runner
 
-agent = StataAgent(
-    work_dir="~/analysis",
-    model="claude-sonnet-4"
+# Initialize Stata agent and convert to tool
+stata_agent = StataAgent()
+stata_tool = stata_agent.as_tool
+
+# Embed in a larger agent workflow
+research_assistant = Agent(
+    name="Research Assistant",
+    instructions="You help with economic research using Stata",
+    tools=[stata_tool]
 )
-response = agent.run("Run a fixed effects regression on panel data")
+
+# Run the agent
+result = await Runner.run(
+    research_assistant,
+    "Analyze the relationship between education and income"
+)
 ```
 
 ### **Terminal REPL**
-Interactive analysis sessions via:
-```bash
-uvx stata-mcp --agent
+Interactive analysis sessions:
+
+```python
+from stata_mcp.agent_as import REPLAgent
+
+agent = REPLAgent(work_dir="~/analysis")
+agent.run()  # Starts interactive REPL
 ```
 
 ## Cross-Platform Support
