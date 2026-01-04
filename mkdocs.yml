@@ -25,18 +25,14 @@ theme:
 
 nav:
   - Home: index.md
-#  - Overview: overview.md
-#  - Quickly Start: usage.md
-#  - Clients: clients.md
-#  - Tools: tools.md
-#  - Resources: resources.md
-#  - Prompts: prompts.md
+  - Overview: overview.md
+  - Usage: usage.md
+  - Clients: clients.md
+  - Tools: mcp/tools.md
+  - Resources: mcp/resources.md
 
   - Agents:
       - Summary: agents/index.md
-#      - Claude Code: agents/claude_code.md
-#      - Codex: agents/codex.md
-#      - Universal: agents/universal.md
 
   - CoreTech:
       - Stata Finder: core/stata/finder.md
