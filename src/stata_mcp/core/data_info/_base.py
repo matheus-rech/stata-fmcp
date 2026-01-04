@@ -251,9 +251,6 @@ class DataInfoBase(ABC):
         """
         Provide a summary of the data.
 
-        Args:
-            saved_path (str): If you want to save the result into a json, config this arg with absloute path.
-
         Returns:
             Dict[str, Any]: the summary of provided data (vars)
 
@@ -303,6 +300,10 @@ class DataInfoBase(ABC):
                 }
             }
         """
+        if self.is_cache:
+            cached_summary = self.load_cached_summary()
+            if cached_summary:
+                return self._filter(cached_summary)
         df = self.df
         selected_vars = self.vars_list
 
