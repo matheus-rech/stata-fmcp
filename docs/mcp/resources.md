@@ -8,6 +8,11 @@ Stata-MCP provides MCP resources for accessing Stata documentation and help cont
 > **Platform Support**: macOS and Linux only (Windows not supported)
 
 ```python
+@stata_mcp.resource(
+    uri="help://stata/{cmd}",
+    name="help",
+    description="Get help for a Stata command"
+)
 def help(cmd: str) -> str:
     ...
 ```
