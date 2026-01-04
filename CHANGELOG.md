@@ -2,6 +2,25 @@
 
 
 <details>
+<summary>Click to expand v1.13.19 details</summary>
+
+## [1.13.19] - 2026-01-04
+
+### Changed
+- **Cached Summary Loading**: Enhanced summary method with automatic cache loading capability
+  - Added `load_cached_summary()` integration in DataInfoBase.summary() method
+  - Improved performance by loading from cache when available instead of reprocessing data
+  - Maintains backward compatibility with existing functionality
+  - Optimized data info retrieval workflow with cache-first approach
+
+### Technical
+- **Performance Enhancement**: Reduced data processing time for repeated operations on same datasets
+- **Cache Architecture**: Better integration of cached summary loading into main summary workflow
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.18 details</summary>
 
 ## [1.13.18] - 2026-01-03
