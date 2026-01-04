@@ -25,12 +25,11 @@ theme:
 
 nav:
   - Home: index.md
-#  - Overview: overview.md
-#  - Quickly Start: usage.md
+  - Overview: overview.md
+  - Usage: usage.md
 #  - Clients: clients.md
   - Tools: tools.md
 #  - Resources: resources.md
-#  - Prompts: prompts.md
 
   - Agents:
       - Summary: agents/index.md
