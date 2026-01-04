@@ -22,7 +22,6 @@ from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo, StataFinder
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
-from .utils.Prompt import pmp
 
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
@@ -156,77 +155,13 @@ except Exception:
         website_url="https://www.statamcp.com",
     )
 
-IS_PROMPT = os.getenv("STATA_MCP_PROMPT", 'true').lower() == 'true'
-
-
-@stata_mcp.prompt()
-def stata_assistant_role(lang: str = None) -> str:
-    """
-    Return the Stata assistant role prompt content.
-
-    This function retrieves a predefined prompt that defines the role and capabilities
-    of a Stata analysis assistant. The prompt helps set expectations and context for
-    the assistant's behavior when handling Stata-related tasks.
-
-    Args:
-        lang (str, optional): Language code for localization of the prompt content.
-            If None, returns the default language version. Defaults to None.
-            Examples: "en" for English, "cn" for Chinese.
-
-    Returns:
-        str: The Stata assistant role prompt text in the requested language.
-
-    Examples:
-        >>> stata_assistant_role()  # Returns default language version
-        "I am a Stata analysis assistant..."
-
-        >>> stata_assistant_role(lang="en")  # Returns English version
-        "I am a Stata analysis assistant..."
-
-        >>> stata_assistant_role(lang="cn")  # Returns Chinese version
-        "我是一个Stata分析助手..."
-    """
-    return pmp.get_prompt(prompt_id="stata_assistant_role", lang=lang)
-
-
-@stata_mcp.prompt()
-def stata_analysis_strategy(lang: str = None) -> str:
-    """
-    Return the Stata analysis strategy prompt content.
-
-    This function retrieves a predefined prompt that outlines the recommended
-    strategy for conducting data analysis using Stata. The prompt includes
-    guidelines for data preparation, code generation, results management,
-    reporting, and troubleshooting.
-
-    Args:
-        lang (str, optional): Language code for localization of the prompt content.
-            If None, returns the default language version. Defaults to None.
-            Examples: "en" for English, "cn" for Chinese.
-
-    Returns:
-        str: The Stata analysis strategy prompt text in the requested language.
-
-    Examples:
-        >>> stata_analysis_strategy()  # Returns default language version
-        "When conducting data analysis using Stata..."
-
-        >>> stata_analysis_strategy(lang="en")  # Returns English version
-        "When conducting data analysis using Stata..."
-
-        >>> stata_analysis_strategy(lang="cn")  # Returns Chinese version
-        "使用Stata进行数据分析时，请遵循以下策略..."
-    """
-    return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
-
-
 if IS_UNIX:
     # Config help class
     help_cls = Help(stata_cli=STATA_CLI,
                     project_tmp_dir=tmp_base_path,
                     cache_dir=STATA_MCP_DIRECTORY / "help")
 
-    # As AI-Client does not support Resource at a board yet, we still keep the prompt
+    # As AI-Client does not support Resource at a board yet, we still keep the resource
     @stata_mcp.resource(
         uri="help://stata/{cmd}",
         name="help",
@@ -375,34 +310,6 @@ def get_data_info(data_path: str | Path,
         return f"Failed to generate data summary for {data_path}: {str(e)}"
 
 
-@stata_mcp.prompt()
-def results_doc_path() -> str:
-    """
-    Generate and return a result document storage path based on the current timestamp.
-
-    This function performs the following operations:
-    1. Gets the current system time and formats it as a '%Y%m%d%H%M%S' timestamp string
-    2. Concatenates this timestamp string with the preset result_doc_path base path to form a complete path
-    3. Creates the directory corresponding to that path (no error if directory already exists)
-    4. Returns the complete path string of the newly created directory
-
-    Returns:
-        str: The complete path of the newly created result document directory, formatted as:
-            `<result_doc_path>/<YYYYMMDDHHMMSS>`,
-            where the timestamp portion is generated from the system time when the function is executed
-
-    Notes:
-        (The following content is not needed for LLM to understand)
-        - Using the `exist_ok=True` parameter, no exception will be raised when the target directory already exists
-        - The function uses the walrus operator (:=) in Python 3.8+ to assign a variable within an expression
-        - The returned path is suitable for use as the output directory for Stata commands such as `outreg2`
-        - In specific Stata code, you can set the file output path at the beginning.
-    """
-    path = result_doc_path / datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
-    path.mkdir(exist_ok=True)
-    return path.as_posix()
-
-
 @stata_mcp.tool(
     name="write_dofile",
     description="write the stata-code to dofile"
@@ -423,12 +330,6 @@ def write_dofile(content: str, encoding: str = None) -> str:
         For avoiding make mistake, you can generate stata-code with the function from `StataCommandGenerator` class.
         Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
         If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
-
-    Enhancement:
-        If you have `outreg2`, `esttab` command for output the result,
-        you should use the follow command to get the output path.
-        `results_doc_path`, and use `local output_path path` the path is the return of the function `results_doc_path`.
-        If you want to use the function `write_dofile`, please use `results_doc_path` before which is necessary.
 
     """
     file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
@@ -466,12 +367,6 @@ def append_dofile(original_dofile_path: str, content: str, encoding: str = None)
         For avoiding mistakes, you can generate stata-code with the function from `StataCommandGenerator` class.
         Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
         If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
-
-    Enhancement:
-        If you have `outreg2`, `esttab` command for output the result,
-        you should use the follow command to get the output path.
-        `results_doc_path`, and use `local output_path path` the path is the return of the function `results_doc_path`.
-        If you want to use the function `append_dofile`, please use `results_doc_path` before which is necessary.
     """
     # Set encoding if None
     encoding = encoding or "utf-8"
