@@ -28,8 +28,8 @@ nav:
   - Overview: overview.md
   - Usage: usage.md
 #  - Clients: clients.md
-  - Tools: tools.md
-#  - Resources: resources.md
+  - Tools: mcp/tools.md
+  - Resources: mcp/resources.md
 
   - Agents:
       - Summary: agents/index.md
