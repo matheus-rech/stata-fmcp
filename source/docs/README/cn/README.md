@@ -17,9 +17,16 @@
 [![sp](https://img.shields.io/badge/Idioma-Español-green.svg)](../sp/README.md)
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![PyPI Downloads](https://static.pepy.tech/badge/stata-mcp)](https://pepy.tech/projects/stata-mcp)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../../../../LICENSE)
+[![License: AGPL 3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](../../../../LICENSE)
 [![Issue](https://img.shields.io/badge/Issue-report-green.svg)](https://github.com/sepinetam/stata-mcp/issues/new)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
+
+---
+**Notes**: While we strive to make open source accessible to everyone, we regret that we can no longer maintain the Apache-2.0 License. Due to individuals directly copying this project and claiming to be its maintainers, we have decided to change the license to AGPL-3.0 to prevent misuse of the project in ways that go against our original vision.
+
+**Notes**: 尽管我们希望尽可能让所有人都能从开源中获益，但我们很遗憾地宣布无法继续保持 Apache-2.0 License。由于有人直接抄袭本项目并标榜其为项目维护者，我们不得不将 License 更改为 AGPL-3.0，以防止有人滥用本项目进行违背项目初心的事情。
+
+**背景**：@jackdark425 的[仓库](https://github.com/jackdark425/aigroup-stata-mcp)直接抄袭了本项目并标榜为项目唯一维护者。我们欢迎基于fork的开源协作，包括但不限于添加新的feature、修改已有bug或对项目提出您宝贵的意见，但坚决反对抄袭和虚假署名行为。
 
 ---
 **新闻**：
@@ -199,7 +206,7 @@ uvx /path/to/your/whl/stata_mcp-1.13.0-py3-non-any.whl  # 这里的文件名可�
 如果您遇到任何错误或有功能请求，请[提交问题](https://github.com/sepinetam/stata-mcp/issues/new)。
 
 ## 📄 许可证
-[Apache License 2.0](../../../../LICENSE)
+[GNU Affero General Public License v3.0](../../../../LICENSE)
 
 ## 📚 引用
 如果您在研究中使用 Stata-MCP，请使用以下格式之一引用此存储库：
