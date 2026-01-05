@@ -33,6 +33,7 @@ nav:
 
   - Agents:
       - Summary: agents/index.md
+      - Claude Code: agents/claude_code.md
 
   - CoreTech:
       - Stata Finder: core/stata/finder.md
