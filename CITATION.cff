@@ -10,4 +10,4 @@ version: 1.13.19
 date-released: 2026-01-04
 url: "https://www.statamcp.com"
 repository-code: "https://github.com/sepinetam/stata-mcp"
-license: Apache-2.0
+license: AGPL-3.0

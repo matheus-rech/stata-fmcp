@@ -15,9 +15,16 @@
 [![cn](https://img.shields.io/badge/语言-中文-yellow.svg)](source/docs/README/cn/README.md)
 [![PyPI version](https://img.shields.io/pypi/v/stata-mcp.svg)](https://pypi.org/project/stata-mcp/)
 [![PyPI Downloads](https://static.pepy.tech/badge/stata-mcp)](https://pepy.tech/projects/stata-mcp)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License: AGPL 3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](LICENSE)
 [![Issue](https://img.shields.io/badge/Issue-report-green.svg)](https://github.com/sepinetam/stata-mcp/issues/new)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/SepineTam/stata-mcp)
+
+---
+**Notes**: While we strive to make open source accessible to everyone, we regret that we can no longer maintain the Apache-2.0 License. Due to individuals directly copying this project and claiming to be its maintainers, we have decided to change the license to AGPL-3.0 to prevent misuse of the project in ways that go against our original vision.
+
+**Notes**: 尽管我们希望尽可能让所有人都能从开源中获益，但我们很遗憾地宣布无法继续保持 Apache-2.0 License。由于有人直接抄袭本项目并标榜其为项目维护者，我们不得不将 License 更改为 AGPL-3.0，以防止有人滥用本项目进行违背项目初心的事情。
+
+**背景**：@jackdark425 的[仓库](https://github.com/jackdark425/aigroup-stata-mcp)直接抄袭了本项目并标榜为项目唯一维护者。我们欢迎基于fork的开源协作，包括但不限于添加新的feature、修改已有bug或对项目提出您宝贵的意见，但坚决反对抄袭和虚假署名行为。
 
 ---
 **News**:
@@ -198,7 +205,7 @@ For more information, refer to the [Statement](source/docs/Rights/Statement.md).
 If you encounter any bugs or have feature requests, please [open an issue](https://github.com/sepinetam/stata-mcp/issues/new).
 
 ## 📄 License
-[Apache License 2.0](LICENSE)
+[GNU Affero General Public License v3.0](LICENSE)
 
 ## 📚 Citation
 If you use Stata-MCP in your research, please cite this repository using one of the following formats:
@@ -233,7 +240,7 @@ Or contribute directly by submitting a [Pull Request](https://github.com/sepinet
 The author sincerely thanks the Stata official team for their support and the Stata License for authorizing the test development.
 
 ## 📃 Statement
-The Stata referred to in this project is the commercial software Stata developed by [StataCorp LLC](https://www.stata.com/company/). This project is not affiliated with, endorsed by, or sponsored by StataCorp LLC. This project does not include the Stata software or any installation packages; users must obtain and install a validly licensed copy of Stata from StataCorp. This project is licensed under [Apache-2.0](LICENSE). The project maintainers accept no liability for any loss or damage arising from the use of this project or from actions related to Stata.
+The Stata referred to in this project is the commercial software Stata developed by [StataCorp LLC](https://www.stata.com/company/). This project is not affiliated with, endorsed by, or sponsored by StataCorp LLC. This project does not include the Stata software or any installation packages; users must obtain and install a validly licensed copy of Stata from StataCorp. This project is licensed under [AGPL-3.0](LICENSE). The project maintainers accept no liability for any loss or damage arising from the use of this project or from actions related to Stata.
 
 More information: refer to the Chinese version at [source/docs/README/cn/README.md]; in case of any conflict, the Chinese version shall prevail.
 

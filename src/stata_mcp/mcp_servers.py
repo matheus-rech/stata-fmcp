@@ -22,7 +22,6 @@ from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo, StataFinder
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
-from .utils.Prompt import pmp
 
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
@@ -156,69 +155,10 @@ except Exception:
         website_url="https://www.statamcp.com",
     )
 
-IS_PROMPT = os.getenv("STATA_MCP_PROMPT", 'true').lower() == 'true'
 
-
-@stata_mcp.prompt()
-def stata_assistant_role(lang: str = None) -> str:
-    """
-    Return the Stata assistant role prompt content.
-
-    This function retrieves a predefined prompt that defines the role and capabilities
-    of a Stata analysis assistant. The prompt helps set expectations and context for
-    the assistant's behavior when handling Stata-related tasks.
-
-    Args:
-        lang (str, optional): Language code for localization of the prompt content.
-            If None, returns the default language version. Defaults to None.
-            Examples: "en" for English, "cn" for Chinese.
-
-    Returns:
-        str: The Stata assistant role prompt text in the requested language.
-
-    Examples:
-        >>> stata_assistant_role()  # Returns default language version
-        "I am a Stata analysis assistant..."
-
-        >>> stata_assistant_role(lang="en")  # Returns English version
-        "I am a Stata analysis assistant..."
-
-        >>> stata_assistant_role(lang="cn")  # Returns Chinese version
-        "我是一个Stata分析助手..."
-    """
-    return pmp.get_prompt(prompt_id="stata_assistant_role", lang=lang)
-
-
-@stata_mcp.prompt()
-def stata_analysis_strategy(lang: str = None) -> str:
-    """
-    Return the Stata analysis strategy prompt content.
-
-    This function retrieves a predefined prompt that outlines the recommended
-    strategy for conducting data analysis using Stata. The prompt includes
-    guidelines for data preparation, code generation, results management,
-    reporting, and troubleshooting.
-
-    Args:
-        lang (str, optional): Language code for localization of the prompt content.
-            If None, returns the default language version. Defaults to None.
-            Examples: "en" for English, "cn" for Chinese.
-
-    Returns:
-        str: The Stata analysis strategy prompt text in the requested language.
-
-    Examples:
-        >>> stata_analysis_strategy()  # Returns default language version
-        "When conducting data analysis using Stata..."
-
-        >>> stata_analysis_strategy(lang="en")  # Returns English version
-        "When conducting data analysis using Stata..."
-
-        >>> stata_analysis_strategy(lang="cn")  # Returns Chinese version
-        "使用Stata进行数据分析时，请遵循以下策略..."
-    """
-    return pmp.get_prompt(prompt_id="stata_analysis_strategy", lang=lang)
-
+# =============================================================================
+# STATA_MCP.TOOLS: Stata Core Tools
+# =============================================================================
 
 if IS_UNIX:
     # Config help class
@@ -226,7 +166,7 @@ if IS_UNIX:
                     project_tmp_dir=tmp_base_path,
                     cache_dir=STATA_MCP_DIRECTORY / "help")
 
-    # As AI-Client does not support Resource at a board yet, we still keep the prompt
+    # As AI-Client does not support Resource at a board yet, we still keep the resource
     @stata_mcp.resource(
         uri="help://stata/{cmd}",
         name="help",
@@ -252,260 +192,78 @@ if IS_UNIX:
         return help_cls.help(cmd)
 
 
-@stata_mcp.tool(
-    name="read_file",
-    description="Reads a file and returns its content as a string"
-)
-def read_file(file_path: str, encoding: str = "utf-8") -> str:
+@stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
+def stata_do(dofile_path: str,
+             log_file_name: str = None,
+             is_read_log: bool = True) -> Dict[str, Union[str, None]]:
     """
-    Reads the content of a file and returns it as a string.
+    Execute a Stata do-file and return the log file path with optional log content.
+
+    This function runs a Stata do-file using the configured Stata executable and
+    generates a log file. It supports cross-platform execution (macOS, Windows, Linux).
 
     Args:
-        file_path (str): The full path to the file to be read.
-        encoding (str, optional): The encoding used to decode the file. Defaults to "utf-8".
+        dofile_path (str): Absolute or relative path to the Stata do-file (.do) to execute.
+        log_file_name (str, optional): Set log file name without a time-string. If None, using nowtime as filename
+        is_read_log (bool, optional): Whether to read and return the log file content.
+                                    Defaults to True.
 
     Returns:
-        str: The content of the file as a string.
+        Dict[str, Union[str, None]]: A dictionary containing:
+            - "log_file_path" (str): Path to the generated Stata log file
+            - "log_content" (str, optional): Content of the log file if is_read_log is True
+
+    Raises:
+        FileNotFoundError: If the specified do-file does not exist
+        RuntimeError: If Stata execution fails or log file cannot be generated
+        PermissionError: If there are insufficient permissions to execute Stata or write log files
+
+    Example:
+        >>> do_file_path: str | Path = ...
+        >>> result = stata_do(do_file_path, is_read_log=True)
+        >>> print(result[log_file_path])
+        /path/to/logs/analysis.log
+        >>> print(result[log_content])
+        Stata log content...
+
+        >>> result = stata_do(do_file_path, log_file_name="experience")  # Not suggest to use log_file_name arg.
+        >>> print(result[log_file_path])
+        /log/file/base/experience.log
+
+        >>> not_exist_dofile = ...
+        >>> result = stata_do(not_exist_dofile)
+        >>> print(result)
+        {"error": "error content..."}
+
+    Note:
+        - The log file is automatically created in the configured log_file_path directory
+        - Supports multiple operating systems through the StataDo executor
+        - Log file naming follows Stata conventions with .log extension
     """
-    path = Path(file_path)
-    if not path.exists():
-        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+    # Initialize Stata executor with system configuration
+    stata_executor = StataDo(
+        stata_cli=STATA_CLI,  # Path to Stata executable
+        log_file_path=str(log_base_path),  # Directory for log files
+        dofile_base_path=str(dofile_base_path),  # Base directory for do-files
+        sys_os=SYSTEM_OS  # Operating system identifier
+    )
+
+    # Execute the do-file and get log file path
+    logging.info(f"Try to running file {dofile_path}")
 
     try:
-        with open(path, "r", encoding=encoding) as file:
-            log_content = file.read()
-        logging.info(f"Successfully read file: {file_path}")
-        return log_content
-    except IOError as e:
-        logging.error(f"Failed to read file {file_path}: {str(e)}")
-        raise IOError(f"An error occurred while reading the file: {e}")
+        log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
+        logging.info(f"{dofile_path} is executed successfully. Log file path: {log_file_path}")
+    except Exception as e:
+        logging.error(f"Failed to execute {dofile_path}. Error: {str(e)}")
+        return {"error": str(e)}
 
-
-@stata_mcp.tool(
-    name="get_data_info",
-    description="Get descriptive statistics for the data file"
-)
-def get_data_info(data_path: str | Path,
-                  vars_list: Optional[List[str]] = None,
-                  encoding: str = "utf-8") -> str:
-    """
-    Get descriptive statistics for the data file.
-
-    Args:
-        data_path (str): the data file's absolutely path.
-            Current, only allow [dta, csv, tsv, psv, xlsx, xls] file.
-        vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
-        encoding (str): data file encoding method (dta file is not supported this arg),
-            if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
-
-    Returns:
-        str: JSON string containing data summary with following structure:
-            - overview: Basic information including source, obs, var_numbers, var_list
-            - info_config: Configuration settings (metrics, max_display, decimal_places)
-            - vars_detail: Detailed statistics for each variable
-            - saved_path: Path to cached JSON file
-
-    Examples:
-        >>> get_data_info("/Applications/Stata/auto.dta")
-        {
-            'overview': {
-                'source': '/Applications/Stata/auto.dta',
-                'obs': 74,
-                'var_numbers': 12,
-                'var_list': ['make', 'price', 'mpg', ...]
-            },
-            'info_config': {
-                'metrics': ['obs', 'mean', 'stderr', 'min', 'max'],
-                'max_display': 10,
-                'decimal_places': 3
-            },
-            'vars_detail': {
-                'make': {
-                    'type': 'str',
-                    'var': 'make',
-                    'summary': {'obs': 74, 'value_list': ['AMC Pacer', 'Buick Century', ...]}
-                },
-                'price': {
-                    'type': 'float',
-                    'var': 'price',
-                    'summary': {'obs': 74, 'mean': 6165.257, 'stderr': 342.872, 'min': 3291.0, 'max': 15906.0,
-                               'q1': 4220.25, 'med': 5006.5, 'q3': 6332.25, 'skewness': 1.688, 'kurtosis': 2.034}
-                },
-                'mpg': {
-                    'type': 'float',
-                    'var': 'mpg',
-                    'summary': {'obs': 74, 'mean': 21.297, 'stderr': 0.673, 'min': 12.0, 'max': 41.0,
-                               'q1': 18.0, 'med': 20.0, 'q3': 24.75, 'skewness': 0.968, 'kurtosis': 1.13}
-                },
-                ...
-            },
-            'saved_path': '$proj/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
-        }
-    """
-    # Config the allowed class
-    CLASS_MAPPING = {
-        "dta": DtaDataInfo,
-        "csv": CsvDataInfo,
-        "tsv": CsvDataInfo,
-        "psv": CsvDataInfo,
-        "xlsx": ExcelDataInfo,
-        "xls": ExcelDataInfo,
+    # Return log content based on user preference
+    log_content = stata_executor.read_log(log_file_path) if is_read_log else "Not read log"
+    return {
+        "log_file_path": log_file_path,
+        "log_content": log_content
     }
-
-    data_path = Path(data_path).expanduser().resolve()
-    data_extension = data_path.suffix.lower().strip(".")
-
-    data_info_cls = CLASS_MAPPING.get(data_extension, None)
-
-    if not data_info_cls:
-        logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
-        return f"Unsupported file extension now: {data_extension}"
-
-    data_info = data_info_cls(data_path, vars_list, encoding=encoding, cache_dir=tmp_base_path)
-    try:
-        info = data_info.info
-        if data_info.is_cache:
-            saved_path = info.get("saved_path", None)
-            logging.info(f"Successfully generated data summary for {data_path}, saved to {saved_path}")
-        else:
-            logging.info(f"Successfully generated data summary for {data_path}")
-        return str(info)
-    except Exception as e:
-        logging.error(f"Failed to generate data summary for {data_path}: {str(e)}")
-        return f"Failed to generate data summary for {data_path}: {str(e)}"
-
-
-@stata_mcp.prompt()
-def results_doc_path() -> str:
-    """
-    Generate and return a result document storage path based on the current timestamp.
-
-    This function performs the following operations:
-    1. Gets the current system time and formats it as a '%Y%m%d%H%M%S' timestamp string
-    2. Concatenates this timestamp string with the preset result_doc_path base path to form a complete path
-    3. Creates the directory corresponding to that path (no error if directory already exists)
-    4. Returns the complete path string of the newly created directory
-
-    Returns:
-        str: The complete path of the newly created result document directory, formatted as:
-            `<result_doc_path>/<YYYYMMDDHHMMSS>`,
-            where the timestamp portion is generated from the system time when the function is executed
-
-    Notes:
-        (The following content is not needed for LLM to understand)
-        - Using the `exist_ok=True` parameter, no exception will be raised when the target directory already exists
-        - The function uses the walrus operator (:=) in Python 3.8+ to assign a variable within an expression
-        - The returned path is suitable for use as the output directory for Stata commands such as `outreg2`
-        - In specific Stata code, you can set the file output path at the beginning.
-    """
-    path = result_doc_path / datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
-    path.mkdir(exist_ok=True)
-    return path.as_posix()
-
-
-@stata_mcp.tool(
-    name="write_dofile",
-    description="write the stata-code to dofile"
-)
-def write_dofile(content: str, encoding: str = None) -> str:
-    """
-    Write stata code to a dofile and return the do-file path.
-
-    Args:
-        content (str): The stata code content which will be writen to the designated do-file.
-        encoding (str): The encoding method for the dofile, default -> 'utf-8'
-
-    Returns:
-        the do-file path
-
-    Notes:
-        Please be careful about the first command in dofile should be use data.
-        For avoiding make mistake, you can generate stata-code with the function from `StataCommandGenerator` class.
-        Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
-        If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
-
-    Enhancement:
-        If you have `outreg2`, `esttab` command for output the result,
-        you should use the follow command to get the output path.
-        `results_doc_path`, and use `local output_path path` the path is the return of the function `results_doc_path`.
-        If you want to use the function `write_dofile`, please use `results_doc_path` before which is necessary.
-
-    """
-    file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
-    encoding = encoding or "utf-8"
-    try:
-        with open(file_path, "w", encoding=encoding) as f:
-            f.write(content)
-        logging.info(f"Successful write dofile to {file_path}")
-    except Exception as e:
-        logging.error(f"Failed to write dofile to {file_path}: {str(e)}")
-    return file_path.as_posix()
-
-
-@stata_mcp.tool(
-    name="append_dofile",
-    description="append stata-code to an existing dofile or create a new one",
-)
-def append_dofile(original_dofile_path: str, content: str, encoding: str = None) -> str:
-    """
-    Append stata code to an existing dofile or create a new one if the original doesn't exist.
-
-    Args:
-        original_dofile_path (str): Path to the original dofile to append to.
-            If empty or invalid, a new file will be created.
-        content (str): The stata code content which will be appended to the designated do-file.
-        encoding (str): The encoding method for the dofile, default -> 'utf-8'
-
-    Returns:
-        The new do-file path (either the modified original or a newly created file)
-
-    Notes:
-        When appending to an existing file, the content will be added at the end of the file.
-        If the original file doesn't exist or path is empty, a new file will be created with the content.
-        Please be careful about the syntax coherence when appending code to an existing file.
-        For avoiding mistakes, you can generate stata-code with the function from `StataCommandGenerator` class.
-        Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
-        If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
-
-    Enhancement:
-        If you have `outreg2`, `esttab` command for output the result,
-        you should use the follow command to get the output path.
-        `results_doc_path`, and use `local output_path path` the path is the return of the function `results_doc_path`.
-        If you want to use the function `append_dofile`, please use `results_doc_path` before which is necessary.
-    """
-    # Set encoding if None
-    encoding = encoding or "utf-8"
-
-    # Create a new file path for the output
-    new_file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
-
-    # Check if original file exists and is valid
-    original_exists = False
-    original_content = ""
-    if original_dofile_path and Path(original_dofile_path).exists():
-        try:
-            with open(original_dofile_path, "r", encoding=encoding) as f:
-                original_content = f.read()
-            original_exists = True
-        except Exception:
-            # If there's any error reading the file, we'll create a new one
-            original_exists = False
-
-    # Write to the new file (either copying original content + new content, or
-    # just new content)
-    with open(new_file_path, "w", encoding=encoding) as f:
-        if original_exists:
-            f.write(original_content)
-            # Add a newline if the original file doesn't end with one
-            if original_content and not original_content.endswith("\n"):
-                f.write("\n")
-            logging.info(f"Successfully appended content to {new_file_path} from {original_dofile_path}")
-        else:
-            logging.info(f"Created new dofile {new_file_path} with content (original file not found)")
-        f.write(content)
-
-    logging.info(f"Successfully wrote dofile to {new_file_path}")
-    return new_file_path.as_posix()
 
 
 @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")
@@ -611,7 +369,238 @@ def ado_package_install(package: str,
         return stata_do(tmp_file, is_read_log=True).get("log_content")
 
 
-@stata_mcp.tool(name="load_figure")
+# =============================================================================
+# STATA_MCP.TOOLS: Data Operation Tools
+# =============================================================================
+
+@stata_mcp.tool(
+    name="get_data_info",
+    description="Get descriptive statistics for the data file"
+)
+def get_data_info(data_path: str | Path,
+                  vars_list: Optional[List[str]] = None,
+                  encoding: str = "utf-8") -> str:
+    """
+    Get descriptive statistics for the data file.
+
+    Args:
+        data_path (str): the data file's absolutely path.
+            Current, only allow [dta, csv, tsv, psv, xlsx, xls] file.
+        vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
+        encoding (str): data file encoding method (dta file is not supported this arg),
+            if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
+
+    Returns:
+        str: JSON string containing data summary with following structure:
+            - overview: Basic information including source, obs, var_numbers, var_list
+            - info_config: Configuration settings (metrics, max_display, decimal_places)
+            - vars_detail: Detailed statistics for each variable
+            - saved_path: Path to cached JSON file
+
+    Examples:
+        >>> get_data_info("/Applications/Stata/auto.dta")
+        {
+            'overview': {
+                'source': '/Applications/Stata/auto.dta',
+                'obs': 74,
+                'var_numbers': 12,
+                'var_list': ['make', 'price', 'mpg', ...]
+            },
+            'info_config': {
+                'metrics': ['obs', 'mean', 'stderr', 'min', 'max'],
+                'max_display': 10,
+                'decimal_places': 3
+            },
+            'vars_detail': {
+                'make': {
+                    'type': 'str',
+                    'var': 'make',
+                    'summary': {'obs': 74, 'value_list': ['AMC Pacer', 'Buick Century', ...]}
+                },
+                'price': {
+                    'type': 'float',
+                    'var': 'price',
+                    'summary': {'obs': 74, 'mean': 6165.257, 'stderr': 342.872, 'min': 3291.0, 'max': 15906.0,
+                               'q1': 4220.25, 'med': 5006.5, 'q3': 6332.25, 'skewness': 1.688, 'kurtosis': 2.034}
+                },
+                'mpg': {
+                    'type': 'float',
+                    'var': 'mpg',
+                    'summary': {'obs': 74, 'mean': 21.297, 'stderr': 0.673, 'min': 12.0, 'max': 41.0,
+                               'q1': 18.0, 'med': 20.0, 'q3': 24.75, 'skewness': 0.968, 'kurtosis': 1.13}
+                },
+                ...
+            },
+            'saved_path': '$proj/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
+        }
+    """
+    # Config the allowed class
+    CLASS_MAPPING = {
+        "dta": DtaDataInfo,
+        "csv": CsvDataInfo,
+        "tsv": CsvDataInfo,
+        "psv": CsvDataInfo,
+        "xlsx": ExcelDataInfo,
+        "xls": ExcelDataInfo,
+    }
+
+    data_path = Path(data_path).expanduser().resolve()
+    data_extension = data_path.suffix.lower().strip(".")
+
+    data_info_cls = CLASS_MAPPING.get(data_extension, None)
+
+    if not data_info_cls:
+        logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")
+        return f"Unsupported file extension now: {data_extension}"
+
+    data_info = data_info_cls(data_path, vars_list, encoding=encoding, cache_dir=tmp_base_path)
+    try:
+        info = data_info.info
+        if data_info.is_cache:
+            saved_path = info.get("saved_path", None)
+            logging.info(f"Successfully generated data summary for {data_path}, saved to {saved_path}")
+        else:
+            logging.info(f"Successfully generated data summary for {data_path}")
+        return str(info)
+    except Exception as e:
+        logging.error(f"Failed to generate data summary for {data_path}: {str(e)}")
+        return f"Failed to generate data summary for {data_path}: {str(e)}"
+
+
+# =============================================================================
+# STATA_MCP.TOOLS: File Management Tools
+# =============================================================================
+
+@stata_mcp.tool(
+    name="read_file",
+    description="Reads a file and returns its content as a string"
+)
+def read_file(file_path: str, encoding: str = "utf-8") -> str:
+    """
+    Reads the content of a file and returns it as a string.
+
+    Args:
+        file_path (str): The full path to the file to be read.
+        encoding (str, optional): The encoding used to decode the file. Defaults to "utf-8".
+
+    Returns:
+        str: The content of the file as a string.
+    """
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+
+    try:
+        with open(path, "r", encoding=encoding) as file:
+            log_content = file.read()
+        logging.info(f"Successfully read file: {file_path}")
+        return log_content
+    except IOError as e:
+        logging.error(f"Failed to read file {file_path}: {str(e)}")
+        raise IOError(f"An error occurred while reading the file: {e}")
+
+
+@stata_mcp.tool(
+    name="write_dofile",
+    description="write the stata-code to dofile"
+)
+def write_dofile(content: str, encoding: str = None) -> str:
+    """
+    Write stata code to a dofile and return the do-file path.
+
+    Args:
+        content (str): The stata code content which will be writen to the designated do-file.
+        encoding (str): The encoding method for the dofile, default -> 'utf-8'
+
+    Returns:
+        the do-file path
+
+    Notes:
+        Please be careful about the first command in dofile should be use data.
+        For avoiding make mistake, you can generate stata-code with the function from `StataCommandGenerator` class.
+        Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
+        If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
+
+    """
+    file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
+    encoding = encoding or "utf-8"
+    try:
+        with open(file_path, "w", encoding=encoding) as f:
+            f.write(content)
+        logging.info(f"Successful write dofile to {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to write dofile to {file_path}: {str(e)}")
+    return file_path.as_posix()
+
+
+@stata_mcp.tool(
+    name="append_dofile",
+    description="append stata-code to an existing dofile or create a new one",
+)
+def append_dofile(original_dofile_path: str, content: str, encoding: str = None) -> str:
+    """
+    Append stata code to an existing dofile or create a new one if the original doesn't exist.
+
+    Args:
+        original_dofile_path (str): Path to the original dofile to append to.
+            If empty or invalid, a new file will be created.
+        content (str): The stata code content which will be appended to the designated do-file.
+        encoding (str): The encoding method for the dofile, default -> 'utf-8'
+
+    Returns:
+        The new do-file path (either the modified original or a newly created file)
+
+    Notes:
+        When appending to an existing file, the content will be added at the end of the file.
+        If the original file doesn't exist or path is empty, a new file will be created with the content.
+        Please be careful about the syntax coherence when appending code to an existing file.
+        For avoiding mistakes, you can generate stata-code with the function from `StataCommandGenerator` class.
+        Please avoid writing any code that draws graphics or requires human intervention for uncertainty bug.
+        If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
+    """
+    # Set encoding if None
+    encoding = encoding or "utf-8"
+
+    # Create a new file path for the output
+    new_file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
+
+    # Check if original file exists and is valid
+    original_exists = False
+    original_content = ""
+    if original_dofile_path and Path(original_dofile_path).exists():
+        try:
+            with open(original_dofile_path, "r", encoding=encoding) as f:
+                original_content = f.read()
+            original_exists = True
+        except Exception:
+            # If there's any error reading the file, we'll create a new one
+            original_exists = False
+
+    # Write to the new file (either copying original content + new content, or
+    # just new content)
+    with open(new_file_path, "w", encoding=encoding) as f:
+        if original_exists:
+            f.write(original_content)
+            # Add a newline if the original file doesn't end with one
+            if original_content and not original_content.endswith("\n"):
+                f.write("\n")
+            logging.info(f"Successfully appended content to {new_file_path} from {original_dofile_path}")
+        else:
+            logging.info(f"Created new dofile {new_file_path} with content (original file not found)")
+        f.write(content)
+
+    logging.info(f"Successfully wrote dofile to {new_file_path}")
+    return new_file_path.as_posix()
+
+
+# =============================================================================
+# STATA_MCP.TOOLS: Result Processing Tools
+# =============================================================================
+
+@stata_mcp.tool(
+    name="load_figure",
+    description="Load figure from local path"
+)
 def load_figure(figure_path: str) -> Image:
     """
     Load figure from device
@@ -629,6 +618,10 @@ def load_figure(figure_path: str) -> Image:
     logging.info(f"Successfully loaded figure from {figure_path}")
     return Image(figure_path)
 
+
+# =============================================================================
+# STATA_MCP.TOOLS: System Tools
+# =============================================================================
 
 @stata_mcp.tool(name="mk_dir")
 def mk_dir(path: str) -> bool:
@@ -686,80 +679,6 @@ def mk_dir(path: str) -> bool:
     except OSError as e:
         logging.error(f"OS error when creating directory {path}: {str(e)}")
         raise OSError(f"Failed to create directory {path}: {str(e)}")
-
-
-@stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
-def stata_do(dofile_path: str,
-             log_file_name: str = None,
-             is_read_log: bool = True) -> Dict[str, Union[str, None]]:
-    """
-    Execute a Stata do-file and return the log file path with optional log content.
-
-    This function runs a Stata do-file using the configured Stata executable and
-    generates a log file. It supports cross-platform execution (macOS, Windows, Linux).
-
-    Args:
-        dofile_path (str): Absolute or relative path to the Stata do-file (.do) to execute.
-        log_file_name (str, optional): Set log file name without a time-string. If None, using nowtime as filename
-        is_read_log (bool, optional): Whether to read and return the log file content.
-                                    Defaults to True.
-
-    Returns:
-        Dict[str, Union[str, None]]: A dictionary containing:
-            - "log_file_path" (str): Path to the generated Stata log file
-            - "log_content" (str, optional): Content of the log file if is_read_log is True
-
-    Raises:
-        FileNotFoundError: If the specified do-file does not exist
-        RuntimeError: If Stata execution fails or log file cannot be generated
-        PermissionError: If there are insufficient permissions to execute Stata or write log files
-
-    Example:
-        >>> do_file_path: str | Path = ...
-        >>> result = stata_do(do_file_path, is_read_log=True)
-        >>> print(result[log_file_path])
-        /path/to/logs/analysis.log
-        >>> print(result[log_content])
-        Stata log content...
-
-        >>> result = stata_do(do_file_path, log_file_name="experience")  # Not suggest to use log_file_name arg.
-        >>> print(result[log_file_path])
-        /log/file/base/experience.log
-
-        >>> not_exist_dofile = ...
-        >>> result = stata_do(not_exist_dofile)
-        >>> print(result)
-        {"error": "error content..."}
-
-    Note:
-        - The log file is automatically created in the configured log_file_path directory
-        - Supports multiple operating systems through the StataDo executor
-        - Log file naming follows Stata conventions with .log extension
-    """
-    # Initialize Stata executor with system configuration
-    stata_executor = StataDo(
-        stata_cli=STATA_CLI,  # Path to Stata executable
-        log_file_path=str(log_base_path),  # Directory for log files
-        dofile_base_path=str(dofile_base_path),  # Base directory for do-files
-        sys_os=SYSTEM_OS  # Operating system identifier
-    )
-
-    # Execute the do-file and get log file path
-    logging.info(f"Try to running file {dofile_path}")
-
-    try:
-        log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
-        logging.info(f"{dofile_path} is executed successfully. Log file path: {log_file_path}")
-    except Exception as e:
-        logging.error(f"Failed to execute {dofile_path}. Error: {str(e)}")
-        return {"error": str(e)}
-
-    # Return log content based on user preference
-    log_content = stata_executor.read_log(log_file_path) if is_read_log else "Not read log"
-    return {
-        "log_file_path": log_file_path,
-        "log_content": log_content
-    }
 
 
 __all__ = [
