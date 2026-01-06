@@ -2,6 +2,46 @@
 
 
 <details>
+<summary>Click to expand v1.13.20 details</summary>
+
+## [1.13.20] - 2026-01-06
+
+### Changed
+- **get_data_info Major Refactor**: Comprehensive improvement to data information retrieval and processing
+  - Added `decimal_places` parameter with environment variable support (`STATA_MCP_DATA_INFO_DECIMAL_PLACES`)
+  - Enhanced summary statistics consistency across all data types
+  - Added cached loading to summary method for improved performance
+  - Simplified `get_data_info` function architecture with enriched output structure
+  - Added string series method for better string variable handling
+
+### Fixed
+- **Metrics Filtering Bug**: Correctly filter metrics in `DataInfoBase._filter()` method
+  - Fixed metric filtering logic that was incorrectly processing data metrics
+  - Ensures accurate metric selection and reporting in data info output
+
+### Added
+- **TSV and PSV Format Support**: Extended data file format compatibility
+  - Added support for Tab-Separated Values (TSV) files
+  - Added support for Pipe-Separated Values (PSV) files
+  - Updated `mcp_servers` to handle new delimiter-separated formats
+  - Automatic delimiter detection for seamless file processing
+
+### Changed
+- **MCP Architecture Cleanup**: Improved MCP server organization and maintainability
+  - Reorganized tool functions order for better code structure
+  - Removed all prompt-related code to streamline MCP server implementation
+  - Cleaner separation of concerns in MCP server architecture
+
+### Technical
+- **Environment Variables**: Added support for decimal precision configuration via environment variables
+- **Code Quality**: Enhanced type annotations and function parameter design
+- **Performance**: Improved summary method performance with cache integration
+- **Maintainability**: Simplified codebase through removal of deprecated prompt features
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.19 details</summary>
 
 ## [1.13.19] - 2026-01-04
