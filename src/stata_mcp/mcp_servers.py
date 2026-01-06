@@ -404,7 +404,9 @@ def get_data_info(data_path: str | Path,
                 'source': '/Applications/Stata/auto.dta',
                 'obs': 74,
                 'var_numbers': 12,
-                'var_list': ['make', 'price', 'mpg', ...]
+                'var_list': ['make', 'price', 'mpg', 'rep78', 'headroom', 'trunk',
+                             'weight', 'length', 'turn', 'displacement', 'gear_ratio', 'foreign'],
+                'hash': 'c557a2db346b522404c2f22932048de4'
             },
             'info_config': {
                 'metrics': ['obs', 'mean', 'stderr', 'min', 'max'],
@@ -415,23 +417,40 @@ def get_data_info(data_path: str | Path,
                 'make': {
                     'type': 'str',
                     'var': 'make',
-                    'summary': {'obs': 74, 'value_list': ['AMC Pacer', 'Buick Century', ...]}
+                    'summary': {
+                        'obs': 74,
+                        'value_list': ['AMC Pacer', 'Chev. Chevette', 'Chev. Nova',
+                                      'Honda Accord', 'Merc. Monarch', 'Olds Cutl Supr',
+                                      'Olds Delta 88', 'Pont. Catalina', 'Renault Le Car', 'Volvo 260']
+                    }
                 },
                 'price': {
                     'type': 'float',
                     'var': 'price',
-                    'summary': {'obs': 74, 'mean': 6165.257, 'stderr': 342.872, 'min': 3291.0, 'max': 15906.0,
-                               'q1': 4220.25, 'med': 5006.5, 'q3': 6332.25, 'skewness': 1.688, 'kurtosis': 2.034}
+                    'summary': {
+                        'obs': 74, 'mean': 6165.257, 'stderr': 342.872, 'min': 3291.0, 'max': 15906.0,
+                        'q1': 4220.25, 'med': 5006.5, 'q3': 6332.25, 'skewness': 1.688, 'kurtosis': 2.034
+                    }
                 },
                 'mpg': {
                     'type': 'float',
                     'var': 'mpg',
-                    'summary': {'obs': 74, 'mean': 21.297, 'stderr': 0.673, 'min': 12.0, 'max': 41.0,
-                               'q1': 18.0, 'med': 20.0, 'q3': 24.75, 'skewness': 0.968, 'kurtosis': 1.13}
+                    'summary': {
+                        'obs': 74, 'mean': 21.297, 'stderr': 0.673, 'min': 12.0, 'max': 41.0,
+                        'q1': 18.0, 'med': 20.0, 'q3': 24.75, 'skewness': 0.968, 'kurtosis': 1.13
+                    }
+                },
+                'rep78': {
+                    'type': 'float',
+                    'var': 'rep78',
+                    'summary': {
+                        'obs': 69, 'mean': 3.406, 'stderr': 0.119, 'min': 1.0, 'max': 5.0,
+                        'q1': 3.0, 'med': 3.0, 'q3': 4.0, 'skewness': -0.058, 'kurtosis': -0.254
+                    }
                 },
                 ...
             },
-            'saved_path': '$proj/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
+            'saved_path': '$cwd/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
         }
     """
     # Config the allowed class

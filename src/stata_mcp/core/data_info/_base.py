@@ -22,20 +22,6 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 
-"""
-DataInfo
-->  Args <core>:
-        data_path (str | Path): 数据文件的位置（一定是绝对路径）
-        vars_list: List[str]: 要获取信息的变量列表
-
-核心任务：获取数据的描述性统计信息来了解数据，分字符串类型和数字类型。
-
-核心流程：
-    1. 拿到数据后跑一遍init，
-    2. 通过df来把整个数据文件都放到df里
-    3. 通过summary函数获取到整个的描述性统计
-"""
-
 
 @dataclass
 class Series:
@@ -256,48 +242,84 @@ class DataInfoBase(ABC):
 
         Examples:
             >>> from stata_mcp.core.data_info import DtaDataInfo
-            >>> data_info = DtaDataInfo(...)
+            >>> data_info = DtaDataInfo("/Applications/Stata/auto.dta")
             >>> summary_data = data_info.summary()
             >>> print(summary_data)
             {
                 "overview": {
-                    "obs": 1314,  # Observed numbers
-                    "var_numbers": 10  # equal to the length of `vars_detail`.
+                    "source": "/Applications/Stata/auto.dta",
+                    "obs": 74,
+                    "var_numbers": 12,
+                    "var_list": ["make", "price", "mpg", "rep78", "headroom", "trunk",
+                                 "weight", "length", "turn", "displacement", "gear_ratio", "foreign"],
+                    "hash": "c557a2db346b522404c2f22932048de4"
+                },
+                "info_config": {
+                    "metrics": ["obs", "mean", "stderr", "min", "max"],
+                    "max_display": 10,
+                    "decimal_places": 3
                 },
                 "vars_detail": {
-                    "name": {
+                    "make": {
                         "type": "str",
-                        "obs": 1314,
-                        "value_list": ["Jack", "Rose", ...]  # list 10 random unique value
-                    },
-                    "age": {
-                        "type": "float",  # it signed as float no matter the value type is int or float
-                        "obs": 1314,
+                        "var": "make",
                         "summary": {
-                            "n": 1314,
-                            "mean": 52.1,
-                            "se": 0.285,
-                            "min": 18,
-                            "max": 100,
-                            "skewness": 0.15,
-                            "kurtosis": 2.3
+                            "obs": 74,
+                            "value_list": ["AMC Pacer", "Chev. Chevette", "Chev. Nova",
+                                          "Honda Accord", "Merc. Monarch", "Olds Cutl Supr",
+                                          "Olds Delta 88", "Pont. Catalina", "Renault Le Car", "Volvo 260"]
                         }
                     },
-                    "male": {
-                        "type": "float",  # Note: no bool type! It is signed with 0 and 1.
-                        "obs": 1111,  # Note: maybe some obs do not have value (NA), this is not be counted.
+                    "price": {
+                        "type": "float",
+                        "var": "price",
                         "summary": {
-                            "n": 1111,
-                            "mean": 0.49955,
-                            "se": 0.015,
-                            "min": 0,
-                            "max": 1,
-                            "skewness": 0.002,
-                            "kurtosis": 1.99
+                            "obs": 74,
+                            "mean": 6165.257,
+                            "stderr": 342.872,
+                            "min": 3291.0,
+                            "max": 15906.0,
+                            "q1": 4220.25,
+                            "med": 5006.5,
+                            "q3": 6332.25,
+                            "skewness": 1.688,
+                            "kurtosis": 2.034
+                        }
+                    },
+                    "mpg": {
+                        "type": "float",
+                        "var": "mpg",
+                        "summary": {
+                            "obs": 74,
+                            "mean": 21.297,
+                            "stderr": 0.673,
+                            "min": 12.0,
+                            "max": 41.0,
+                            "q1": 18.0,
+                            "med": 20.0,
+                            "q3": 24.75,
+                            "skewness": 0.968,
+                            "kurtosis": 1.13
+                        }
+                    },
+                    "rep78": {
+                        "type": "float",
+                        "var": "rep78",
+                        "summary": {
+                            "obs": 69,
+                            "mean": 3.406,
+                            "stderr": 0.119,
+                            "min": 1.0,
+                            "max": 5.0,
+                            "q1": 3.0,
+                            "med": 3.0,
+                            "q3": 4.0,
+                            "skewness": -0.058,
+                            "kurtosis": -0.254
                         }
                     }
-                    "var_name": {}
-                }
+                },
+                "saved_path": "~/.stata_mcp/.cache/data_info__auto_dta__hash_c557a2db346b.json"
             }
         """
         if self.is_cache:
