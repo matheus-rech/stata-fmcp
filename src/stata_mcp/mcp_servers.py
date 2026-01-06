@@ -14,7 +14,7 @@ import platform
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 from mcp.server.fastmcp import FastMCP, Icon, Image
 
