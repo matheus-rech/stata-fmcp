@@ -434,7 +434,7 @@ class DataInfoBase(ABC):
                 # Filter numerical vars based on self.metrics
                 var_summary = var_detail["summary"]
                 filtered_summary = {k: var_summary[k] for k in self.metrics if k in var_summary}
-                summary["vars_detail"][var_name]["summary"].update(filtered_summary)
+                summary["vars_detail"][var_name]["summary"] = filtered_summary
 
         return summary
 
