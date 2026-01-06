@@ -8,7 +8,7 @@ Multi-language: [中文](#中文版本)、[English](#english-version)、[França
 各个语言版本可能存在冲突，一切以中文版本为准。
 
 ### 项目说明
-Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归分析的开源工具。本项目采用Apache License 2.0，仅用于研究和教育目的。
+Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归分析的开源工具。本项目采用GNU Affero General Public License v3.0，仅用于研究和教育目的。
 
 ### 免责声明
 1. **使用风险**：使用本软件的风险由用户自行承担。开发者不对因使用本软件而可能导致的任何直接或间接损失负责，包括但不限于数据丢失、系统故障或其他形式的损害。
@@ -26,7 +26,7 @@ Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归
 7. **无关联关系**：本项目涉及的Stata指的是由StataCorp LLC开发的商业软件Stata。本项目与StataCorp LLC无隶属、关联或背书关系。本项目不包含Stata软件或其安装包，用户须自行从StataCorp获取并安装有效授权的Stata版本。
 
 ### 版权和许可
-1. 本项目采用Apache License 2.0，允许用户在遵守许可条款的前提下自由使用、修改和分发。
+1. 本项目采用GNU Affero General Public License v3.0，允许用户在遵守许可条款的前提下自由使用、修改和分发。
 
 2. 本项目中使用的第三方库和组件受其各自许可证的约束，用户在使用时应当遵守这些许可要求。
 
@@ -50,7 +50,7 @@ Stata-MCP 是一个旨在帮助用户通过大语言模型(LLM)完成Stata回归
 There may be conflicts between different language versions. The Chinese version shall prevail.
 
 ### Project Description
-Stata-MCP is an open-source tool designed to help users complete Stata regression analysis through Large Language Models (LLMs). This project is licensed under the Apache License 2.0 and is intended for research and educational purposes only.
+Stata-MCP is an open-source tool designed to help users complete Stata regression analysis through Large Language Models (LLMs). This project is licensed under the GNU Affero General Public License v3.0 and is intended for research and educational purposes only.
 
 ### Disclaimer
 1. **Usage Risk**: Use of this software is at your own risk. The developer is not responsible for any direct or indirect losses that may result from using this software, including but not limited to data loss, system failures, or other forms of damage.
@@ -68,7 +68,7 @@ Stata-MCP is an open-source tool designed to help users complete Stata regressio
 7. **No Affiliation**: The Stata referred to in this project is the commercial software Stata developed by StataCorp LLC. This project is not affiliated with, endorsed by, or sponsored by StataCorp LLC. This project does not include the Stata software or any installation packages; users must obtain and install a validly licensed copy of Stata from StataCorp.
 
 ### Copyright and License
-1. This project is licensed under the Apache License 2.0, allowing users to freely use, modify, and distribute it in compliance with the license terms.
+1. This project is licensed under the GNU Affero General Public License v3.0, allowing users to freely use, modify, and distribute it in compliance with the license terms.
 
 2. Third-party libraries and components used in this project are subject to their respective licenses, which users should respect when using the software.
 
@@ -92,7 +92,7 @@ Stata-MCP is an open-source tool designed to help users complete Stata regressio
 Il peut y avoir des conflits entre différentes versions linguistiques. La version chinoise prévaudra.
 
 ### Description du Projet
-Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réaliser des analyses de régression avec Stata grâce aux Grands Modèles de Langage (LLM). Ce projet est sous licence Apache 2.0 et est destiné uniquement à des fins de recherche et d'éducation.
+Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réaliser des analyses de régression avec Stata grâce aux Grands Modèles de Langage (LLM). Ce projet est sous licence GNU Affero General Public License v3.0 et est destiné uniquement à des fins de recherche et d'éducation.
 
 ### Avertissement
 1. **Risque d'Utilisation** : L'utilisation de ce logiciel se fait à vos propres risques. Le développeur n'est pas responsable des pertes directes ou indirectes qui pourraient résulter de l'utilisation de ce logiciel, y compris, mais sans s'y limiter, la perte de données, les défaillances du système ou d'autres formes de dommages.
@@ -110,7 +110,7 @@ Stata-MCP est un outil open-source conçu pour aider les utilisateurs à réalis
 7. **Aucune Affiliation** : Le Stata mentionné dans ce projet est le logiciel commercial Stata développé par StataCorp LLC. Ce projet n'est pas affilié à, approuvé par, ou parrainé par StataCorp LLC. Ce projet n'inclut pas le logiciel Stata ou aucun package d'installation ; les utilisateurs doivent obtenir et installer une copie licenciée de manière valide de Stata à partir de StataCorp.
 
 ### Droits d'Auteur et Licence
-1. Ce projet est sous licence Apache 2.0, permettant aux utilisateurs de l'utiliser, de le modifier et de le distribuer librement conformément aux conditions de la licence.
+1. Ce projet est sous licence GNU Affero General Public License v3.0, permettant aux utilisateurs de l'utiliser, de le modifier et de le distribuer librement conformément aux conditions de la licence.
 
 2. Les bibliothèques et composants tiers utilisés dans ce projet sont soumis à leurs licences respectives, que les utilisateurs doivent respecter lors de l'utilisation du logiciel.
 
