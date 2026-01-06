@@ -378,7 +378,7 @@ def ado_package_install(package: str,
     description="Get descriptive statistics for the data file"
 )
 def get_data_info(data_path: str | Path,
-                  vars_list: Optional[List[str]] = None,
+                  vars_list: List[str] | None = None,
                   encoding: str = "utf-8") -> str:
     """
     Get descriptive statistics for the data file.
@@ -386,7 +386,7 @@ def get_data_info(data_path: str | Path,
     Args:
         data_path (str): the data file's absolutely path.
             Current, only allow [dta, csv, tsv, psv, xlsx, xls] file.
-        vars_list (Optional[List[str]]): the vars you want to get info (default is None, means all vars).
+        vars_list (List[str] | None): the vars you want to get info (default is None, means all vars).
         encoding (str): data file encoding method (dta file is not supported this arg),
             if you do not know your data ignore this arg, for most of the data files are `UTF-8`.
 
