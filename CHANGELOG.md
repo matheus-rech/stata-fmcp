@@ -2,6 +2,25 @@
 
 
 <details>
+<summary>Click to expand v1.13.21 details</summary>
+
+## [1.13.21] - 2026-01-07
+
+### Security
+- **Path Traversal Protection**: Enhanced file reading security for `read_file` tool
+  - Restricted `read_file` to only access files within the `stata-mcp-folder` directory
+  - Added path resolution and validation to prevent symlink-based attacks
+  - Implemented security violation logging for audit trails
+  - Raises `PermissionError` when attempting to access files outside allowed directory
+
+### Technical
+- **Security Hardening**: Prevented unauthorized file system access through path traversal attacks
+- **Error Handling**: Enhanced error messages with clear directory restrictions
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.20 details</summary>
 
 ## [1.13.20] - 2026-01-06
