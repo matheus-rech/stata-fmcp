@@ -504,8 +504,32 @@ def read_file(file_path: str, encoding: str = "utf-8") -> str:
 
     Returns:
         str: The content of the file as a string.
+
+    Raises:
+        PermissionError: If the file is not within the allowed stata-mcp-folder directory.
+        FileNotFoundError: If the file does not exist.
+        IOError: If an error occurs while reading the file.
     """
-    path = Path(file_path)
+    path = Path(file_path).resolve()  # Resolve to handle symlinks and ..
+
+    # Security check: ensure the file is within the allowed directory
+    try:
+        path.relative_to(output_base_path.resolve())
+    except ValueError:
+        allowed_path = output_base_path.resolve()
+        # Log security violation for audit purposes.
+        # If this security warning appears, it may indicate that the current model has been compromised/poisoned.
+        logging.warning(
+            f"[SECURITY VIOLATION] Attempted to access file outside allowed directory: "
+            f"requested_path='{file_path}', "
+            f"resolved_path='{path}', "
+            f"allowed_directory='{allowed_path}'"
+        )
+        raise PermissionError(
+            f"Access denied: File '{file_path}' is outside the allowed directory '{allowed_path}'. "
+            f"read_file can only read files within the stata-mcp-folder."
+        )
+
     if not path.exists():
         raise FileNotFoundError(f"The file at {file_path} does not exist.")
 
