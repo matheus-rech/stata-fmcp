@@ -44,9 +44,11 @@
 - Want to evaluate your LLM? Look [here](source/docs/Usages/Evaluation.md).  
 - Update `StataFinder`, it could locate your Stata executable file automatically. 
 
-Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
+> Finding our **newest research**? Click [here](source/reports/README.md) or visit [reports website](https://www.statamcp.com/reports).
 
-> Looking for others?  
+<details>
+<summary>Looking for others?</summary>
+
 > **MCP or AI about Stata**
 > - A session based MCP server for Stata, [mcp-stata](https://github.com/tmonk/mcp-stata)
 > - A VScode or Cursor integrated [here](https://github.com/hanlulong/stata-mcp). Confused it? 💡 [Difference](source/docs/Difference.md)
@@ -55,6 +57,7 @@ Finding our **newest research**? Click [here](source/reports/README.md) or visit
 > - [STOP Dataset](https://opendata.ai4cssci.com): StataMCP-Team Opendata Project 📊, we have open-sourced a comprehensive dataset collection for social science research, aiming to enable the future of AI-driven and data-powered research paradigms.  
 > - [Trace DID](https://github.com/asjadnaqvi/DiD): If you want to fetch the newest information about DID (Difference-in-Difference), click [here](https://asjadnaqvi.github.io/DiD/). Now there is a Chinese translation by [Sepine Tam](https://github.com/sepine) and [StataMCP-Team](https://github.com/statamcp-team) 🎉
 > - Jupyter Lab Usage (Important: Stata 17+) [here](source/docs/JupyterStata.md) and [nbstata](https://github.com/hugetim/nbstata)
+</details>
 
 ## 💡 Quickly Start
 ### Use Stata-MCP in Claude Code
