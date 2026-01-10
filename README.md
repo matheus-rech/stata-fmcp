@@ -72,6 +72,11 @@ claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) --scope project -- uvx --dir
 
 In your working directory, you can find a file named `.mcp.json`, your mcp config will be placed here. 
 
+If you want to install Stata-MCP globally, you can run:
+```bash
+claude mcp add stata-mcp --scope user -- uvx stata-mcp
+```
+
 Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it:
 
 - **Paper Replication**: Replicate empirical studies from economics papers
