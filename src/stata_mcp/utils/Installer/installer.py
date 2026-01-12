@@ -16,50 +16,24 @@ from ...core.stata import StataFinder
 
 
 class Installer:
-    def __init__(self, sys_os, is_env=True):
-        self.config_file_path: str = None
+    def __init__(self, sys_os: str = None, is_env: bool = True):
+        self.sys_os = sys_os or sys.platform
         self.is_env = is_env
-        if sys_os == "Darwin":
-            self.config_file_path = os.path.expanduser(
-                "~/Library/Application Support/Claude/claude_desktop_config.json"
-            )
-        elif sys_os == "Linux":
-            print(
-                "There is not a Linux version of Claude yet, please use the Windows or macOS version."
-            )
-        elif sys_os == "Windows":
-            appdata = os.getenv(
-                "APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
-            self.config_file_path = os.path.join(
-                appdata, "Claude", "claude_desktop_config.json"
-            )
-
-        os.makedirs(os.path.dirname(self.config_file_path), exist_ok=True)
-
-        # Create an empty file if it does not already exist
-        if not os.path.exists(self.config_file_path):
-            with open(self.config_file_path, "w", encoding="utf-8") as f:
-                # Or write the default configuration
-                f.write('{"mcpServers": {}}')
 
     @property
     def STATA_CLI(self) -> str:
-        cli = None
-        if self.is_env:
-            cli = os.getenv("STATA_CLI", None)
-        if cli is None:
-            cli = StataFinder().STATA_CLI
-        return cli
+        return StataFinder().STATA_CLI
 
     @property
     def STATA_MCP_COMMON_CONFIG(self):
+        command = "uvx"
+        args = ["stata-mcp"]
+        env = {"STATA_CLI": self.STATA_CLI} if self.is_env else {}
         return {
             "stata-mcp": {
-                "command": "uvx",
-                "args": ["stata-mcp"],
-                "env": {
-                    "STATA_CLI": self.STATA_CLI
-                },
+                "command": command,
+                "args": args,
+                "env": env
             }
         }
 
@@ -109,37 +83,20 @@ class Installer:
         self.install_to_json_config(cc_mcp_config_file)
 
     def install_to_claude_desktop(self):
-        server_cfg = self.STATA_MCP_COMMON_CONFIG["stata-mcp"]
-        stata_cli_path = server_cfg["env"]["STATA_CLI"]
-        print("About to install the following MCP server into your Claude config:\n")
-        print("  Server name:    stata-mcp")
-        print(f"  Command:        {server_cfg['command']}")
-        print(f"  Args:           {server_cfg['args']}")
-        print(f"  STATA_CLI path: {stata_cli_path}\n")
-        print(f"Configuration file to modify:\n  {self.config_file_path}\n")
+        # Get config file path based on OS
+        if self.sys_os.lower() == "darwin":
+            config_file_path = os.path.expanduser(
+                "~/Library/Application Support/Claude/claude_desktop_config.json"
+            )
+        elif self.sys_os.lower() == "linux":
+            print("There is not a Linux version of Claude yet.")
+            sys.exit(1)
+        elif self.sys_os.lower() == "windows":
+            appdata = os.getenv("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
+            config_file_path = os.path.join(appdata, "Claude", "claude_desktop_config.json")
+        else:
+            print(f"Unsupported platform: {self.sys_os}")
+            sys.exit(1)
 
-        # Ask the user for confirmation
-        choice = input(
-            "Do you want to proceed and add this configuration? [y/N]: ")
-        if choice.strip().lower() != "y":
-            print("Installation aborted.")
-            return
+        self.install_to_json_config(Path(config_file_path))
 
-        # Read the now config
-        try:
-            with open(self.config_file_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            config = {"mcpServers": {}}
-
-        # Update MCP_Config
-        servers = config.setdefault("mcpServers", {})
-        servers.update(self.STATA_MCP_COMMON_CONFIG)
-
-        # Write it
-        with open(self.config_file_path, "w", encoding="utf-8") as f:
-            json.dump(config, f, ensure_ascii=False, indent=2)
-
-        print(
-            f"✅ Successfully wrote 'stata-mcp' configuration to: {self.config_file_path}"
-        )
