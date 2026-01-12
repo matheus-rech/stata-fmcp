@@ -44,9 +44,10 @@ def main() -> None:
         help="check whether Stata-MCP could be used on this computer",
     )
     parser.add_argument(
-        "--install",
-        action="store_true",
-        help="install Stata-MCP to Claude Desktop")
+        "--install", "-i",
+        nargs="?",
+        const="claude",
+        help="install Stata-MCP to Claude Desktop (default client: claude)")
 
     # mcp.run
     parser.add_argument(
@@ -64,7 +65,7 @@ def main() -> None:
 
     elif args.install:
         from ..utils.Installer import Installer
-        Installer(sys_os=sys.platform).install()
+        Installer(sys_os=sys.platform).install(args.install)
 
     elif args.agent:
         from ..agent_as import REPLAgent
