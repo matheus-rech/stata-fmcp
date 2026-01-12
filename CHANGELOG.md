@@ -2,6 +2,32 @@
 
 
 <details>
+<summary>Click to expand v1.13.22 details</summary>
+
+## [1.13.22] - 2026-01-12
+
+### Added
+- **Multi-Client Installation Support**: Enhanced installer to support multiple client targets
+  - Added `install_to_json_config` method for generic JSON config installation
+  - Added `install_to_claude_code` method for Claude Code client support
+  - Updated `install` method to accept target client parameter (claude/cc)
+  - Support for installing to both Claude Desktop and Claude Code from CLI
+
+### Changed
+- **Environment Variable Configuration**: Improved STATA_CLI configuration flexibility
+  - Changed `STATA_CLI` and `STATA_MCP_COMMON_CONFIG` to `@property` methods
+  - Support reading `STATA_CLI` from environment variable
+  - Dynamic configuration loading for better portability
+
+### Enhanced
+- **CLI Installation**: Enhanced command-line interface for installation
+  - Simplified installation process with direct client target specification
+  - Better user experience for installing to different clients
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.21 details</summary>
 
 ## [1.13.21] - 2026-01-07
