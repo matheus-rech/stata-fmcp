@@ -10,6 +10,7 @@
 import json
 import os
 import sys
+import tomllib
 from pathlib import Path
 
 from ...core.stata import StataFinder
@@ -20,20 +21,21 @@ class Installer:
         self.sys_os = sys_os or sys.platform
         self.is_env = is_env
 
+        self.command = "uvx"
+        self.args = ["stata-mcp"]
+        self.env = {"STATA_CLI": self.STATA_CLI} if self.is_env else {}
+
     @property
     def STATA_CLI(self) -> str:
         return StataFinder().STATA_CLI
 
     @property
     def STATA_MCP_COMMON_CONFIG(self):
-        command = "uvx"
-        args = ["stata-mcp"]
-        env = {"STATA_CLI": self.STATA_CLI} if self.is_env else {}
         return {
             "stata-mcp": {
-                "command": command,
-                "args": args,
-                "env": env
+                "command": self.command,
+                "args": self.args,
+                "env": self.env
             }
         }
 
@@ -41,6 +43,9 @@ class Installer:
         client_function_mapping = {
             "claude": self.install_to_claude_desktop,
             "cc": self.install_to_claude_code,
+            "cursor": self.install_to_cursor,
+            "cline": self.install_to_cline,
+            "codex": self.install_to_codex,
         }
         if to in client_function_mapping.keys():
             client_function_mapping[to]()
@@ -78,6 +83,77 @@ class Installer:
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config, f, ensure_ascii=False, indent=2)
 
+    def install_to_toml_config(self, config_path: Path, key: str = "mcpServers"):
+        config_path = Path(config_path)
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Check if stata-mcp already exists
+        if config_path.exists():
+            try:
+                with open(config_path, "rb") as f:
+                    config = tomllib.load(f)
+                if key in config and "stata-mcp" in config[key]:
+                    print("stata-mcp is already installed.")
+                    sys.exit(0)
+            except Exception:
+                pass  # Continue with installation
+
+        # Append stata-mcp config to file
+        with open(config_path, "a", encoding="utf-8") as f:
+            f.write(f"\n[{key}.stata-mcp]\n")
+            f.write(f'command = "{self.command}"\n')
+            f.write(f"args = {self._format_toml_list(self.args)}\n")
+            if self.is_env:
+                f.write(f"env = {self._format_inline_table(self.env)}\n")
+
+        print(f"✅ Successfully installed stata-mcp to: {config_path}")
+
+    def _write_toml(self, file, config, prefix=""):
+        """Recursively write config to TOML format."""
+        for key, value in config.items():
+            full_key = f"{prefix}.{key}" if prefix else key
+
+            if isinstance(value, dict):
+                # Check if it's a simple dict (inline table) or nested table
+                if self._is_simple_dict(value):
+                    file.write(f"{key} = {self._format_inline_table(value)}\n")
+                else:
+                    file.write(f"[{full_key}]\n")
+                    self._write_toml(file, value, full_key)
+            elif isinstance(value, list):
+                file.write(f"{key} = {self._format_toml_list(value)}\n")
+            elif isinstance(value, str):
+                file.write(f'{key} = "{value}"\n')
+            elif isinstance(value, bool):
+                file.write(f"{key} = {str(value).lower()}\n")
+            else:
+                file.write(f"{key} = {value}\n")
+
+    def _is_simple_dict(self, d):
+        """Check if dict can be formatted as inline table."""
+        return len(d) <= 3 and not any(isinstance(v, (dict, list)) for v in d.values())
+
+    def _format_inline_table(self, d):
+        """Format dict as inline table."""
+        items = []
+        for k, v in d.items():
+            if isinstance(v, str):
+                items.append(f'{k} = "{v}"')
+            elif isinstance(v, bool):
+                items.append(f"{k} = {str(v).lower()}")
+            elif isinstance(v, list):
+                items.append(f"{k} = {self._format_toml_list(v)}")
+            else:
+                items.append(f"{k} = {v}")
+        return "{" + ", ".join(items) + "}"
+
+    def _format_toml_list(self, lst):
+        """Format list for TOML output."""
+        if not lst:
+            return "[]"
+        formatted = [f'"{item}"' if isinstance(item, str) else str(item) for item in lst]
+        return "[" + ", ".join(formatted) + "]"
+
     def install_to_claude_code(self):
         cc_mcp_config_file = Path.home() / ".claude.json"
         self.install_to_json_config(cc_mcp_config_file)
@@ -100,3 +176,34 @@ class Installer:
 
         self.install_to_json_config(Path(config_file_path))
 
+    def install_to_cursor(self):
+        config_file = Path.home() / ".cursor" / "mcp.json"  # Only works on macOS as not other device to test
+
+        # As some reason, cursor should config more args to use.
+        document_path = Path.home() / "Documents"
+        self.args = ["--directory", document_path.as_posix(), "stata-mcp"]
+        self.env["STATA_MCP_CWD"] = document_path.as_posix()
+
+        self.install_to_json_config(config_file)
+
+    def install_to_cline(self):
+        # Get config file path based on OS
+        if self.sys_os.lower() == "darwin":
+            config_file = Path.home() / "Library" / "Application Support" / "Code" / "User" / "globalStorage" / \
+                "saoudrizwan.claude-dev" / "settings" / "cline_mcp_settings.json"
+        elif self.sys_os.lower() == "linux":
+            config_file = Path.home() / ".config" / "Code" / "User" / "globalStorage" / \
+                "saoudrizwan.claude-dev" / "settings" / "cline_mcp_settings.json"
+        elif self.sys_os.lower() == "windows":
+            appdata = os.getenv("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
+            config_file = Path(appdata) / "Code" / "User" / "globalStorage" / \
+                "saoudrizwan.claude-dev" / "settings" / "cline_mcp_settings.json"
+        else:
+            print(f"Unsupported platform: {self.sys_os}")
+            sys.exit(1)
+
+        self.install_to_json_config(config_file)
+
+    def install_to_codex(self):
+        config_file = Path.home() / ".codex" / "config.toml"
+        self.install_to_toml_config(config_file, key="mcp_servers")
