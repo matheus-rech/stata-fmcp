@@ -2,6 +2,29 @@
 
 
 <details>
+<summary>Click to expand v1.13.23 details</summary>
+
+## [1.13.23] - 2026-01-13
+
+### Added
+- **Multi-Agent Client Support**: Extended installer with support for multiple AI agent platforms
+  - Added support for Cursor IDE
+  - Added support for Cline (VS Code extension)
+  - Added support for Codex with TOML-based configuration
+
+### Changed
+- **Installer Refactor**: Enhanced installer architecture for better extensibility
+  - Moved `command`, `args`, `env` to instance variables for reusability
+  - Added `install_to_toml_config` method for TOML-based configurations
+  - Simplified configuration management across different clients
+
+### Technical
+- **TOML Support**: Added `tomllib` import and TOML formatting helpers
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.22 details</summary>
 
 ## [1.13.22] - 2026-01-12
