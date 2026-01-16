@@ -11,7 +11,7 @@ license = { text = "AGPL-3.0" }
 keywords = ["stata", "mcp", "econometrics", "ai", "agent"]
 dependencies = [
     "python-dotenv>=1.2.1",
-    "mcp[cli]>=1.16.0",
+    "mcp[cli]>=1.23.0",
     "pandas>=2.3.0",
     "pexpect>=4.9.0",
     "openpyxl>=3.1.5",
