@@ -30,4 +30,7 @@ build-backend = "hatchling.build"
 
 [project.urls]
 Homepage = "https://www.statamcp.com"
+Documentation = "https://docs.statamcp.com"
 Source = "https://github.com/sepinetam/stata-mcp"
+Issues = "https://github.com/sepinetam/stata-mcp/issues"
+Changelog = "https://github.com/sepinetam/stata-mcp/blob/master/CHANGELOG.md"
