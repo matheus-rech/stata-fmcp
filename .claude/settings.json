@@ -23,6 +23,8 @@
       "WebFetch(domain:*.statamcp.com)",
       "WebFetch(domain:*.nber.com)",
       "WebFetch(domain:*.ssrn.com)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
       "mcp__github__list_issues",
       "mcp__github__issue_read",
       "mcp__github__search_issues",
@@ -31,6 +33,7 @@
       "mcp__github__search_pull_requests"
     ],
     "deny": [
+      "Bash(git push --force)",
       "Bash(echo $:*TOKEN:*)",
       "Bash(echo $:*API_KEY:*)",
       "Bash(cat .env)",
@@ -42,6 +45,7 @@
     ]
   },
   "enabledMcpjsonServers": [
+    "context7",
     "github"
   ],
   "enableAllProjectMcpServers": true
