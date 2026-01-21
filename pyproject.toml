@@ -1,6 +1,6 @@
 [project]
 name = "stata-mcp"
-version = "1.13.23"
+version = "1.13.24"
 description = "Let LLM help you achieve your regression analysis with Stata"
 readme = "README.md"
 authors = [
@@ -27,6 +27,11 @@ stata-mcp = "stata_mcp.cli:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
 
 [project.urls]
 Homepage = "https://www.statamcp.com"

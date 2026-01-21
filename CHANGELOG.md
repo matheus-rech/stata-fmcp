@@ -2,6 +2,33 @@
 
 
 <details>
+<summary>Click to expand v1.13.24 details</summary>
+
+## [1.13.24] - 2026-01-21
+
+### Added
+- **Security Guard System**: Implemented comprehensive security validation for Stata dofile execution
+  - Added `guard` package with blacklist-based security validation
+  - `blacklist.py`: Defines dangerous commands (shell escapes, file operations, external code execution)
+  - `validator.py`: Core validation logic with `GuardValidator`, `RiskItem`, and `SecurityReport` classes
+  - Integrated guard into `stata_do` function to validate dofiles before execution
+  - Returns detailed warnings and blocks execution when dangerous commands are detected
+  - Configurable via `STATA_MCP__IS_GUARD` environment variable (default: enabled)
+
+### Security
+- **Blacklist Coverage**: Protects against dangerous commands including:
+  - Shell escapes: `!`, `!!`, `shell`, `xshell`, `winexec`, `unixcmd`
+  - File operations: `erase`, `rm`, `rmdir`, `copy`
+  - External code execution: `run`, `do`, `include`
+
+### Testing
+- Added comprehensive test suite with 15 test cases covering all security scenarios
+- Tests validate dangerous command detection, line number tracking, and edge cases
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.23 details</summary>
 
 ## [1.13.23] - 2026-01-13
