@@ -14,7 +14,7 @@ import platform
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP, Icon, Image
 
@@ -22,6 +22,7 @@ from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo, StataFinder
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
+from .guard import GuardValidator
 
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
@@ -195,7 +196,7 @@ if IS_UNIX:
 @stata_mcp.tool(name="stata_do", description="Run a stata-code via Stata")
 def stata_do(dofile_path: str,
              log_file_name: str = None,
-             is_read_log: bool = True) -> Dict[str, Union[str, None]]:
+             is_read_log: bool = True) -> Dict[str, Any]:
     """
     Execute a Stata do-file and return the log file path with optional log content.
 
@@ -209,9 +210,13 @@ def stata_do(dofile_path: str,
                                     Defaults to True.
 
     Returns:
-        Dict[str, Union[str, None]]: A dictionary containing:
-            - "log_file_path" (str): Path to the generated Stata log file
-            - "log_content" (str, optional): Content of the log file if is_read_log is True
+        Dict[str, Any]: A dictionary containing:
+            - "log_file_path" (str): Path to the generated Stata log file (on success)
+            - "log_content" (str): Content of the log file if is_read_log is True (on success)
+            - "action" (str): Action taken when security check fails
+            - "warning" (str): Warning message when dangerous commands are detected
+            - "suggesting" (str): Suggestions for resolving security issues
+            - "error" (str): Error message if execution fails
 
     Raises:
         FileNotFoundError: If the specified do-file does not exist
@@ -239,7 +244,41 @@ def stata_do(dofile_path: str,
         - The log file is automatically created in the configured log_file_path directory
         - Supports multiple operating systems through the StataDo executor
         - Log file naming follows Stata conventions with .log extension
+        - Security guard blocks execution when dangerous commands are detected (blacklist mode)
+        - To disable security guard, set environment variable STATA_MCP__IS_GUARD=false
     """
+    # Security check: validate dofile before execution
+    IS_GUARD = os.getenv("STATA_MCP__IS_GUARD", "true").lower() == "true"
+
+    if IS_GUARD:
+        # Read dofile content
+        try:
+            with open(dofile_path, 'r', encoding='utf-8') as f:
+                dofile_content = f.read()
+        except Exception as e:
+            logging.error(f"Failed to read dofile {dofile_path}: {str(e)}")
+            return {"error": f"Failed to read dofile for security check: {str(e)}"}
+
+        # Config guard validator (platform-independent)
+        guard_validator = GuardValidator()
+
+        # Perform security validation
+        report = guard_validator.validate(dofile_content)
+
+        if not report.is_safe:
+            warning_msg = "⚠️  Security warning: Dangerous commands detected:\n"
+            for item in report.dangerous_items:
+                warning_msg += f"  - Line {item.line}: {item.type} '{item.content}'\n"
+            logging.warning(warning_msg)
+            return {
+                "action": "Security check, dofile not executed",
+                "warning": warning_msg,
+                "suggesting": ("Modify the dofile to ensure safety\n"
+                               "or set environment variable `STATA_MCP__IS_GUARD` to `false` (not recommended)")
+            }
+        else:
+            logging.info(f"✅ {dofile_path} - Security check passed")
+
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
         stata_cli=STATA_CLI,  # Path to Stata executable
