@@ -2,6 +2,27 @@
 
 
 <details>
+<summary>Click to expand v1.13.25 details</summary>
+
+## [1.13.25] - 2026-01-22
+
+### Added
+- **Configuration File Support**: Added support for reading configuration from `~/.statamcp/config.toml` file
+  - Config priority: Environment variables (highest) > TOML config file > Default values (lowest)
+  - Added `Config` class in `src/stata_mcp/config.py` with unified configuration management
+  - Type-safe converters: `_to_bool()`, `_to_int()`, `_to_path()` with validators
+  - Configuration properties: `IS_DEBUG`, `LOGGING_ON`, `LOGGING_CONSOLE_HANDLER_ON`, `LOGGING_FILE_HANDLER_ON`, `LOG_FILE`, `MAX_BYTES`, `BACKUP_COUNT`, `SYSTEM_OS`, `IS_UNIX`, `STATA_CLI`
+  - Added `config.example.toml` for user configuration reference
+
+### Changed
+- **mcp_servers.py**: Simplified configuration initialization using centralized `Config` class
+  - Removed scattered environment variable reading logic
+  - Delegated platform detection and Stata CLI finding to `Config` class
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.24 details</summary>
 
 ## [1.13.24] - 2026-01-21
