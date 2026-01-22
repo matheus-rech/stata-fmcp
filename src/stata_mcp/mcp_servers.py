@@ -10,16 +10,15 @@
 import logging
 import logging.handlers
 import os
-import platform
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP, Icon, Image
 
+from .config import Config
 from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
-from .core.stata import StataDo, StataFinder
+from .core.stata import StataDo
 from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .guard import GuardValidator
@@ -27,38 +26,32 @@ from .guard import GuardValidator
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
-STATA_MCP_DIRECTORY = Path.home() / ".statamcp"
-CFG_FILE = STATA_MCP_DIRECTORY / "config.toml"
-IS_DEBUG = False
-if os.getenv("STATA_MCP_LOGGING_ON", 'true').lower() == 'true':
+config = Config()
+STATA_MCP_DIRECTORY = config.STATA_MCP_DIRECTORY
+IS_DEBUG = config.IS_DEBUG
+
+if config.LOGGING_ON:
     # Configure logging
     logging_handlers = []
 
-    if os.getenv("STATA_MCP_LOGGING_CONSOLE_HANDLER", 'false').lower() == 'true':
+    if config.LOGGING_CONSOLE_HANDLER_ON:
         # config logging in console.
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
 
         logging_handlers.append(console_handler)
 
-    if len(logging_handlers) == 0 or os.getenv("STATA_MCP_LOGGING_FILE_HANDLER", 'true').lower() == 'true':
+    if len(logging_handlers) == 0 or config.LOGGING_FILE_HANDLER_ON:
         # If there is no handler, must add file-handler with rotation support.
         IS_DEBUG = True
-        stata_mcp_dot_log_file_path = os.getenv(
-            "STATA_MCP_LOG_FILE", None
-        )
-        if stata_mcp_dot_log_file_path:
-            stata_mcp_dot_log_file_path = Path(stata_mcp_dot_log_file_path).expanduser().absolute()
-        else:
-            stata_mcp_dot_log_file_path = STATA_MCP_DIRECTORY / "stata_mcp_debug.log"
-        stata_mcp_dot_log_file_path.parent.mkdir(exist_ok=True, parents=True)
+        stata_mcp_dot_log_file_path = config.LOG_FILE
 
         # Use RotatingFileHandler to limit file size and implement log rotation
         # Single file max size: 10MB, backup count: 5 (total 6 files including current)
         file_handler = logging.handlers.RotatingFileHandler(
             stata_mcp_dot_log_file_path,
-            maxBytes=10_000_000,  # 10MB
-            backupCount=5,
+            maxBytes=config.MAX_BYTES,  # 10MB
+            backupCount=config.BACKUP_COUNT,
             encoding='utf-8'
         )
         file_handler.setLevel(logging.DEBUG)
@@ -76,22 +69,11 @@ else:
     logging.disable()
 
 # Initialize optional parameters
-SYSTEM_OS = platform.system()
-
-if SYSTEM_OS not in ["Darwin", "Linux", "Windows"]:
-    # Here, if unknown system -> exit.
-    sys.exit(f"Unknown System: {SYSTEM_OS}")
-
-# Define IS_UNIX for cleaner conditional logic
-IS_UNIX = SYSTEM_OS.lower() in ["darwin", "linux"]
+SYSTEM_OS = config.SYSTEM_OS
+IS_UNIX = config.IS_UNIX
 
 # Set stata_cli
-try:
-    # find stata_cli, env first, then default path
-    finder = StataFinder()
-    STATA_CLI = finder.STATA_CLI
-except FileNotFoundError as e:
-    sys.exit(str(e))
+STATA_CLI = config.STATA_CLI
 
 # Get working directory from environment variable (fallback: auto-detect writable directory)
 cwd = os.getenv("STATA_MCP_CWD")
