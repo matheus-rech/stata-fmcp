@@ -9,7 +9,6 @@
 
 import logging
 import logging.handlers
-import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
@@ -23,11 +22,13 @@ from .core.stata.builtin_tools import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .guard import GuardValidator
 
+# Init project config
+config = Config()
+STATA_MCP_DIRECTORY = config.STATA_MCP_DIRECTORY
+
 # Maybe somebody does not like logging.
 # Whatever, left a controller switch `logging STATA_MCP_LOGGING_ON`. Turn off all logging with setting it as false.
 # Default Logging Status: File (on), Console (off).
-config = Config()
-STATA_MCP_DIRECTORY = config.STATA_MCP_DIRECTORY
 IS_DEBUG = config.IS_DEBUG
 
 if config.LOGGING_ON:
@@ -76,45 +77,15 @@ IS_UNIX = config.IS_UNIX
 STATA_CLI = config.STATA_CLI
 
 # Get working directory from environment variable (fallback: auto-detect writable directory)
-cwd = os.getenv("STATA_MCP_CWD")
-
-if not cwd:
-    # Auto-detect: try current directory first, fallback to ~/Documents
-    try:
-        cwd = Path.cwd()
-        # Test write permission by creating and deleting a temp file
-        test_file = cwd / ".stata_mcp_write_test"
-        test_file.touch()
-        test_file.unlink()
-        logging.info(f"Using {cwd} as current working directory. ")
-    except (OSError, PermissionError):
-        # Current directory not writable, use default Documents directory
-        logging.error(f"Cannot write to {cwd}. Using ~/Documents instead.")
-        cwd = Path.home() / "Documents"
-else:
-    cwd = Path(cwd)
-    proj_name = cwd.name
-    logging.info(f"Project name: {proj_name} in {cwd}") if IS_DEBUG else None  # Log project name if debug is enabled
+WORKING_DIR = config.WORKING_DIR
+cwd = WORKING_DIR.get("cwd")
 
 # Use configured output path if available
-output_base_path = cwd / "stata-mcp-folder"
-output_base_path.mkdir(exist_ok=True, parents=True)  # make sure this folder exists
+output_base_path = WORKING_DIR.get("output_base", cwd / "stata-mcp-folder")
 
-# Create a series of folder
-log_base_path = output_base_path / "stata-mcp-log"
-log_base_path.mkdir(exist_ok=True)
-dofile_base_path = output_base_path / "stata-mcp-dofile"
-dofile_base_path.mkdir(exist_ok=True)
-result_doc_path = output_base_path / "stata-mcp-result"
-result_doc_path.mkdir(exist_ok=True)
-tmp_base_path = output_base_path / "stata-mcp-tmp"
-tmp_base_path.mkdir(exist_ok=True)
-
-# Config gitignore in STATA_MCP_FOLDER
-if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
-    with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
-        f.write("*")
-
+log_base_path = WORKING_DIR.get("log_base", output_base_path / "stata-mcp-log")
+dofile_base_path = WORKING_DIR.get("dofile_base", output_base_path / "stata-mcp-dofile")
+tmp_base_path = WORKING_DIR.get("tmp_base", output_base_path / "stata-mcp-tmp")
 
 # Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
 instructions = ("Stata-MCP provides a set of tools to operate Stata locally. "
@@ -230,9 +201,7 @@ def stata_do(dofile_path: str,
         - To disable security guard, set environment variable STATA_MCP__IS_GUARD=false
     """
     # Security check: validate dofile before execution
-    IS_GUARD = os.getenv("STATA_MCP__IS_GUARD", "true").lower() == "true"
-
-    if IS_GUARD:
+    if config.IS_GUARD:
         # Read dofile content
         try:
             with open(dofile_path, 'r', encoding='utf-8') as f:

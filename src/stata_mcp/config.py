@@ -30,6 +30,29 @@ class Config:
             config = {}
         return config
 
+    @staticmethod
+    def _clean_string_value(value):
+        """
+        Clean string value by stripping whitespace and processing escape sequences.
+
+        Args:
+            value: The value to clean
+
+        Returns:
+            Cleaned value (only processes strings, returns other types as-is)
+        """
+        if isinstance(value, str):
+            # Strip leading/trailing whitespace
+            value = value.strip()
+            # Process escape sequences (e.g., \n, \t)
+            try:
+                value = value.encode('utf-8').decode('unicode_escape')
+            except (UnicodeDecodeError, UnicodeEncodeError):
+                pass  # If decoding fails, keep original value
+        if value == "":
+            value = None
+        return value
+
     def _get_config_value(self, config_keys: list, env_var: str, default, converter=None, validator=None):
         """
         Generic configuration reading method with priority: environment variable > toml config file > default value
@@ -46,6 +69,7 @@ class Config:
         """
         # 1. Read from environment variable first
         value = os.getenv(env_var, None)  # str | None
+        value = self._clean_string_value(value)
 
         # 2. If no environment variable, read from config file
         if value is None:
@@ -58,6 +82,7 @@ class Config:
 
             if isinstance(config_dict, dict):
                 value = config_dict.get(config_keys[-1], None)  # str | bool | dict | list | int | float | None
+                value = self._clean_string_value(value)
 
         # 3. If still no value, return default
         if value is None:
@@ -93,7 +118,7 @@ class Config:
     @staticmethod
     def _to_path(value):
         """Convert value to Path object."""
-        return Path(value).expanduser().absolute()
+        return Path(value).expanduser().absolute() if value else None
 
     @property
     def STATA_MCP_DIRECTORY(self) -> Path:
@@ -193,6 +218,67 @@ class Config:
             return finder.STATA_CLI
         except FileNotFoundError as e:
             sys.exit(str(e))
+
+    @property
+    def IS_GUARD(self) -> bool:
+        return self._get_config_value(
+            config_keys=["SECURITY", "IS_GUARD"],
+            env_var="STATA_MCP__IS_GUARD",
+            default=True,
+            converter=self._to_bool,
+            validator=lambda x: isinstance(x, bool)
+        )
+
+    @property
+    def WORKING_DIR(self) -> Dict[str, Path]:
+        cwd = self._get_config_value(
+            config_keys=["PROJECT", "WORKING_DIR"],
+            env_var="STATA_MCP__CWD",
+            default=None,
+            converter=self._to_path,
+        )
+
+        if cwd is None:
+            # 版本前向支持
+            cwd = os.getenv("STATA_MCP_CWD", Path.cwd())
+
+        cwd = self._to_path(cwd)
+
+        try:
+            cwd.mkdir(parents=True, exist_ok=True)
+            test_file = cwd / ".stata_mcp_write_test"
+            test_file.touch()
+            test_file.unlink()
+        except (OSError, PermissionError):
+            cwd = Path.home() / "Documents"
+
+        output_base_path = cwd / "stata-mcp-folder"
+        output_base_path.mkdir(exist_ok=True, parents=True)  # make sure this folder exists
+
+        # sub-based path
+        log_base_path = output_base_path / "stata-mcp-log"
+        log_base_path.mkdir(exist_ok=True)
+        dofile_base_path = output_base_path / "stata-mcp-dofile"
+        dofile_base_path.mkdir(exist_ok=True)
+        tmp_base_path = output_base_path / "stata-mcp-tmp"
+        tmp_base_path.mkdir(exist_ok=True)
+
+        # Config gitignore in STATA_MCP_FOLDER
+        if not (GITIGNORE_FILE := output_base_path / ".gitignore").exists():
+            with open(GITIGNORE_FILE, "w", encoding="utf-8") as f:
+                f.write("*")
+
+        return {
+            "cwd": cwd,
+            "output_base": output_base_path,
+            "log_base": log_base_path,
+            "dofile_base": dofile_base_path,
+            "tmp_base": tmp_base_path
+        }
+
+    @property
+    def PROJECT_NAME(self) -> str:
+        return self.WORKING_DIR.get("cwd").name
 
 
 if __name__ == "__main__":
