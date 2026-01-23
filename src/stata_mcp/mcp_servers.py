@@ -87,6 +87,8 @@ log_base_path = WORKING_DIR.get("log_base", output_base_path / "stata-mcp-log")
 dofile_base_path = WORKING_DIR.get("dofile_base", output_base_path / "stata-mcp-dofile")
 tmp_base_path = WORKING_DIR.get("tmp_base", output_base_path / "stata-mcp-tmp")
 
+logging.info(f"Using {output_base_path.as_posix()} as output base folder")
+
 # Initialize MCP Server, avoiding FastMCP server timeout caused by Icon src fetch
 instructions = ("Stata-MCP provides a set of tools to operate Stata locally. "
                 "Typically, it writes code to do-file and executes them. "
