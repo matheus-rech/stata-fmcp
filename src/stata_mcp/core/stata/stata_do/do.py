@@ -10,6 +10,8 @@
 import logging
 import os
 import subprocess
+
+from pathlib import Path
 from typing import Dict
 
 from ....utils import get_nowtime
@@ -20,7 +22,8 @@ class StataDo:
                  stata_cli: str,
                  log_file_path: str,
                  dofile_base_path: str,
-                 sys_os: str = None):
+                 sys_os: str = None,
+                 cwd: Path = None):
         """
         Initialize Stata executor
 
@@ -29,6 +32,7 @@ class StataDo:
             log_file_path: Path for storing log files
             dofile_base_path: Base path for do files, this arg is work for Windows user.
             sys_os: Operating system type
+            cwd (Path): current working directory
         """
         self.stata_cli = stata_cli
         self.log_file_path = log_file_path
@@ -38,6 +42,7 @@ class StataDo:
         else:
             from ....utils import get_os
             self.sys_os = get_os()
+        self.cwd = cwd or Path.cwd()
 
     def set_cli(self, cli_path):
         self.stata_cli = cli_path
@@ -133,27 +138,26 @@ class StataDo:
             text=True,
             shell=True,  # Required when the path contains spaces
             env=env,  # Use environment with terminal size settings
+            cwd=self.cwd  # Set cwd for more friendly control output
         )
 
         # Execute commands sequentially in Stata
         replace_clause = ", replace" if is_replace else ""
 
         commands = f"""
+        capture log close
         log using "{log_file}"{replace_clause}
         do "{dofile_path}"
         log close
         exit, STATA
         """
-        stdout, stderr = proc.communicate(
-            input=commands
-        )  # Send commands and wait for completion
+        stdout, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
 
         if proc.returncode != 0:
             logging.error(f"Stata execution failed: {stderr}")
             raise RuntimeError(f"Something went wrong: {stderr}")
         else:
-            logging.info(
-                f"Stata execution completed successfully. Log file: {log_file}")
+            logging.info(f"Stata execution completed successfully. Log file: {log_file}")
 
     def _execute_windows(self, dofile_path: str, log_file: str, nowtime: str, is_replace: bool = True):
         """
@@ -171,6 +175,7 @@ class StataDo:
         replace_clause = ", replace" if is_replace else ""
         try:
             with open(batch_file, "w", encoding="utf-8") as f:
+                f.write("capture log close\n")
                 f.write(f'log using "{log_file}"{replace_clause}\n')
                 f.write(f'do "{dofile_path}"\n')
                 f.write("log close\n")
@@ -180,7 +185,12 @@ class StataDo:
             # Use double quotes to handle spaces in the path
             cmd = f'"{self.STATA_CLI}" /e do "{batch_file}"'
             result = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True)
+                cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                cwd=self.cwd
+            )
 
             if result.returncode != 0:
                 logging.error(
