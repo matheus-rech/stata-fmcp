@@ -2,6 +2,46 @@
 
 
 <details>
+<summary>Click to expand v1.13.26 details</summary>
+
+## [1.13.26] - 2026-01-25
+
+### Fixed
+- **Windows Log File Completeness**: Added `capture log close` before opening log to prevent incomplete log files
+  - Ensures proper log file closure in both Unix and Windows environments
+  - Adds working directory (cwd) parameter to StataDo for better execution control
+  - Sets cwd in subprocess calls for proper execution context
+
+### Changed
+- **Windows Temporary File Management**: Optimized temporary batch dofile handling on Windows
+  - Changed temp directory from user directory to system temp directory
+  - Uses dofile stem as temporary batch filename instead of timestamp
+  - Removed dofile_base_path parameter from StataDo class (no longer needed)
+
+- **Code Quality Improvements**: Enhanced StataDo implementation with better type safety
+  - Refactored do.py to use Path types instead of strings
+  - Replaced repetitive OS checks with boolean is_unix flag
+  - Improved error handling with exception handling in read_log method
+
+- **Security Module Integration**: Replaced validation logic with guard module
+  - Replaced _validate_dofile_content with guard module integration
+  - Centralized security validation for better maintainability
+
+- **Configuration Enhancements**: Improved configuration and logging system
+  - Re-constructed path configuration and IS_GUARD handling
+  - Added back logging for output_base_path for better debugging
+  - Updated config.example.toml with new configuration options
+
+### Technical
+- **Code Quality**: Improved type safety with Path types and boolean flags
+- **Error Handling**: Enhanced exception handling throughout StataDo
+- **Maintainability**: Centralized validation logic in guard module
+- **User Experience**: Better log file completeness and temporary file management
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.25 details</summary>
 
 ## [1.13.25] - 2026-01-22
