@@ -20,9 +20,9 @@ from ....utils import get_nowtime
 class StataDo:
     def __init__(self,
                  stata_cli: str,
-                 log_file_path: str,
-                 dofile_base_path: str,
-                 sys_os: str = None,
+                 log_file_path: Path,
+                 dofile_base_path: Path,
+                 is_unix: bool = None,
                  cwd: Path = None):
         """
         Initialize Stata executor
@@ -31,17 +31,17 @@ class StataDo:
             stata_cli: Path to Stata command line tool
             log_file_path: Path for storing log files
             dofile_base_path: Base path for do files, this arg is work for Windows user.
-            sys_os: Operating system type
+            is_unix: Whether the OS is Unix-like (macOS/Linux)
             cwd (Path): current working directory
         """
         self.stata_cli = stata_cli
         self.log_file_path = log_file_path
         self.dofile_base_path = dofile_base_path
-        if sys_os:
-            self.sys_os = sys_os
+        if is_unix is not None:
+            self.is_unix = is_unix
         else:
             from ....utils import get_os
-            self.sys_os = get_os()
+            self.is_unix = get_os() in ["Darwin", "Linux"]
         self.cwd = cwd or Path.cwd()
 
     def set_cli(self, cli_path):
@@ -52,58 +52,32 @@ class StataDo:
         return self.stata_cli
 
     def execute_dofile(self,
-                       dofile_path: str,
+                       dofile_path: Path,
                        log_file_name: str = None,
-                       is_replace: bool = True) -> str:
+                       is_replace: bool = True) -> Path:
         """
         Execute Stata do file and return log file path
 
         Args:
-            dofile_path (str): Path to do file
+            dofile_path (Path): Path to do file
             log_file_name (str, optional): File name of log
             is_replace (bool): Whether replace the log file if exists before. Default is True
 
         Returns:
-            str: Path to generated log file
+            Path: Path to generated log file
 
         Raises:
             ValueError: Unsupported operating system
             RuntimeError: Stata execution error
         """
-        # Replace _validate_dofile_content with guard module
-        # # ===== Initial security guard: validate do-file content =====
-        # def _validate_dofile_content(text: str) -> None:
-        #     """
-        #     Initial security guard: reject Stata shell-escape directives
-        #     like `!cmd` or `shell cmd` to prevent OS command execution.
-        #     """
-        #     dangerous_tokens = ["\n!", "\nshell "]
-        #     for token in dangerous_tokens:
-        #         if token in text:
-        #             raise ValueError(
-        #                 "Shell-escape commands (!cmd or shell cmd) "
-        #                 "are disabled for security reasons."
-        #             )
-        #
-        # try:
-        #     # Load the do-file content and validate before execution
-        #     with open(dofile_path, "r", encoding="utf-8") as f:
-        #         dofile_content = f.read()
-        #     _validate_dofile_content(dofile_content)
-        # except Exception as e:
-        #     return f"There is a security in {dofile_path}, error: {e}"
-        # # ===== End of initial security guard =====
-
         nowtime = get_nowtime()
         log_name = log_file_name or nowtime
-        log_file = os.path.join(self.log_file_path, f"{log_name}.log")
+        log_file = self.log_file_path / f"{log_name}.log"
 
-        if self.sys_os == "Darwin" or self.sys_os == "Linux":
+        if self.is_unix:
             self._execute_unix_like(dofile_path, log_file, is_replace)
-        elif self.sys_os == "Windows":
-            self._execute_windows(dofile_path, log_file, nowtime, is_replace)
         else:
-            raise ValueError(f"Unsupported operating system: {self.sys_os}")
+            self._execute_windows(dofile_path, log_file, nowtime, is_replace)
 
         return log_file
 
@@ -115,7 +89,7 @@ class StataDo:
         env['LINES'] = str(lines)
         return env
 
-    def _execute_unix_like(self, dofile_path: str, log_file: str, is_replace: bool = True):
+    def _execute_unix_like(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
         """
         Execute Stata on macOS/Linux systems
 
@@ -151,7 +125,7 @@ class StataDo:
         log close
         exit, STATA
         """
-        stdout, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+        _, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
 
         if proc.returncode != 0:
             logging.error(f"Stata execution failed: {stderr}")
@@ -159,7 +133,7 @@ class StataDo:
         else:
             logging.info(f"Stata execution completed successfully. Log file: {log_file}")
 
-    def _execute_windows(self, dofile_path: str, log_file: str, nowtime: str, is_replace: bool = True):
+    def _execute_windows(self, dofile_path: Path, log_file: Path, nowtime: str, is_replace: bool = True):
         """
         Execute Stata on Windows systems
 
@@ -170,7 +144,7 @@ class StataDo:
         """
         # Windows approach - use the /e flag to run a batch command
         # Create a temporary batch file
-        batch_file = os.path.join(self.dofile_base_path, f"{nowtime}_batch.do")
+        batch_file = self.dofile_base_path / f"{nowtime}_batch.do"
 
         replace_clause = ", replace" if is_replace else ""
         try:
@@ -206,9 +180,9 @@ class StataDo:
             raise
         finally:
             # Clean up temporary batch file
-            if os.path.exists(batch_file):
+            if batch_file.exists():
                 try:
-                    os.remove(batch_file)
+                    batch_file.unlink()
                     logging.debug(
                         f"Temporary batch file removed: {batch_file}")
                 except Exception as e:

@@ -202,6 +202,12 @@ def stata_do(dofile_path: str,
         - Security guard blocks execution when dangerous commands are detected (blacklist mode)
         - To disable security guard, set environment variable STATA_MCP__IS_GUARD=false
     """
+    # Convert dofile_path from str to Path
+    try:
+        dofile_path = Path(dofile_path)
+    except Exception as e:
+        return {"error": f"Could not recognize dofile_path as pathlib.Path object: {e}"}
+
     # Security check: validate dofile before execution
     if config.IS_GUARD:
         # Read dofile content
@@ -235,9 +241,10 @@ def stata_do(dofile_path: str,
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
         stata_cli=STATA_CLI,  # Path to Stata executable
-        log_file_path=str(log_base_path),  # Directory for log files
-        dofile_base_path=str(dofile_base_path),  # Base directory for do-files
-        sys_os=SYSTEM_OS  # Operating system identifier
+        log_file_path=log_base_path,  # Directory for log files
+        dofile_base_path=dofile_base_path,  # Base directory for do-files
+        is_unix=IS_UNIX,  # Whether the OS is Unix-like
+        cwd=cwd
     )
 
     # Execute the do-file and get log file path
