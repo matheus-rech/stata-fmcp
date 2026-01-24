@@ -242,7 +242,6 @@ def stata_do(dofile_path: str,
     stata_executor = StataDo(
         stata_cli=STATA_CLI,  # Path to Stata executable
         log_file_path=log_base_path,  # Directory for log files
-        dofile_base_path=dofile_base_path,  # Base directory for do-files
         is_unix=IS_UNIX,  # Whether the OS is Unix-like
         cwd=cwd
     )
@@ -257,12 +256,13 @@ def stata_do(dofile_path: str,
         logging.error(f"Failed to execute {dofile_path}. Error: {str(e)}")
         return {"error": str(e)}
 
+    result: Dict[str, Any] = {"log_file_path": log_file_path}
+
     # Return log content based on user preference
-    log_content = stata_executor.read_log(log_file_path) if is_read_log else "Not read log"
-    return {
-        "log_file_path": log_file_path,
-        "log_content": log_content
-    }
+    if is_read_log:
+        result["log_content"] = stata_executor.read_log(log_file_path)
+
+    return result
 
 
 @stata_mcp.tool(name="ado_package_install", description="Install ado package from ssc or github")

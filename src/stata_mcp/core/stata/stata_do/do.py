@@ -10,7 +10,7 @@
 import logging
 import os
 import subprocess
-
+import tempfile
 from pathlib import Path
 from typing import Dict
 
@@ -21,7 +21,6 @@ class StataDo:
     def __init__(self,
                  stata_cli: str,
                  log_file_path: Path,
-                 dofile_base_path: Path,
                  is_unix: bool = None,
                  cwd: Path = None):
         """
@@ -30,13 +29,11 @@ class StataDo:
         Args:
             stata_cli: Path to Stata command line tool
             log_file_path: Path for storing log files
-            dofile_base_path: Base path for do files, this arg is work for Windows user.
             is_unix: Whether the OS is Unix-like (macOS/Linux)
             cwd (Path): current working directory
         """
         self.stata_cli = stata_cli
         self.log_file_path = log_file_path
-        self.dofile_base_path = dofile_base_path
         if is_unix is not None:
             self.is_unix = is_unix
         else:
@@ -77,7 +74,7 @@ class StataDo:
         if self.is_unix:
             self._execute_unix_like(dofile_path, log_file, is_replace)
         else:
-            self._execute_windows(dofile_path, log_file, nowtime, is_replace)
+            self._execute_windows(dofile_path, log_file, is_replace)
 
         return log_file
 
@@ -133,18 +130,18 @@ class StataDo:
         else:
             logging.info(f"Stata execution completed successfully. Log file: {log_file}")
 
-    def _execute_windows(self, dofile_path: Path, log_file: Path, nowtime: str, is_replace: bool = True):
+    def _execute_windows(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
         """
         Execute Stata on Windows systems
 
         Args:
             dofile_path: Path to do file
             log_file: Path to log file
-            nowtime: Timestamp for generating temporary file names
+            is_replace: Whether replace the log file if exists.
         """
         # Windows approach - use the /e flag to run a batch command
-        # Create a temporary batch file
-        batch_file = self.dofile_base_path / f"{nowtime}_batch.do"
+        # Create a temporary batch file in system temp directory
+        batch_file = Path(tempfile.gettempdir()) / f"stata_batch__{dofile_path.stem}.do"
 
         replace_clause = ", replace" if is_replace else ""
         try:
@@ -167,13 +164,10 @@ class StataDo:
             )
 
             if result.returncode != 0:
-                logging.error(
-                    f"Stata execution failed on Windows: {result.stderr}")
-                raise RuntimeError(
-                    f"Windows Stata execution failed: {result.stderr}")
+                logging.error(f"Stata execution failed on Windows: {result.stderr}")
+                raise RuntimeError(f"Windows Stata execution failed: {result.stderr}")
             else:
-                logging.info(
-                    f"Stata execution completed successfully on Windows. Log file: {log_file}")
+                logging.info(f"Stata execution completed successfully on Windows. Log file: {log_file}")
 
         except Exception as e:
             logging.error(f"Error during Windows Stata execution: {str(e)}")
@@ -183,15 +177,15 @@ class StataDo:
             if batch_file.exists():
                 try:
                     batch_file.unlink()
-                    logging.debug(
-                        f"Temporary batch file removed: {batch_file}")
+                    logging.debug(f"Temporary batch file removed: {batch_file}")
                 except Exception as e:
-                    logging.warning(
-                        f"Failed to remove temporary batch file "
-                        f"{batch_file}: {str(e)}")
+                    logging.warning(f"Failed to remove temporary batch file {batch_file}: {str(e)}")
 
     @staticmethod
     def read_log(log_file_path, mode="r", encoding="utf-8") -> str:
-        with open(log_file_path, mode, encoding=encoding) as file:
-            log_content = file.read()
-        return log_content
+        try:
+            with open(log_file_path, mode, encoding=encoding) as file:
+                log_content = file.read()
+            return log_content
+        except Exception as e:
+            return f"Failed to read logfile-{log_file_path}: {e}"
