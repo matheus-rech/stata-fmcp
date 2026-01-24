@@ -213,7 +213,7 @@ def stata_do(dofile_path: str,
             return {"error": f"Failed to read dofile for security check: {str(e)}"}
 
         # Config guard validator (platform-independent)
-        guard_validator = GuardValidator()
+        guard_validator = GuardValidator()  # TODO: It may be make an error for windows user
 
         # Perform security validation
         report = guard_validator.validate(dofile_content)
