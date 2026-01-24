@@ -10,11 +10,11 @@
 import os
 from pathlib import Path
 
-from ..stata_controller import StataController
+from ...stata_controller import StataController
 
 
 class StataHelp:
-    def __init__(self, stata_cli: str, project_tmp_dir: Path, cache_dir: Path = None):
+    def __init__(self, stata_cli: str, project_tmp_dir: Path = None, cache_dir: Path = None):
         self.help_cache_dir = cache_dir or Path.home() / ".stata_mcp" / "help"
         self.help_cache_dir.mkdir(parents=True, exist_ok=True)
         self.project_tmp_dir = project_tmp_dir

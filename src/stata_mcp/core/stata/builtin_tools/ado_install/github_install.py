@@ -7,7 +7,7 @@
 # @Email  : sepinetam@gmail.com
 # @File   : github_install.py
 
-from ..stata_help import StataHelp
+from ..help import StataHelp
 from .base import AdoInstallBase
 
 

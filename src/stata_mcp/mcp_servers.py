@@ -18,7 +18,7 @@ from mcp.server.fastmcp import FastMCP, Icon, Image
 from .config import Config
 from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo
-from .core.stata.builtin_tools import StataHelp as Help
+from .core.stata.builtin_tools.help import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .guard import GuardValidator
 
