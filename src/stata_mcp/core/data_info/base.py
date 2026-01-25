@@ -22,6 +22,10 @@ from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 
+# Global registry for data info classes
+# Maps file extensions to their corresponding DataInfoBase subclass
+DATA_INFO_REGISTRY: Dict[str, type] = {}
+
 
 @dataclass
 class Series:
@@ -117,11 +121,29 @@ class NumericSeries(Series):
 
 
 class DataInfoBase(ABC):
+    """Base class for data info handlers."""
+
+    # Registry of supported file extensions (to be overridden by subclasses)
+    supported_extensions: list[str] = []
+
     CFG_FILE = Path.home() / ".stata_mcp" / "config.toml"
     DEFAULT_METRICS = ['obs', 'mean', 'stderr', 'min', 'max']
     ALLOWED_METRICS = ['obs', 'mean', 'stderr', 'min', 'max',
                        # Additional metrics
                        'q1', 'q3', 'skewness', 'kurtosis']
+
+    def __init_subclass__(cls, **kwargs):
+        """
+        Automatically register subclasses to DATA_INFO_REGISTRY.
+
+        This method is called when a subclass is created, and it registers
+        the subclass with its supported file extensions in the global registry.
+        """
+        super().__init_subclass__(**kwargs)
+
+        # Register this subclass for each supported extension
+        for ext in cls.supported_extensions:
+            DATA_INFO_REGISTRY[ext.lower()] = cls
 
     def __init__(self,
                  data_path: str | PathLike | Path,

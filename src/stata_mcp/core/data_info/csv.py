@@ -15,6 +15,10 @@ from .base import DataInfoBase
 
 
 class CsvDataInfo(DataInfoBase):
+    """Data info handler for CSV and related delimited files."""
+
+    supported_extensions = ['csv', 'tsv', 'psv']
+
     def _read_data(self) -> pd.DataFrame:
         """
         Read CSV file into pandas DataFrame.

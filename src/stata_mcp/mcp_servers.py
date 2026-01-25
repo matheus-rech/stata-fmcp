@@ -16,7 +16,7 @@ from typing import Any, Dict, List
 from mcp.server.fastmcp import FastMCP, Icon, Image
 
 from .config import Config
-from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
+from .core.data_info import get_data_handler
 from .core.stata import StataDo
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
 from .core.stata.builtin_tools.help import StataHelp as Help
@@ -387,7 +387,7 @@ def ado_package_install(package: str,
     name="get_data_info",
     description="Get descriptive statistics for the data file"
 )
-def get_data_info(data_path: str | Path,
+def get_data_info(data_path: str,
                   vars_list: List[str] | None = None,
                   encoding: str = "utf-8") -> str:
     """
@@ -463,20 +463,11 @@ def get_data_info(data_path: str | Path,
             'saved_path': '$cwd/stata-mcp-folder/stata-mcp-tmp/data_info__auto_dta__hash_c557a2db346b.json'
         }
     """
-    # Config the allowed class
-    CLASS_MAPPING = {
-        "dta": DtaDataInfo,
-        "csv": CsvDataInfo,
-        "tsv": CsvDataInfo,
-        "psv": CsvDataInfo,
-        "xlsx": ExcelDataInfo,
-        "xls": ExcelDataInfo,
-    }
-
     data_path = Path(data_path).expanduser().resolve()
     data_extension = data_path.suffix.lower().strip(".")
 
-    data_info_cls = CLASS_MAPPING.get(data_extension, None)
+    # Get the appropriate data handler class from the registry
+    data_info_cls = get_data_handler(data_extension)
 
     if not data_info_cls:
         logging.error(f"Unsupported file extension: {data_extension} for data file: {data_path}")

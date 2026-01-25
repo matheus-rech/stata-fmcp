@@ -17,6 +17,10 @@ from .base import DataInfoBase
 
 
 class DtaDataInfo(DataInfoBase):
+    """Data info handler for Stata .dta files."""
+
+    supported_extensions = ['dta']
+
     def _read_data(self) -> pd.DataFrame:
         """
         Read Stata dta file into pandas DataFrame.

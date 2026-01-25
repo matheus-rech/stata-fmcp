@@ -16,6 +16,10 @@ from .base import DataInfoBase
 
 
 class ExcelDataInfo(DataInfoBase):
+    """Data info handler for Excel files."""
+
+    supported_extensions = ['xlsx', 'xls']
+
     def _read_data(self) -> pd.DataFrame:
         """
         Read Excel file into pandas DataFrame.
