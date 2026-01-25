@@ -17,7 +17,7 @@ Stata-MCP addresses a critical gap in AI-assisted research: while modern LLMs ex
 
 ## Architecture Overview
 
-Stata-MCP operates through three architectural layers:
+Stata-MCP operates through four architectural layers:
 
 ### 1. **Protocol Layer (MCP Server)**
 The `FastMCP`-based server (`src/stata_mcp/__init__.py`) implements the Model Context Protocol, exposing Stata operations as structured tools. Each tool defines:
@@ -32,7 +32,21 @@ Platform-specific Stata controllers manage command execution:
 - **`StataController`**: Manages Stata process lifecycle, command invocation, and exit code monitoring
 - **`StataDo`**: Handles do-file execution with log capture and error reporting
 
-### 3. **Application Layer (Modes & Tools)**
+### 3. **Security & Monitoring Layer**
+Advanced safety features for production deployments:
+- **[Security Guard](security.md)**: Validates dofiles against dangerous commands (shell execution, file deletion, etc.)
+- **[Monitoring System](monitoring.md)**: Real-time RAM monitoring with automatic process termination
+- **Blacklist-based validation**: Blocks dangerous operations before execution
+- **Resource limits**: Prevents memory exhaustion and system instability
+
+### 4. **Configuration Layer**
+Unified configuration management with hierarchical priority:
+- **[Configuration System](configuration.md)**: TOML-based config file at `~/.statamcp/config.toml`
+- **Environment variables**: Override settings for specific sessions
+- **Priority**: Environment variables > config file > defaults
+- **Sections**: DEBUG, SECURITY, PROJECT, MONITOR
+
+### 5. **Application Layer (Modes & Tools)**
 Two primary operational modes:
 
 #### **MCP Server Mode** (Default)
@@ -175,9 +189,35 @@ agent.run()  # Starts interactive REPL
 2. **Fail-Safety**: Graceful degradation (e.g., `append_dofile` creates new files if source missing)
 3. **Reproducibility**: Deterministic paths, automatic logging, and cache invalidation
 4. **Extensibility**: Plugin architecture for custom tools and data format handlers
-5. **Security**: Path validation, permission checks, and sandboxed execution environments
+5. **Security First**:
+   - **Security Guard**: Blocks dangerous commands before execution
+   - **Path Validation**: Restricts file operations to working directory
+   - **Resource Monitoring**: Prevents memory exhaustion via RAM monitoring
+   - **Sandboxed Execution**: Isolated execution environments for safety
 
 ## Advanced Features
+
+### **Security Guard** ✅
+Automatically validates all dofile code against dangerous commands:
+- Blocks shell execution (`!`, `shell`, `xshell`, etc.)
+- Prevents file deletion operations (`erase`, `rm`)
+- Stops untrusted code execution (`run`, `do`, `include`)
+- Configurable via [Security settings](configuration.md#security-section)
+
+### **RAM Monitoring** ✅
+Real-time monitoring of Stata process memory usage:
+- Tracks RAM usage during execution
+- Automatically terminates processes exceeding limits
+- Configurable RAM limits per project
+- Minimal overhead with daemon thread architecture
+- See [Monitoring documentation](monitoring.md) for details
+
+### **Unified Configuration** ✅
+Hierarchical configuration system:
+- TOML-based configuration file (`~/.statamcp/config.toml`)
+- Environment variable overrides
+- Sections: DEBUG, SECURITY, PROJECT, MONITOR
+- See [Configuration documentation](configuration.md) for details
 
 ### **Sandbox System** (not support now)
 Alternative execution backend using Jupyter kernels for environments without Stata licenses or for testing purposes.

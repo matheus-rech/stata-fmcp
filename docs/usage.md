@@ -16,6 +16,102 @@ Verify your setup:
 uvx stata-mcp --usable
 ```
 
+## New Features
+
+### 🔒 Security Guard System
+
+Stata-MCP now includes automatic security validation to prevent dangerous commands:
+
+```python
+# Automatically enabled by default
+# Blocks: !, shell, erase, rm, run, do, include, etc.
+
+# Safe code executes normally
+result = stata_mcp.stata_do("""
+    sysuse auto
+    regress price mpg weight
+""")
+
+# Dangerous code is blocked
+result = stata_mcp.stata_do("""
+    ! rm -rf /  # ❌ Blocked by security guard
+""")
+# Error: Security validation failed
+```
+
+**Configuration**:
+```toml
+# ~/.statamcp/config.toml
+[SECURITY]
+IS_GUARD = true  # Default: true
+```
+
+**Environment Variable**:
+```bash
+export STATA_MCP__IS_GUARD=true
+```
+
+For details, see [Security Documentation](security.md).
+
+### 📊 RAM Monitoring System
+
+Monitor and control Stata process memory usage:
+
+```python
+# Enable monitoring with 8GB limit
+export STATA_MCP__IS_MONITOR=true
+export STATA_MCP__RAM_LIMIT=8192
+
+# Process is automatically terminated if RAM exceeds limit
+result = stata_mcp.stata_do(large_analysis_code)
+```
+
+**Configuration**:
+```toml
+[MONITOR]
+IS_MONITOR = false   # Default: false
+MAX_RAM_MB = -1      # -1 = no limit, positive value = limit in MB
+```
+
+For details, see [Monitoring Documentation](monitoring.md).
+
+### ⚙️ Unified Configuration System
+
+Configure all settings via TOML file or environment variables:
+
+**Priority**: Environment variables > config file > defaults
+
+```bash
+# Quick setup with environment variables
+export STATA_MCP__CWD="/projects/my-analysis"
+export STATA_MCP__IS_GUARD=true
+export STATA_MCP__IS_MONITOR=true
+export STATA_MCP__RAM_LIMIT=16384
+```
+
+**Or use config file** (`~/.statamcp/config.toml`):
+```toml
+[DEBUG]
+IS_DEBUG = false
+
+[DEBUG.logging]
+LOGGING_ON = true
+LOGGING_CONSOLE_HANDLER_ON = false
+LOGGING_FILE_HANDLER_ON = true
+
+[SECURITY]
+IS_GUARD = true
+
+[PROJECT]
+WORKING_DIR = ""
+
+[MONITOR]
+IS_MONITOR = false
+MAX_RAM_MB = -1
+```
+
+For details, see [Configuration Documentation](configuration.md).
+
 ## Usage in Python
 
 ### Using OpenAI Agents SDK
