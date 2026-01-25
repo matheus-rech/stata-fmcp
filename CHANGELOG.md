@@ -2,6 +2,69 @@
 
 
 <details>
+<summary>Click to expand v1.13.27 details</summary>
+
+## [1.13.27] - 2026-01-25
+
+### Added
+- **Performance Monitoring System**: Complete RAM monitoring framework for Stata subprocess execution
+  - Abstract `MonitorBase` class for extensible monitor implementations
+  - `RAMMonitor` implementation with psutil integration for cross-platform RAM tracking
+  - Daemon thread-based monitoring with configurable check interval (0.5s default)
+  - Automatic process termination when RAM exceeds configured limit
+  - Custom exception hierarchy: `StataMCPError` → `RAMLimitExceededError`
+
+- **Configuration System**: Comprehensive monitoring configuration via config and environment variables
+  - `IS_MONITOR` global toggle for enabling/disabling monitoring (default: false)
+  - `MAX_RAM_MB` configuration property for RAM limit in MB (default: -1, no limit)
+  - Environment variable `STATA_MCP__IS_MONITOR` for global toggle
+  - Environment variable `STATA_MCP__RAM_LIMIT` for RAM limit configuration
+  - Configuration priority: environment variables > config file > defaults
+
+- **Monitor Integration**: Clean separation between monitored and non-monitored execution paths
+  - Original execution functions remain unchanged (`_execute_unix_like`, `_execute_windows`)
+  - New monitored execution functions (`_execute_unix_like_with_monitors`, `_execute_windows_with_monitors`)
+  - `execute_dofile()` routes to appropriate path based on `IS_MONITOR` flag
+  - Monitor list passed to `StataDo` constructor for flexibility
+  - 100% backward compatible when `IS_MONITOR=false`
+
+### Changed
+- **StataDo Architecture**: Enhanced with monitor support and improved execution control
+  - Added `monitors` parameter to `StataDo.__init__()` for optional monitor instances
+  - Added `IS_MONITOR` boolean property for efficient execution path selection
+  - Maintains original behavior when no monitors provided
+  - Clean separation of concerns with dedicated monitor execution paths
+
+- **MCP Server Integration**: Wired up RAM monitoring from configuration
+  - `RAMMonitor` instantiation based on `config.IS_MONITOR` and `config.MAX_RAM_MB`
+  - Monitor list passed to `StataDo` constructor during initialization
+  - `RAMLimitExceededError` caught and returned as error response to MCP client
+  - Nested configuration check for cleaner monitor activation logic
+
+- **Configuration Enhancement**: Added monitor configuration section to config system
+  - New `[MONITOR]` section in config.example.toml
+  - `IS_MONITOR` and `MAX_RAM_MB` configuration options documented
+  - Default configuration ensures monitoring is disabled unless explicitly enabled
+
+### Technical
+- **New Dependencies**: Added `psutil>=6.0.0` for cross-platform process monitoring
+- **Code Quality**: Clean architecture with abstract base class pattern for extensibility
+- **Backward Compatibility**: Original functions unchanged, monitoring opt-in via configuration
+- **Performance**: Minimal overhead when monitoring disabled, daemon thread when enabled
+- **Error Handling**: Custom exception with detailed RAM usage information
+- **Documentation**: Comprehensive docstrings noting feature is "coded by Claude Code with GLM-4.7"
+
+### Notes
+- This is a beta feature with monitoring disabled by default
+- When `IS_MONITOR=false`, behavior is 100% identical to previous versions
+- When `IS_MONITOR=true` and `MAX_RAM_MB` is set, Stata processes are monitored and killed if RAM exceeds limit
+- `-1` in config for `MAX_RAM_MB` means no limit (converted to `None`)
+- Monitor system designed for extensibility to support timeout monitoring in future
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.26 details</summary>
 
 ## [1.13.26] - 2026-01-25
