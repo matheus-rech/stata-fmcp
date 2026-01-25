@@ -104,6 +104,24 @@ uvx stata-mcp --usable
    - Command-line interface for running stata-mcp
    - Support for multiple modes: server, agent, install, version check
 
+5. **Configuration System (`src/stata_mcp/config.py`)**
+   - Unified configuration management via TOML config file
+   - Priority: environment variables > config file > defaults
+   - Sections: DEBUG, SECURITY, PROJECT, MONITOR
+   - Supports hot-reload of configuration changes
+
+6. **Security Guard (`src/stata_mcp/guard/`)**
+   - `GuardValidator`: Validates Stata dofiles against dangerous commands
+   - `blacklist.py`: Maintains list of prohibited commands and patterns
+   - Prevents execution of destructive operations (e.g., `shell`, `rm`, `! del`)
+   - Configurable via `IS_GUARD` setting
+
+7. **Monitoring System (`src/stata_mcp/monitor/`)**
+   - `MonitorBase`: Abstract base class for extensible monitors
+   - `RAMMonitor`: Tracks Stata process RAM usage with psutil
+   - Automatic process termination when RAM exceeds limit
+   - Configurable via `IS_MONITOR` and `MAX_RAM_MB` settings
+
 ### MCP Tools Provided
 
 - `help`: Get Stata command documentation (macOS and Linux only)
@@ -143,18 +161,63 @@ The project supports:
 
 ### Configuration
 
-Environment variables:
+The project uses a hierarchical configuration system with priority: **environment variables > config file > defaults**.
+
+#### Configuration File
+
+Location: `~/.statamcp/config.toml`
+
+Example configuration (see `config.example.toml` in repository root):
+
+```toml
+[DEBUG]
+IS_DEBUG = false
+
+[DEBUG.logging]
+LOGGING_ON = true
+LOGGING_CONSOLE_HANDLER_ON = false
+LOGGING_FILE_HANDLER_ON = true
+LOG_FILE = "~/"
+
+MAX_BYTES = 10_000_000
+BACKUP_COUNT = 5
+
+[SECURITY]
+IS_GUARD = true
+
+[PROJECT]
+WORKING_DIR = ""
+
+[MONITOR]
+IS_MONITOR = false
+MAX_RAM_MB = -1  # -1 means no limit
+```
+
+#### Environment Variables
+
+**Working Directory:**
 - `STATA_MCP_CWD`: Working directory (defaults to current directory or `~/Documents`)
+
+**Logging:**
 - `STATA_MCP_LOGGING_ON`: Enable/disable logging (default: true)
 - `STATA_MCP_LOGGING_CONSOLE_HANDLER`: Enable console logging (default: false)
 - `STATA_MCP_LOGGING_FILE_HANDLER`: Enable file logging (default: true)
 - `STATA_MCP_LOG_FILE`: Custom log file path
+
+**Data Processing:**
 - `STATA_MCP_CACHE_HELP`: Enable help caching (default: true)
 - `STATA_MCP_DATA_INFO_DECIMAL_PLACES`: Decimal places for data info output
 - `STATA_MCP_DATA_INFO_STRING_KEEP_NUMBER`: Max string values to display
-- Stata executable path detection via `StataFinder` (or set environment variable)
 
-Configuration file: `~/.statamcp/config.toml`
+**Security:**
+- `STATA_MCP__IS_GUARD`: Enable security guard validation (default: true)
+
+**Monitoring:**
+- `STATA_MCP__IS_MONITOR`: Enable RAM monitoring (default: false)
+- `STATA_MCP__RAM_LIMIT`: Maximum RAM in MB (default: -1, no limit)
+
+**Stata Path:**
+- Stata executable path detection via `StataFinder` (or set platform-specific environment variable)
 
 ## Git Commit Standards
 

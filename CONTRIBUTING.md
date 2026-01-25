@@ -102,3 +102,123 @@ git push
 ## Legal Notice
 
 By contributing to this project, you agree to the terms of the [Contributor License Agreement](source/docs/Rights/CLA.md). If you do not have the rights to submit the code, please do not contribute.
+
+## Development Guidelines
+
+### Code Style
+
+- All Python functions must have **type annotations**
+- All Python functions must have **English docstrings**
+- Script comments should be in **Chinese** (for one-time scripts)
+- Use descriptive variable names
+- Maintain proper code indentation
+
+### Project Structure
+
+```
+stata-mcp/
+├── src/stata_mcp/
+│   ├── __init__.py          # MCP server entry point
+│   ├── config.py            # Configuration system
+│   ├── core/                # Core functionality
+│   │   ├── stata/          # Stata integration
+│   │   └── data_info/      # Data processing
+│   ├── guard/              # Security validation
+│   ├── monitor/            # Performance monitoring
+│   ├── cli/                # Command-line interface
+│   └── agent_as/           # Agent mode implementation
+├── docs/                   # Documentation
+├── tests/                  # Test files (if applicable)
+└── config.example.toml     # Example configuration
+```
+
+### Adding New Features
+
+#### 1. Configuration Options
+
+When adding new configuration options:
+
+1. Add to `config.example.toml`
+2. Implement in `src/stata_mcp/config.py`
+3. Add documentation in `docs/configuration.md`
+4. Update CLAUDE.md if needed
+
+Example:
+```python
+@property
+def MY_NEW_OPTION(self) -> bool:
+    return self._get_config_value(
+        config_keys=["SECTION", "MY_OPTION"],
+        env_var="STATA_MCP__MY_OPTION",
+        default=False,
+        converter=self._to_bool,
+        validator=lambda x: isinstance(x, bool)
+    )
+```
+
+#### 2. Security Features
+
+When adding security features:
+
+1. Extend `src/stata_mcp/guard/` module
+2. Add to blacklist or create new validators
+3. Document in `docs/security.md`
+4. Add tests if applicable
+
+#### 3. Monitoring Features
+
+When adding monitoring features:
+
+1. Extend `src/stata_mcp/monitor/base.py`
+2. Create new monitor class
+3. Document in `docs/monitoring.md`
+4. Ensure graceful degradation when disabled
+
+### Testing Guidelines
+
+Before submitting a PR:
+
+1. **Test locally**: Use `uvx stata-mcp --usable` to verify installation
+2. **Test configuration**: Verify config file parsing
+3. **Test cross-platform**: Check macOS, Windows, Linux if possible
+4. **Test security features**: Verify guard validation works
+5. **Document changes**: Update relevant documentation
+
+### Documentation Updates
+
+When making changes, ensure you:
+
+1. **Update CLAUDE.md** for architectural changes
+2. **Update docs/** for user-facing features
+3. **Update README.md** for major features
+4. **Add examples** for new functionality
+5. **Update CHANGELOG.md** for releases
+
+### Getting Help
+
+- **Documentation**: See [docs/](docs/) for complete guides
+- **Architecture**: Read [docs/overview.md](docs/overview.md) for system design
+- **Configuration**: Refer to [docs/configuration.md](docs/configuration.md)
+- **Security**: Check [docs/security.md](docs/security.md)
+- **Monitoring**: See [docs/monitoring.md](docs/monitoring.md)
+
+## Issue Reporting
+
+When reporting issues, please include:
+
+1. **Stata-MCP version**: `stata-mcp --version`
+2. **Operating system**: macOS/Windows/Linux with version
+3. **Stata version**: Stata 17/18 with MP/SE/BE variant
+4. **Error messages**: Complete error traceback
+5. **Steps to reproduce**: Minimal reproducible example
+6. **Configuration**: Relevant parts of `~/.statamcp/config.toml` (without sensitive data)
+
+## Feature Requests
+
+For feature requests:
+
+1. Check [existing issues](https://github.com/sepinetam/stata-mcp/issues) first
+2. Describe the use case clearly
+3. Explain why it's important
+4. Suggest a possible implementation (if you have ideas)
+5. Consider if it fits the project's scope and philosophy
