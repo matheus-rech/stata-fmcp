@@ -13,7 +13,7 @@ from agents import Agent
 from agents.handoffs import Handoff
 
 from ..agent_base import AgentBase
-from ._base import KnowledgeBase
+from .base import KnowledgeBase
 
 
 class HandoffAgent(AgentBase):

@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from ._base import DataInfoBase
+from .base import DataInfoBase
 
 
 class DtaDataInfo(DataInfoBase):

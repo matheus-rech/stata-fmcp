@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from ._base import DataInfoBase
+from .base import DataInfoBase
 
 
 class CsvDataInfo(DataInfoBase):

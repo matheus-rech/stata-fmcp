@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import pandas as pd
 
-from ._base import DataInfoBase
+from .base import DataInfoBase
 
 
 class ExcelDataInfo(DataInfoBase):

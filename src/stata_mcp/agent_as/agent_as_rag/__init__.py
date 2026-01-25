@@ -1,5 +1,5 @@
-from ._base import KnowledgeBase
 from ._tools import FetchFromDocs
+from .base import KnowledgeBase
 from .handoff import HandoffAgent
 
 __all__ = [
