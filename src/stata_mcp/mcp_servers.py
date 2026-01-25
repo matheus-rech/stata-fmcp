@@ -20,7 +20,9 @@ from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo
 from .core.stata.builtin_tools.help import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
+from .core.types import RAMLimitExceededError
 from .guard import GuardValidator
+from .monitor import RAMMonitor
 
 # Init project config
 config = Config()
@@ -238,12 +240,18 @@ def stata_do(dofile_path: str,
         else:
             logging.info(f"✅ {dofile_path} - Security check passed")
 
+    # Initialize monitors
+    monitors = []
+    if config.MAX_RAM_MB is not None:
+        monitors.append(RAMMonitor(max_ram_mb=config.MAX_RAM_MB))
+
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
         stata_cli=STATA_CLI,  # Path to Stata executable
         log_file_path=log_base_path,  # Directory for log files
         is_unix=IS_UNIX,  # Whether the OS is Unix-like
-        cwd=cwd
+        cwd=cwd,
+        monitors=monitors
     )
 
     # Execute the do-file and get log file path
@@ -252,6 +260,8 @@ def stata_do(dofile_path: str,
     try:
         log_file_path = stata_executor.execute_dofile(dofile_path, log_file_name)
         logging.info(f"{dofile_path} is executed successfully. Log file path: {log_file_path}")
+    except RAMLimitExceededError as e:
+        return {"error": f"Out of max RAM limit: {e}"}
     except Exception as e:
         logging.error(f"Failed to execute {dofile_path}. Error: {str(e)}")
         return {"error": str(e)}

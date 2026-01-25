@@ -280,6 +280,34 @@ class Config:
     def PROJECT_NAME(self) -> str:
         return self.WORKING_DIR.get("cwd").name
 
+    @property
+    def MAX_RAM_MB(self) -> int | None:
+        """Get RAM limit for stata_do execution in MB.
+
+        Returns:
+            int | None: RAM limit in MB, or None if no limit is configured
+
+        Configuration priority:
+            1. Environment variable: STATA_MCP__RAM_LIMIT
+            2. Config file: [MONITOR] MAX_RAM_MB
+            3. Default: None (no limit)
+
+        Note:
+            -1 in config file means no limit (will be converted to None)
+        """
+        value = self._get_config_value(
+            config_keys=["MONITOR", "MAX_RAM_MB"],
+            env_var="STATA_MCP__RAM_LIMIT",
+            default=-1,
+            converter=self._to_int,
+            validator=lambda x: isinstance(x, int)
+        )
+
+        # Convert -1 to None (no limit)
+        if value == -1:
+            return None
+        return value
+
 
 if __name__ == "__main__":
     cfg = Config("./config.example.toml")

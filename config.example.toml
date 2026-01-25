@@ -15,3 +15,6 @@ IS_GUARD = true
 
 [PROJECT]
 WORKING_DIR = ""
+
+[MONITOR]
+MAX_RAM_MB = -1

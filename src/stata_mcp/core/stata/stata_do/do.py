@@ -12,7 +12,7 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
 
 from ....utils import get_nowtime
 
@@ -22,7 +22,8 @@ class StataDo:
                  stata_cli: str,
                  log_file_path: Path,
                  is_unix: bool = None,
-                 cwd: Path = None):
+                 cwd: Path = None,
+                 monitors: Optional[List] = None):
         """
         Initialize Stata executor
 
@@ -31,6 +32,7 @@ class StataDo:
             log_file_path: Path for storing log files
             is_unix: Whether the OS is Unix-like (macOS/Linux)
             cwd (Path): current working directory
+            monitors: List of monitor instances (e.g., RAMMonitor, TimeoutMonitor)
         """
         self.stata_cli = stata_cli
         self.log_file_path = log_file_path
@@ -40,6 +42,7 @@ class StataDo:
             from ....utils import get_os
             self.is_unix = get_os() in ["Darwin", "Linux"]
         self.cwd = cwd or Path.cwd()
+        self.monitors = monitors or []
 
     def set_cli(self, cli_path):
         self.stata_cli = cli_path
@@ -112,6 +115,12 @@ class StataDo:
             cwd=self.cwd  # Set cwd for more friendly control output
         )
 
+        # Start all monitors
+        if self.monitors:
+            logging.info(f"Starting {len(self.monitors)} monitor(s)")
+        for monitor in self.monitors:
+            monitor.start(proc)
+
         # Execute commands sequentially in Stata
         replace_clause = ", replace" if is_replace else ""
 
@@ -123,6 +132,12 @@ class StataDo:
         exit, STATA
         """
         _, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+
+        # Stop all monitors (this will raise exceptions if limits were exceeded)
+        if self.monitors:
+            logging.info("Stopping all monitors")
+        for monitor in self.monitors:
+            monitor.stop()
 
         if proc.returncode != 0:
             logging.error(f"Stata execution failed: {stderr}")
@@ -138,6 +153,9 @@ class StataDo:
             dofile_path: Path to do file
             log_file: Path to log file
             is_replace: Whether replace the log file if exists.
+
+        Raises:
+            RuntimeError: Stata execution error
         """
         # Windows approach - use the /e flag to run a batch command
         # Create a temporary batch file in system temp directory
@@ -155,23 +173,44 @@ class StataDo:
             # Run Stata on Windows using /e to execute the batch file
             # Use double quotes to handle spaces in the path
             cmd = f'"{self.STATA_CLI}" /e do "{batch_file}"'
-            result = subprocess.run(
+
+            # Use Popen instead of run to enable monitoring
+            proc = subprocess.Popen(
                 cmd,
                 shell=True,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
                 cwd=self.cwd
             )
 
-            if result.returncode != 0:
-                logging.error(f"Stata execution failed on Windows: {result.stderr}")
-                raise RuntimeError(f"Windows Stata execution failed: {result.stderr}")
+            # Start all monitors
+            if self.monitors:
+                logging.info(f"Starting {len(self.monitors)} monitor(s) on Windows")
+            for monitor in self.monitors:
+                monitor.start(proc)
+
+            # Wait for process to complete
+            _, stderr = proc.communicate()
+
+            # Stop all monitors (this will raise exceptions if limits were exceeded)
+            if self.monitors:
+                logging.info("Stopping all monitors on Windows")
+            for monitor in self.monitors:
+                monitor.stop()
+
+            if proc.returncode != 0:
+                logging.error(f"Stata execution failed on Windows: {stderr}")
+                raise RuntimeError(f"Windows Stata execution failed: {stderr}")
             else:
                 logging.info(f"Stata execution completed successfully on Windows. Log file: {log_file}")
 
+        except RuntimeError:
+            # Re-raise RuntimeError (includes monitor errors)
+            raise
         except Exception as e:
             logging.error(f"Error during Windows Stata execution: {str(e)}")
-            raise
+            raise RuntimeError(f"Windows Stata execution error: {str(e)}")
         finally:
             # Clean up temporary batch file
             if batch_file.exists():

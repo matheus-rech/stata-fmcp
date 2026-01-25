@@ -19,6 +19,7 @@ dependencies = [
     "openai>=1.109.1",
     "pathvalidate>=3.3.1",
     "openai-api-polling>=0.1.2",
+    "psutil>=6.0.0",
 ]
 
 [project.scripts]
