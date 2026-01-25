@@ -17,4 +17,5 @@ IS_GUARD = true
 WORKING_DIR = ""
 
 [MONITOR]
+IS_MONITOR = false
 MAX_RAM_MB = -1

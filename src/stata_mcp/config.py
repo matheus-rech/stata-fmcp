@@ -230,6 +230,16 @@ class Config:
         )
 
     @property
+    def IS_MONITOR(self) -> bool:
+        return self._get_config_value(
+            config_keys=["MONITOR", "IS_MONITOR"],
+            env_var="STATA_MCP__IS_MONITOR",
+            default=False,
+            converter=self._to_bool,
+            validator=lambda x: isinstance(x, bool)
+        )
+
+    @property
     def WORKING_DIR(self) -> Dict[str, Path]:
         cwd = self._get_config_value(
             config_keys=["PROJECT", "WORKING_DIR"],

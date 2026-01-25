@@ -18,8 +18,8 @@ from mcp.server.fastmcp import FastMCP, Icon, Image
 from .config import Config
 from .core.data_info import CsvDataInfo, DtaDataInfo, ExcelDataInfo
 from .core.stata import StataDo
-from .core.stata.builtin_tools.help import StataHelp as Help
 from .core.stata.builtin_tools.ado_install import GITHUB_Install, NET_Install, SSC_Install
+from .core.stata.builtin_tools.help import StataHelp as Help
 from .core.types import RAMLimitExceededError
 from .guard import GuardValidator
 from .monitor import RAMMonitor
@@ -242,8 +242,9 @@ def stata_do(dofile_path: str,
 
     # Initialize monitors
     monitors = []
-    if config.MAX_RAM_MB is not None:
-        monitors.append(RAMMonitor(max_ram_mb=config.MAX_RAM_MB))
+    if config.IS_MONITOR:
+        if config.MAX_RAM_MB is not None:
+            monitors.append(RAMMonitor(max_ram_mb=config.MAX_RAM_MB))
 
     # Initialize Stata executor with system configuration
     stata_executor = StataDo(
