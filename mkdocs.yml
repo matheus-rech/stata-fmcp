@@ -28,6 +28,9 @@ nav:
   - Overview: overview.md
   - Usage: usage.md
   - Clients: clients.md
+  - Configuration: configuration.md
+  - Security: security.md
+  - Monitoring: monitoring.md
   - Tools: mcp/tools.md
   - Resources: mcp/resources.md
 
