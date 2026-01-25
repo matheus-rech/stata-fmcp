@@ -43,6 +43,7 @@ class StataDo:
             self.is_unix = get_os() in ["Darwin", "Linux"]
         self.cwd = cwd or Path.cwd()
         self.monitors = monitors or []
+        self.IS_MONITOR = len(self.monitors) > 0
 
     def set_cli(self, cli_path):
         self.stata_cli = cli_path
@@ -75,9 +76,15 @@ class StataDo:
         log_file = self.log_file_path / f"{log_name}.log"
 
         if self.is_unix:
-            self._execute_unix_like(dofile_path, log_file, is_replace)
+            if self.IS_MONITOR:
+                self._execute_unix_like_with_monitors(dofile_path, log_file, is_replace)
+            else:
+                self._execute_unix_like(dofile_path, log_file, is_replace)
         else:
-            self._execute_windows(dofile_path, log_file, is_replace)
+            if self.IS_MONITOR:
+                self._execute_windows_with_monitors(dofile_path, log_file, is_replace)
+            else:
+                self._execute_windows(dofile_path, log_file, is_replace)
 
         return log_file
 
@@ -115,11 +122,100 @@ class StataDo:
             cwd=self.cwd  # Set cwd for more friendly control output
         )
 
-        # Start all monitors
-        if self.monitors:
-            logging.info(f"Starting {len(self.monitors)} monitor(s)")
-        for monitor in self.monitors:
-            monitor.start(proc)
+        # Execute commands sequentially in Stata
+        replace_clause = ", replace" if is_replace else ""
+
+        commands = f"""
+        capture log close
+        log using "{log_file}"{replace_clause}
+        do "{dofile_path}"
+        log close
+        exit, STATA
+        """
+        _, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
+
+        if proc.returncode != 0:
+            logging.error(f"Stata execution failed: {stderr}")
+            raise RuntimeError(f"Something went wrong: {stderr}")
+        else:
+            logging.info(f"Stata execution completed successfully. Log file: {log_file}")
+
+    def _execute_windows(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
+        """
+        Execute Stata on Windows systems
+
+        Args:
+            dofile_path: Path to do file
+            log_file: Path to log file
+            is_replace: Whether replace the log file if exists.
+        """
+        # Windows approach - use the /e flag to run a batch command
+        # Create a temporary batch file in system temp directory
+        batch_file = Path(tempfile.gettempdir()) / f"stata_batch__{dofile_path.stem}.do"
+
+        replace_clause = ", replace" if is_replace else ""
+        try:
+            with open(batch_file, "w", encoding="utf-8") as f:
+                f.write("capture log close\n")
+                f.write(f'log using "{log_file}"{replace_clause}\n')
+                f.write(f'do "{dofile_path}"\n')
+                f.write("log close\n")
+                f.write("exit, STATA\n")
+
+            # Run Stata on Windows using /e to execute the batch file
+            # Use double quotes to handle spaces in the path
+            cmd = f'"{self.STATA_CLI}" /e do "{batch_file}"'
+            result = subprocess.run(
+                cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                cwd=self.cwd
+            )
+
+            if result.returncode != 0:
+                logging.error(f"Stata execution failed on Windows: {result.stderr}")
+                raise RuntimeError(f"Windows Stata execution failed: {result.stderr}")
+            else:
+                logging.info(f"Stata execution completed successfully on Windows. Log file: {log_file}")
+
+        except Exception as e:
+            logging.error(f"Error during Windows Stata execution: {str(e)}")
+            raise
+        finally:
+            # Clean up temporary batch file
+            if batch_file.exists():
+                try:
+                    batch_file.unlink()
+                    logging.debug(f"Temporary batch file removed: {batch_file}")
+                except Exception as e:
+                    logging.warning(f"Failed to remove temporary batch file {batch_file}: {str(e)}")
+
+    def _execute_unix_like_with_monitors(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
+        """
+        Execute Stata on macOS/Linux systems with monitoring enabled.
+
+        Args:
+            dofile_path: Path to do file
+            log_file: Path to log file
+            is_replace: Whether replace the log file if exists.
+
+        Raises:
+            RuntimeError: Stata execution error
+        """
+        # Get environment with terminal size settings
+        env = self.set_fake_terminal_size_env()
+
+        proc = subprocess.Popen(
+            [self.STATA_CLI],  # Launch the Stata CLI
+            stdin=subprocess.PIPE,  # Prepare to send commands
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=True,  # Required when the path contains spaces
+            env=env,  # Use environment with terminal size settings
+            cwd=self.cwd  # Set cwd for more friendly control output
+        )
 
         # Execute commands sequentially in Stata
         replace_clause = ", replace" if is_replace else ""
@@ -131,6 +227,13 @@ class StataDo:
         log close
         exit, STATA
         """
+
+        # Start all monitors
+        if self.monitors:
+            logging.info(f"Starting {len(self.monitors)} monitor(s)")
+        for monitor in self.monitors:
+            monitor.start(proc)
+
         _, stderr = proc.communicate(input=commands)  # Send commands and wait for completion
 
         # Stop all monitors (this will raise exceptions if limits were exceeded)
@@ -145,9 +248,9 @@ class StataDo:
         else:
             logging.info(f"Stata execution completed successfully. Log file: {log_file}")
 
-    def _execute_windows(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
+    def _execute_windows_with_monitors(self, dofile_path: Path, log_file: Path, is_replace: bool = True):
         """
-        Execute Stata on Windows systems
+        Execute Stata on Windows systems with monitoring enabled.
 
         Args:
             dofile_path: Path to do file
