@@ -2,6 +2,42 @@
 
 
 <details>
+<summary>Click to expand v1.13.28 details</summary>
+
+## [1.13.28] - 2026-01-26
+
+### Changed
+- **Data Handler Registry Pattern**: Implemented registry pattern for extensible data format handler management
+  - Added `DATA_INFO_REGISTRY` in base.py for automatic extension-to-handler mapping
+  - Implemented `__init_subclass__` for automatic subclass registration with their supported extensions
+  - Added `get_data_handler()` function for retrieving handlers by file extension
+  - Replaced hardcoded `CLASS_MAPPING` with dynamic registry in `get_data_info()`
+  - Added `supported_extensions` class attribute to all data handler classes (CsvDataInfo, DtaDataInfo, ExcelDataInfo)
+  - Improved imports organization in mcp_servers.py with relative imports
+  - Enhanced extensibility - new data formats can be added without modifying core get_data_info function
+
+- **Code Naming Consistency**: Renamed internal base module files for better naming conventions
+  - Renamed `_base.py` to `base.py` in agent_as_rag module
+  - Renamed `_base.py` to `base.py` in data_info module
+  - Updated all import statements to reflect new file names
+  - Removed leading underscore convention as these are not private modules
+
+### Removed
+- **Sandbox Module Cleanup**: Removed unused sandbox infrastructure code
+  - Cleaned up 136 lines of unused sandbox module code
+  - Removed sandbox README and core module implementations
+  - Removed jupyter_manager implementation
+  - Streamlined codebase by removing experimental features
+
+### Technical
+- **Code Architecture**: Enhanced extensibility through registry pattern implementation
+- **Maintainability**: Improved code organization with consistent naming conventions
+- **Developer Experience**: Easier to add new data format support through registration mechanism
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.27 details</summary>
 
 ## [1.13.27] - 2026-01-25
