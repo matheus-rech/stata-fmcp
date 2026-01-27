@@ -56,3 +56,55 @@ For detailed usage guide, visit [agents/claude_code.md](agents/claude_code.md).
 
 If you want to explore more [clients](clients.md) or [agents](agents/index.md), visit their respective documentation.
 
+## Documentation
+
+### Core Documentation
+
+- **[Overview](overview.md)**: Architecture, design philosophy, and integration patterns
+- **[Usage](usage.md)**: Common usage patterns and examples
+- **[Configuration](configuration.md)**: Complete configuration guide with all options
+- **[Clients](clients.md)**: Supported MCP clients and setup instructions
+
+### Advanced Features
+
+- **[Security Guard](security.md)**: Security validation system for dangerous commands
+- **[Monitoring System](monitoring.md)**: RAM monitoring and resource limits
+
+### Core Components
+
+- **[Stata Integration](core/stata/)**
+  - [StataDo](core/stata/do.md): Do-file execution
+  - [StataFinder](core/stata/finder.md): Stata executable detection
+  - [Stata Help](core/stata/help.md): Command documentation
+  - [Package Installation](core/stata/package.md): SSC and GitHub packages
+
+- **[MCP Tools](mcp/tools.md)**: Available MCP tools and usage
+- **[MCP Resources](mcp/resources.md)**: MCP resources and capabilities
+
+### Agents
+
+- **[Agent Index](agents/index.md)**: Overview of agent modes
+- **[Claude Code Integration](agents/claude_code.md)**: Detailed Claude Code setup
+
+## Quick Links
+
+### For Users
+
+- [Getting Started](#quickly-start)
+- [Configuration Guide](configuration.md)
+- [Security Documentation](security.md)
+- [Monitoring Setup](monitoring.md)
+
+### For Developers
+
+- [Architecture Overview](overview.md)
+- [MCP Tools Reference](mcp/tools.md)
+- [Core Components](core/stata/)
+
+### Configuration
+
+- [Basic Configuration](configuration.md#configuration-file)
+- [Security Settings](configuration.md#security-section)
+- [Monitoring Settings](configuration.md#monitor-section)
+- [Environment Variables](configuration.md#environment-variables)
+

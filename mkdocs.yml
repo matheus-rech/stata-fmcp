@@ -28,6 +28,9 @@ nav:
   - Overview: overview.md
   - Usage: usage.md
   - Clients: clients.md
+  - Configuration: configuration.md
+  - Security: security.md
+  - Monitoring: monitoring.md
   - Tools: mcp/tools.md
   - Resources: mcp/resources.md
 
@@ -43,4 +46,4 @@ nav:
 
 repo_name: stata-mcp
 repo_url: https://github.com/sepinetam/stata-mcp
-site_url: https://docs.statamcp.com
+site_url: https://docs.statamcp.com/

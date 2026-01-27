@@ -209,13 +209,38 @@ env = { STATA_MCP_CWD = "/path/to/project" }
 
 ### Environment Variables
 
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `STATA_MCP_CWD` | Working directory for Stata operations | `"/Users/user/research"` |
-| `STATA_CLI` | Path to specific Stata executable | `"/Applications/Stata/StataMP"` |
-| `STATA_MCP_MODEL` | LLM model for agent mode | `"gpt-4"` |
-| `STATA_MCP_API_KEY` | API key for LLM provider | `"sk-..."` |
-| `STATA_MCP_API_BASE_URL` | Custom API endpoint | `"https://api.openai.com/v1"` |
+#### Core Variables
+
+| Variable                 | Purpose                                | Example                         |
+|--------------------------|----------------------------------------|---------------------------------|
+| `STATA_MCP_CWD`          | Working directory for Stata operations | `"/Users/user/research"`        |
+| `STATA_CLI`              | Path to specific Stata executable      | `"/Applications/Stata/StataMP"` |
+| `STATA_MCP_MODEL`        | LLM model for agent mode               | `"gpt-4"`                       |
+| `STATA_MCP_API_KEY`      | API key for LLM provider               | `"sk-..."`                      |
+| `STATA_MCP_API_BASE_URL` | Custom API endpoint                    | `"https://api.openai.com/v1"`   |
+
+#### Security Variables
+
+| Variable              | Purpose                          | Default | Example               |
+|-----------------------|----------------------------------|---------|-----------------------|
+| `STATA_MCP__IS_GUARD` | Enable security guard validation | `true`  | `"true"` or `"false"` |
+
+#### Monitoring Variables
+
+| Variable                | Purpose               | Default         | Example               |
+|-------------------------|-----------------------|-----------------|-----------------------|
+| `STATA_MCP__IS_MONITOR` | Enable RAM monitoring | `false`         | `"true"` or `"false"` |
+| `STATA_MCP__RAM_LIMIT`  | Maximum RAM in MB     | `-1` (no limit) | `"8192"` for 8GB      |
+
+#### Debug Variables
+
+| Variable                                | Purpose                | Default                           | Example                          |
+|-----------------------------------------|------------------------|-----------------------------------|----------------------------------|
+| `STATA_MCP__IS_DEBUG`                   | Enable debug mode      | `false`                           | `"true"` or `"false"`            |
+| `STATA_MCP__LOGGING_ON`                 | Enable logging         | `true`                            | `"true"` or `"false"`            |
+| `STATA_MCP__LOGGING_CONSOLE_HANDLER_ON` | Enable console logging | `false`                           | `"true"` or `"false"`            |
+| `STATA_MCP__LOGGING_FILE_HANDLER_ON`    | Enable file logging    | `true`                            | `"true"` or `"false"`            |
+| `STATA_MCP__LOG_FILE`                   | Custom log file path   | `~/.statamcp/stata_mcp_debug.log` | `"/var/log/stata-mcp/debug.log"` |
 
 **JSON Format**:
 ```json
@@ -225,21 +250,40 @@ env = { STATA_MCP_CWD = "/path/to/project" }
 }
 ```
 
+**With Security and Monitoring**:
+```json
+"env": {
+  "STATA_MCP_CWD": "/path/to/project",
+  "STATA_MCP__IS_GUARD": "true",
+  "STATA_MCP__IS_MONITOR": "true",
+  "STATA_MCP__RAM_LIMIT": "8192"
+}
+```
+
 **TOML Format** (Codex):
 ```toml
 env = { STATA_MCP_CWD = "/path/to/project" }
 ```
 
+**With All Features**:
+```toml
+env.STATA_MCP_CWD = "/path/to/project"
+env.STATA_MCP__IS_GUARD = "true"
+env.STATA_MCP__IS_MONITOR = "true"
+env.STATA_MCP__RAM_LIMIT = "8192"
+env.STATA_MCP__LOGGING_CONSOLE_HANDLER_ON = "true"
+```
+
 ## Configuration File Locations
 
-| Client | Config File Location | Format |
-|--------|---------------------|--------|
-| Claude Code | `.mcp.json` (project) or global config | JSON |
-| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` | JSON |
-| Codex | `~/.codex/config.toml` | TOML |
-| Cline | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/setting/cline_mcp_settings.json` | JSON |
-| Cursor | Cursor settings directory | JSON |
-| Cherry Studio | Cherry Studio settings directory | JSON |
+| Client         | Config File Location                                                                                           | Format |
+|----------------|----------------------------------------------------------------------------------------------------------------|--------|
+| Claude Code    | `.mcp.json` (project) or global config                                                                         | JSON   |
+| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json`                                              | JSON   |
+| Codex          | `~/.codex/config.toml`                                                                                         | TOML   |
+| Cline          | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/setting/cline_mcp_settings.json` | JSON   |
+| Cursor         | Cursor settings directory                                                                                      | JSON   |
+| Cherry Studio  | Cherry Studio settings directory                                                                               | JSON   |
 
 ## Troubleshooting
 
