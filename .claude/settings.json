@@ -30,7 +30,8 @@
       "mcp__github__search_issues",
       "mcp__github__list_pull_requests",
       "mcp__github__pull_request_read",
-      "mcp__github__search_pull_requests"
+      "mcp__github__search_pull_requests",
+      "mcp__github__get_file_contents"
     ],
     "deny": [
       "Bash(git push --force)",
