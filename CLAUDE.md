@@ -238,6 +238,16 @@ fix(api): resolve null response issue
 docs: update installation guide
 ```
 
+A standard git workflow follows:
+
+1. **Lint code**: Run lint tools on your code
+2. **Check status**: Run `git status` to see current changes
+3. **Stage files**: Run `git add <files>` to stage changes
+4. **Review changes**: Run `git diff --staged` to review staged changes
+5. **Commit**: Run `git commit -m "type: description"` with conventional commit message
+6. **Pull rebase**: Before pushing, run `git pull --rebase` to integrate remote changes
+7. **Push**: Run `git push` to push changes to remote
+
 ## Important Notes
 
 - All Python functions must have type annotations and English docstrings
