@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Dict
 
 from .core.stata import StataFinder
+from .core.types import StataCLINotFoundError
 
 
 class Config:
@@ -213,11 +214,11 @@ class Config:
 
     @property
     def STATA_CLI(self) -> str:
-        try:
-            finder = StataFinder(self.config.get("STATA", {}).get("STATA_CLI", None))
-            return finder.STATA_CLI
-        except FileNotFoundError as e:
-            sys.exit(str(e))
+        finder = StataFinder(self.config.get("STATA", {}).get("STATA_CLI", None))
+        cli = finder.STATA_CLI
+        if cli is None:
+            raise StataCLINotFoundError()
+        return cli
 
     @property
     def IS_GUARD(self) -> bool:

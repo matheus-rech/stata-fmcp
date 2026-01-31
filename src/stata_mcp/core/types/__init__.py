@@ -1,6 +1,7 @@
-from ._error import RAMLimitExceededError, StataMCPError
+from ._error import RAMLimitExceededError, StataCLINotFoundError, StataMCPError
 
 __all__ = [
     "StataMCPError",
-    "RAMLimitExceededError"
+    "RAMLimitExceededError",
+    "StataCLINotFoundError"
 ]

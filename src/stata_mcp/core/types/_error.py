@@ -18,3 +18,18 @@ class RAMLimitExceededError(StataMCPError):
         self.ram_limit_mb = ram_limit_mb
         message = f"Over RAM usage than config ({ram_used_mb:.0f}MB > {ram_limit_mb}MB)"
         super().__init__(message)
+
+
+class StataCLINotFoundError(StataMCPError):
+    """Exception raised when Stata CLI cannot be found."""
+
+    def __init__(self):
+        """Initialize Stata CLI not found error."""
+        message = (
+            "Stata CLI not found. Please:\n"
+            "1. Install Stata 17+ with a valid license, or\n"
+            "2. Configure the path in ~/.statamcp/config.toml:\n"
+            "   [STATA]\n"
+            "   STATA_CLI = '/path/to/stata-mp'"
+        )
+        super().__init__(message)
