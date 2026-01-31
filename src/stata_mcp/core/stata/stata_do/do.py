@@ -117,7 +117,7 @@ class StataDo:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,  # Required when the path contains spaces
+            shell=False,  # Direct execution, subprocess handles path spaces safely
             env=env,  # Use environment with terminal size settings
             cwd=self.cwd  # Set cwd for more friendly control output
         )
@@ -212,7 +212,7 @@ class StataDo:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,  # Required when the path contains spaces
+            shell=False,  # Direct execution, subprocess handles path spaces safely
             env=env,  # Use environment with terminal size settings
             cwd=self.cwd  # Set cwd for more friendly control output
         )
