@@ -2,6 +2,49 @@
 
 
 <details>
+<summary>Click to expand v1.13.29 details</summary>
+
+## [1.13.29] - 2026-02-01
+
+### Fixed
+- **Environment Variable Documentation**: Fixed inconsistent environment variable names in documentation
+  - Corrected debug mode environment variable from `STATA_MCP_DEBUG` to `STATA_MCP__IS_DEBUG` in usage docs
+  - Fixed working directory environment variable documentation showing duplicate names
+  - Clarified that `STATA_MCP__CWD` (double underscore) is the new standard
+  - Added deprecation notice for legacy `STATA_MCP_CWD` (single underscore) variable
+  - Documentation now matches actual code implementation
+
+- **Stata CLI Error Detection**: Added early error detection when Stata CLI cannot be found
+  - Created new `StataCLINotFoundError` exception class for clear error messages
+  - Modified `Config.STATA_CLI` to check if finder returns None and raise exception immediately
+  - Added helpful configuration instructions in error message
+  - Previously, None was propagated to execution stage causing confusing runtime errors
+  - Now raises at MCP server startup with actionable guidance
+
+- **Logging Configuration**: Fixed file logging configuration not being respected
+  - Removed fallback logic that forced file logging when no handlers existed
+  - Changed condition from `len(logging_handlers) == 0 or LOGGING_FILE_HANDLER_ON` to just `LOGGING_FILE_HANDLER_ON`
+  - File logging is now only enabled when explicitly configured
+  - Previously, `LOGGING_FILE_HANDLER_ON=false` did not prevent file log creation when console logging was disabled
+
+- **Security and Path Handling**: Changed Unix-like systems to use `shell=False` for subprocess execution
+  - Changed subprocess.Popen `shell` parameter from `True` to `False` in macOS/Linux execution paths
+  - Fixed incorrect usage of `shell=True` with list arguments (only first element was used)
+  - Paths with spaces now work correctly on Unix-like systems
+  - Eliminated potential shell command injection risk
+  - Updated comments to reflect correct subprocess usage pattern
+  - Windows execution remains unchanged (correctly uses `shell=True` with string arguments and manual quoting)
+
+### Technical
+- **Security**: Improved subprocess security by avoiding shell parsing on Unix-like systems
+- **Reliability**: Early error detection prevents confusing runtime failures
+- **User Experience**: Configuration now behaves as documented and expected
+- **Documentation**: Environment variable documentation now matches implementation
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.28 details</summary>
 
 ## [1.13.28] - 2026-01-26
