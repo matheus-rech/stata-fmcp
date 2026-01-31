@@ -425,7 +425,7 @@ Sessions are stored in `<work_dir>/.stata_sessions.db` for conversation history.
 
 Enable verbose logging:
 ```bash
-export STATA_MCP_DEBUG=1
+export STATA_MCP__IS_DEBUG=true
 uvx stata-mcp --agent
 ```
 

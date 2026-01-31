@@ -168,10 +168,11 @@ Set the working directory for Stata-MCP operations.
 
 - **Type**: Path (string)
 - **Default**: Current directory (if writable) or `~/Documents`
-- **Environment Variable**: `STATA_MCP__CWD` (legacy) or `STATA_MCP__CWD` (new)
+- **Environment Variable**: `STATA_MCP__CWD` (double underscore)
 - **Description**:
   - If set and writable, all output files will be organized under `<WORKING_DIR>/stata-mcp-folder/`
   - If not set or not writable, falls back to current directory or `~/Documents`
+  - **Legacy support**: `STATA_MCP_CWD` (single underscore) is still supported but deprecated
 - **Example**:
   ```bash
   export STATA_MCP__CWD="/projects/my-research"
