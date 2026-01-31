@@ -44,8 +44,8 @@ if config.LOGGING_ON:
 
         logging_handlers.append(console_handler)
 
-    if len(logging_handlers) == 0 or config.LOGGING_FILE_HANDLER_ON:
-        # If there is no handler, must add file-handler with rotation support.
+    if config.LOGGING_FILE_HANDLER_ON:
+        # Add file-handler with rotation support if enabled.
         IS_DEBUG = True
         stata_mcp_dot_log_file_path = config.LOG_FILE
 
