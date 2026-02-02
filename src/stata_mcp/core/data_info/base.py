@@ -126,7 +126,7 @@ class DataInfoBase(ABC):
     # Registry of supported file extensions (to be overridden by subclasses)
     supported_extensions: list[str] = []
 
-    CFG_FILE = Path.home() / ".stata_mcp" / "config.toml"
+    CFG_FILE = Path.home() / ".statamcp" / "config.toml"
     DEFAULT_METRICS = ['obs', 'mean', 'stderr', 'min', 'max']
     ALLOWED_METRICS = ['obs', 'mean', 'stderr', 'min', 'max',
                        # Additional metrics
@@ -173,7 +173,7 @@ class DataInfoBase(ABC):
         self._pre_vars_list = vars_list
 
         self.is_cache = is_cache
-        self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".stata_mcp" / ".cache"
+        self.cache_dir = Path(cache_dir) if cache_dir else Path.home() / ".statamcp" / ".cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         self.string_keep_number = string_keep_number or int(os.getenv("STATA_MCP_DATA_INFO_STRING_KEEP_NUMBER", 10))
@@ -341,7 +341,7 @@ class DataInfoBase(ABC):
                         }
                     }
                 },
-                "saved_path": "~/.stata_mcp/.cache/data_info__auto_dta__hash_c557a2db346b.json"
+                "saved_path": "~/.statamcp/.cache/data_info__auto_dta__hash_c557a2db346b.json"
             }
         """
         if self.is_cache:
