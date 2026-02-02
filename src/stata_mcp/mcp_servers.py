@@ -351,6 +351,8 @@ def ado_package_install(package: str,
         Avoid using this tool unless strictly necessary, as SSC installation can be time-consuming
         and may not be required if the package is already present.
     """
+    source = source.lower()
+
     if IS_UNIX:
         SOURCE_MAPPING: Dict = {
             "github": GITHUB_Install,
