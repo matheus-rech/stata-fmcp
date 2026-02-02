@@ -2,6 +2,28 @@
 
 
 <details>
+<summary>Click to expand v1.13.30 details</summary>
+
+## [1.13.30] - 2026-02-02
+
+### Fixed
+- **macOS StataNow BE Detection**: Fixed StataNow BE not being detected on macOS
+  - StataNow BE uses CamelCase executable filename (e.g., `StataBE`) instead of lowercase (e.g., `stata-be`)
+  - FinderMacOS now tries multiple possible executable name formats:
+    - `stata-{edition}` (traditional lowercase format)
+    - `Stata{EDITION}` (StataNow CamelCase format)
+    - `Stata{Edition}` (alternative capitalization)
+  - Ensures compatibility with StataNow BE/SE/MP while maintaining backward compatibility
+  - Related to issue #35
+
+### Technical
+- **Compatibility**: Extended Stata finder to support both traditional and StataNow naming conventions
+- **Backward Compatibility**: Existing Stata installations continue to work (first option tried is original format)
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.29 details</summary>
 
 ## [1.13.29] - 2026-02-01
