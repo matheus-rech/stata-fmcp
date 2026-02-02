@@ -55,10 +55,19 @@ class FinderMacOS(FinderBase):
                 # Extract edition from Stata app name (MP, SE, BE, IC)
                 # Remove "Stata" prefix and ".app" suffix, then convert to lowercase
                 _edition = stata_app.name.replace("Stata", "").replace(".app", "").lower()
-                __stata_cli_path = stata_app / "Contents" / "MacOS" / f"stata-{_edition}"
-                if self._is_executable(__stata_cli_path):
-                    stata_cli_path = str(__stata_cli_path)
-                    break
+
+                # Try multiple possible executable names (for different Stata versions)
+                possible_names = [
+                    f"stata-{_edition}",              # stata-be (traditional format)
+                    f"Stata{_edition.upper()}",       # StataBE (StataNow format)
+                    f"Stata{_edition.capitalize()}",  # StataBe (alternative capitalization)
+                ]
+
+                for name in possible_names:
+                    __stata_cli_path = stata_app / "Contents" / "MacOS" / name
+                    if self._is_executable(__stata_cli_path):
+                        stata_cli_path = str(__stata_cli_path)
+                        break
         if _version and _edition and stata_cli_path:
             return StataEditionConfig(_edition, _version, stata_cli_path)
 
