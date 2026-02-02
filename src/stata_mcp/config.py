@@ -43,13 +43,7 @@ class Config:
             Cleaned value (only processes strings, returns other types as-is)
         """
         if isinstance(value, str):
-            # Strip leading/trailing whitespace
             value = value.strip()
-            # Process escape sequences (e.g., \n, \t)
-            try:
-                value = value.encode('utf-8').decode('unicode_escape')
-            except (UnicodeDecodeError, UnicodeEncodeError):
-                pass  # If decoding fails, keep original value
         if value == "":
             value = None
         return value
