@@ -67,9 +67,8 @@ if config.LOGGING_ON:
         handlers=logging_handlers
     )
 else:
-    # I am not sure about whether this command would disable logging, and there is another suggestion
-    # logging.basicConfig(level=logging.CRITICAL + 1)
-    logging.disable()
+    # Disable all logging by setting level above CRITICAL
+    logging.disable(logging.CRITICAL + 1)
 
 # Initialize optional parameters
 SYSTEM_OS = config.SYSTEM_OS
