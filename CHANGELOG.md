@@ -2,6 +2,33 @@
 
 
 <details>
+<summary>Click to expand v1.13.31 details</summary>
+
+## [1.13.31] - 2026-02-03
+
+### Fixed
+- **Code Quality Improvements**: Fixed 8 code issues discovered through AI code reviews
+  - **ado_package_install**: Made `source` parameter case-insensitive to match documentation (e.g., "GitHub" now works)
+  - **logging.disable()**: Added missing required level argument to prevent TypeError when logging is disabled
+  - **Windows Path Handling**: Removed unicode_escape processing that corrupted Windows paths (e.g., `C:\new\data` → `C:\n` + ew)
+  - **Config Directory**: Unified configuration directory from inconsistent `~/.stata_mcp` and `~/.stata_mcp` to single `~/.statamcp`
+  - **write_dofile**: Added microsecond precision to timestamps (from `%Y%m%d%H%M%S` to `%Y%m%d%H%M%S%f`) to prevent filename collisions
+  - **Code Comments**: Translated Chinese code comments to English for international team maintainability
+
+### Removed
+- **Deprecated Modules**: Removed deprecated code to simplify codebase
+  - Removed `claude_proj` module (entire directory, 261 lines)
+  - Removed `StataFinderOLD` class (154 lines of dead code)
+
+### Technical
+- **Code Review**: Issues were discovered through multiple AI code review tools (ChatGPT, Codex, and other reviewers)
+- **Breaking Change**: Config directory changed from `~/.stata_mcp` to `~/.statamcp` - users may need to migrate configurations
+- **Performance**: Microsecond precision in timestamps reduces collision probability from 1/second to 1/microsecond (1,000,000x improvement)
+
+</details>
+
+
+<details>
 <summary>Click to expand v1.13.30 details</summary>
 
 ## [1.13.30] - 2026-02-02
