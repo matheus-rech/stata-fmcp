@@ -567,7 +567,7 @@ def write_dofile(content: str, encoding: str = None) -> str:
         If you find something went wrong about the code, you can use the function from `StataCommandGenerator` class.
 
     """
-    file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S')}.do"
+    file_path = dofile_base_path / f"{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S%f')}.do"
     encoding = encoding or "utf-8"
     try:
         with open(file_path, "w", encoding=encoding) as f:
