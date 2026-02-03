@@ -90,7 +90,7 @@ class FinderMacOS(FinderBase):
         if default_stata_list:
             return default_stata_list  # Finally choose the max-edition by max() function
 
-        # 通过for循环来从applications_dir里找stata*.app
+        # Loop through applications_dir to find stata*.app
         for applications_dir in applications_dirs:
             for stata_app in applications_dir.glob("Stata *"):
                 _version = None

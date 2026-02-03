@@ -185,7 +185,7 @@ class DataInfoBase(ABC):
     # Properties
     @property
     def hash(self) -> str:
-        # TODO: 如果是URL的话不能直接read_bytes，低priority
+        # TODO: URL inputs cannot directly use read_bytes, low priority
         return hashlib.md5(self.data_path.read_bytes()).hexdigest()
 
     @property

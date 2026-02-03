@@ -43,7 +43,7 @@ class AdviceModelBase(ABC):
         elif isinstance(processer, list):
             processer = "\n".join(processer)
 
-        # 设置reference_answer，如果提供了的话
+        # Set reference_answer if provided
         if reference_answer is not None:
             self._set_reference_answer(reference_answer)
 

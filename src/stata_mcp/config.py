@@ -244,7 +244,7 @@ class Config:
         )
 
         if cwd is None:
-            # 版本前向支持
+            # Backward compatibility support
             cwd = os.getenv("STATA_MCP_CWD", Path.cwd())
 
         cwd = self._to_path(cwd)
