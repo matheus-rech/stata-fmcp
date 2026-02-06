@@ -359,10 +359,10 @@ For interactive sessions, use the built-in REPL agent:
 
 ```bash
 # Start with current directory
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 
 # Start with custom working directory
-uvx stata-mcp --agent ~/Documents/MyResearch
+uvx stata-mcp agent run ~/Documents/MyResearch
 ```
 
 **Usage:**
@@ -426,7 +426,7 @@ Sessions are stored in `<work_dir>/.stata_sessions.db` for conversation history.
 Enable verbose logging:
 ```bash
 export STATA_MCP__IS_DEBUG=true
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 ```
 
 ## Best Practices

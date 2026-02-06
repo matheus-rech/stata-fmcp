@@ -64,11 +64,11 @@ Operates as a stdio/HTTP/SSE server, responding to tool invocation requests from
 | `read_file` | Generic file reading with encoding support |
 | `mk_dir` | Secure directory creation with validation |
 
-#### **Agent Mode** (`--agent` flag)
+#### **Agent Mode** (`agent run` command)
 Interactive REPL agent for conversational analysis:
 - Read-Eval-Print Loop (REPL) interface for multi-turn sessions
 - SQLite-based session management for conversation history
-- Custom working directory support via `--agent <path>`
+- Custom working directory support via `agent run <path>`
 - Environment variables for model configuration (`STATA_MCP_MODEL`, `STATA_MCP_API_KEY`)
 - Supports any OpenAI-compatible API endpoint
 

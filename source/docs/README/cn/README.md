@@ -81,13 +81,13 @@ uv sync
 uv pip install -e .
 
 stata-mcp --version  # 测试stata-mcp是否安装成功。
-stata-mcp --agent  # 现在您可以享受stata-mcp代理模式。
+stata-mcp agent run  # 现在您可以享受stata-mcp代理模式。
 ```
 
 或者您可以直接使用 `uvx`：
 ```bash
 uvx stata-mcp --version  # 测试它是否可以在您的计算机上使用。
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 ```
 
 您可以编辑 `agent_examples/openai/main.py` 中的 `model_instructions` 和 `task_message` 变量，[点击我](../../../agent_examples/openai/main.py) #L37 和 #L68

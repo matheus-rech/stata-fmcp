@@ -63,13 +63,13 @@ uv sync
 uv pip install -e .
 
 stata-mcp --version  # para probar si stata-mcp está instalado correctamente.
-stata-mcp --agent  # ahora puedes disfrutar del modo agente stata-mcp.
+stata-mcp agent run  # ahora puedes disfrutar del modo agente stata-mcp.
 ```
 
 o puedes usarlo directamente con `uvx`:
 ```bash
 uvx stata-mcp --version  # para probar si se puede usar en su computadora.
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 ```
 
 ### Modo Cliente Chat-Bot IA

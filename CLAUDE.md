@@ -49,10 +49,10 @@ stata-mcp -t sse     # SSE transport
 #### Agent Mode
 ```bash
 # Run interactive agent mode
-stata-mcp --agent
+stata-mcp agent run
 
 # Or use uvx for direct execution
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 ```
 
 #### Utility Commands
@@ -71,7 +71,7 @@ stata-mcp --version
 ```bash
 # Run without local installation
 uvx stata-mcp --version
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 uvx stata-mcp --usable
 ```
 

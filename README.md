@@ -100,13 +100,13 @@ uv sync
 uv pip install -e .
 
 stata-mcp --version  # for test whether stata-mcp is installed successfully.
-stata-mcp --agent  # now you have enjoy your stata-mcp agent mode.
+stata-mcp agent run  # now you can enjoy your stata-mcp agent mode.
 ```
 
 or you can directly use it with `uvx`:
 ```bash
 uvx stata-mcp --version  # for test whether it could be used on your computer.
-uvx stata-mcp --agent
+uvx stata-mcp agent run
 ```
 
 You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](source/agent_examples/openai/main.py) #L37 and #L68
