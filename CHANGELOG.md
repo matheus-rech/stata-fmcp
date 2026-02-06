@@ -2,6 +2,31 @@
 
 
 <details>
+<summary>Click to expand v1.13.32 details</summary>
+
+## [1.13.32] - 2026-02-06
+
+### Changed
+- **CLI Refactor**: Redesigned CLI structure with subcommands for better usability
+  - Replaced `stata-mcp --agent` with `stata-mcp agent run` subcommand
+  - Replaced `stata-mcp --install` with `stata-mcp install` subcommand
+  - Added support for `-c/--client` option to specify installation target (claude, cc, cursor, cline, codex)
+  - Set `-t/--transport` default to `stdio` explicitly
+- **Documentation**: Comprehensive documentation updates
+  - Added new CLI reference guide (docs/cli.md) with complete command documentation
+  - Updated all existing documentation with new CLI syntax
+  - Updated README and translations (cn, fr, sp) with new command examples
+  - Updated mkdocs.yml navigation to include CLI Reference
+
+### Breaking Changes
+- **CLI Commands**: Flag-based commands changed to subcommands
+  - `stata-mcp --agent` → `stata-mcp agent run`
+  - `stata-mcp --install [client]` → `stata-mcp install -c [client]`
+  - Users will need to update scripts and documentation using old syntax
+
+</details>
+
+<details>
 <summary>Click to expand v1.13.31 details</summary>
 
 ## [1.13.31] - 2026-02-03
