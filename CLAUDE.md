@@ -61,7 +61,7 @@ uvx stata-mcp agent run
 stata-mcp --usable
 
 # Install to Claude Desktop
-stata-mcp --install
+stata-mcp install
 
 # Check version
 stata-mcp --version
