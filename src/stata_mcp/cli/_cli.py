@@ -8,7 +8,6 @@
 # @File   : _cli.py
 
 import argparse
-import os
 import sys
 from importlib.metadata import version
 
@@ -19,75 +18,86 @@ def main() -> None:
         prog="stata-mcp",
         description="Stata-MCP command line interface",
         add_help=True)
+
     parser.add_argument(
         "-v",
         "--version",
         action="version",
-        version=f"Stata-MCP version is {version('stata-mcp')}",
+        version=f"%(prog)s {version('stata-mcp')}",
         help="show version information",
     )
-    parser.add_argument(
-        "-a", "--agent",
-        nargs="?",
-        const="./",
-        help="run Stata-MCP as agent mode (default work dir: current working directory)",
-    )
-    parser.add_argument(
-        "-c", "--client",
-        nargs="?",
-        const="cc",
-        help="set the client mode (default for Claude Code)"
-    )
-    parser.add_argument(
-        "--usable",
-        action="store_true",
-        help="check whether Stata-MCP could be used on this computer",
-    )
-    parser.add_argument(
-        "--install", "-i",
-        nargs="?",
-        const="claude",
-        help="install Stata-MCP to Claude Desktop (default client: claude)")
 
-    # mcp.run
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # MCP server options (default behavior)
     parser.add_argument(
         "-t",
         "--transport",
-        choices=["stdio", "sse", "http", "streamable-http"],
-        default=None,
-        help="mcp server transport method (default: stdio)",
+        choices=["stdio", "sse", "http"],
+        default="stdio",
+        help="MCP server transport method (default: stdio)",
     )
+    parser.add_argument(
+        "-u",
+        "--usable",
+        action="store_true",
+        help="Check whether Stata-MCP can be used on this computer",
+    )
+
+    # Agent subcommand
+    agent_parser = subparsers.add_parser(
+        "agent",
+        help="Run Stata-MCP as agent mode"
+    )
+    agent_subparsers = agent_parser.add_subparsers(dest="agent_action")
+
+    agent_run_parser = agent_subparsers.add_parser("run", help="Start agent")
+    agent_run_parser.add_argument(
+        "--work-dir",
+        default="./",
+        help="Working directory for agent (default: current directory)",
+    )
+
+    # Install subcommand
+    install_parser = subparsers.add_parser(
+        "install",
+        help="Install Stata-MCP to Claude Desktop"
+    )
+    install_parser.add_argument(
+        "-c",
+        "--client",
+        choices=["claude", "cc", "cursor", "cline", "codex"],
+        default="claude",
+        help="Target client (default: claude)",
+    )
+
     args = parser.parse_args()
 
+    # Handle --usable flag
     if args.usable:
         from ..utils.usable import usable
         sys.exit(usable())
 
-    elif args.install:
+    # Handle subcommands
+    if args.command == "agent":
+        if args.agent_action == "run":
+            from ..agent_as import REPLAgent
+            agent = REPLAgent(work_dir=args.work_dir)
+            agent.run()
+        else:
+            agent_parser.print_help()
+
+    elif args.command == "install":
         from ..utils.Installer import Installer
-        Installer(sys_os=sys.platform).install(args.install)
+        Installer(sys_os=sys.platform).install(args.client)
+        print(f"Stata-MCP has been installed to {args.client}.")
+        sys.exit(0)
 
-    elif args.agent:
-        from ..agent_as import REPLAgent
-        agent = REPLAgent(work_dir=args.agent)
-        agent.run()
-
-    elif args.client:
-        os.environ["STATA-MCP-CLIENT"] = "cc"
-
-        from ..mcp_servers import stata_mcp as mcp
-
-        mcp.run()
-
+    # Default: Start MCP server
     else:
         from ..mcp_servers import stata_mcp as mcp
 
-        print("Starting Stata-MCP...")
-
-        # Use stdio if there is no transport argument
-        transport = args.transport or "stdio"
+        transport = args.transport
         if transport == "http":
-            transport = (
-                "streamable-http"  # Default to streamable-http for HTTP transport
-            )
+            transport = "streamable-http"
         mcp.run(transport=transport)
