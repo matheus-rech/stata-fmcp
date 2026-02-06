@@ -26,6 +26,7 @@ theme:
 nav:
   - Home: index.md
   - Overview: overview.md
+  - CLI Reference: cli.md
   - Usage: usage.md
   - Clients: clients.md
   - Configuration: configuration.md
