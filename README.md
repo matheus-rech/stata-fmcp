@@ -109,7 +109,7 @@ uvx stata-mcp --version  # for test whether it could be used on your computer.
 uvx stata-mcp agent run
 ```
 
-You can edit the task in `agent_examples/openai/main.py` for variable `model_instructions` and `task_message`, [click me](source/agent_examples/openai/main.py) #L37 and #L68
+You can edit the task in `agent_examples/openai/main.py` for variable `[model_instructions](source/agent_examples/openai/main.py#L37)` and `[task_message](source/agent_examples/openai/main.py#L68)`
 
 ### Agent as Tool
 If you want to use a Stata-Agent in another agent, [here](source/docs/Usages/agent_as/agent_as_tool.md) is a simple example:
