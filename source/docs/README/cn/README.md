@@ -90,7 +90,7 @@ uvx stata-mcp --version  # 测试它是否可以在您的计算机上使用。
 uvx stata-mcp agent run
 ```
 
-您可以编辑 `agent_examples/openai/main.py` 中的 `model_instructions` 和 `task_message` 变量，[点击我](../../../agent_examples/openai/main.py) #L37 和 #L68
+您可以编辑 `agent_examples/openai/main.py` 中的 `[model_instructions](../../../agent_examples/openai/main.py#L37)` 和 `[task_message](../../../agent_examples/openai/main.py#L68)` 变量
 
 ### 代理作为工具
 如果您想在另一个代理中使用Stata代理，[此处](../../Usages/agent_as/agent_as_tool.md)有一个简单的示例：
