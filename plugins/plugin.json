@@ -1,5 +1,5 @@
 {
-  "name": "Stata-MCP Plugin",
+  "name": "stata-toolbox",
   "version": "0.1.0",
   "description": "The official working package of Stata-MCP plugin, including mcp config and stata lsp.",
   "author": {
