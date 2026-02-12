@@ -1,0 +1,40 @@
+{
+  "name": "Stata-MCP Plugin",
+  "version": "0.1.0",
+  "description": "The official working package of Stata-MCP plugin, including mcp config and stata lsp.",
+  "author": {
+    "name": "Song Tan",
+    "email": "sepinetam@gmail.com",
+    "url": "https://www.sepinetam.com"
+  },
+  "homepage": "https://statamcp.com",
+  "repository": "https://github.com/sepinetam/stata-mcp",
+  "license": "AGPL-3.0",
+  "keywords": ["stata", "econometrics", "empirical analysis"],
+  "mcpServers": {
+    "stata-mcp": {
+      "command": "uvx",
+      "args": ["stata-mcp"],
+      "env": {}
+    }
+  },
+  "lspServers": {
+    "stata": {
+      "command": "stata-language-server",
+      "args": [],
+      "extensionToLanguage": {
+        ".do": "stata"
+      },
+      "settings": {
+        "stata": {
+          "setMaxLineLength": 120,
+          "setIndentSpace": 4,
+          "enableCompletion": true,
+          "enableDocstring": true,
+          "enableStyleChecking": true,
+          "enableFormatting": true
+        }
+      }
+    }
+  }
+}
