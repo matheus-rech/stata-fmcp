@@ -1,5 +1,5 @@
 {
-  "name": "Stata-MCP-plugin-lib",
+  "name": "stata-plugin-lib",
   "owner": {
     "name": "Song Tan",
     "email": "sepinetam@gmail.com"
@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "stata-toolbox",
-      "source": "./plugins/review-plugin",
+      "source": "./plugins/stata-toolbox",
       "description": "The official working package of Stata-MCP plugin, including mcp config and stata lsp."
     }
   ]
