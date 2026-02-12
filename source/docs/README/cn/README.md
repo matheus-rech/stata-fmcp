@@ -30,6 +30,7 @@
 
 ---
 **新闻**：
+- 编码智能体中的一站式原生插件支持: 一步安装与 Stata 有关的全部可添加项，无需再繁琐添加 MCP 和 LSP 等内容
 - 在Claude Code中使用Stata-MCP，请查看[此处](#在claude-code中使用stata-mcp)
 - 尝试将代理模式用作工具？现在更容易支持了，请查看[此处](../../Usages/agent_as/agent_as_tool.md)。
 - 想要评估您的LLM？请查看[此处](../../Usages/Evaluation.md)。
@@ -69,6 +70,16 @@ claude mcp add stata-mcp --env STATA_MCP_CWD=$(pwd) -- uvx stata-mcp
 - **Stata陪伴教学**：通过逐步Stata解释学习计量经济学
 - **整理代码**：审查和优化现有Stata do-files
 - **解释结果**：理解复杂的统计输出和回归结果
+
+### 安装 Claude Code 插件
+我们提供官方原生插件，集成 [Stata-MCP](https://github.com/sepinetam/stata-mcp) 由 @sepinetam 维护 和 [Stata LSP](https://github.com/euglevi/stata-language-server) 由 @euglevi 维护。安装命令：
+```bash
+# Install stata-mcp marketplace first
+claude plugin marketplace add sepinetam/stata-mcp
+
+# Install plugin to local, project or user scope
+claude plugin install stata-toolbox -s local
+```
 
 ### 代理模式
 代理模式的详细信息请查看[此处](../../../agent_examples/README.md)。

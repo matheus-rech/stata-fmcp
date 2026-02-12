@@ -39,6 +39,7 @@
 
 ---
 **News**:
+- ✨ **Claude Code Plugin Support**: Official plugin package with MCP server and Stata LSP integration
 - ✨ **Security Guard System**: Automatic validation against dangerous commands (shell execution, file deletion, etc.)
 - ✨ **RAM Monitoring System**: Real-time monitoring with automatic process termination when memory limits exceeded
 - ✨ **Unified Configuration**: TOML-based config file with environment variable overrides
@@ -88,6 +89,16 @@ Then, you can use Stata-MCP in Claude Code. Here are some scenarios for using it
 - **Stata Learning Assistant**: Learn econometrics with step-by-step Stata explanations
 - **Code Organization**: Review and optimize existing Stata do-files
 - **Result Interpretation**: Understand complex statistical outputs and regression results
+
+### Install Claude Code Plugin
+We provide official native plugin, integrating [Stata-MCP](https://github.com/sepinetam/stata-mcp) maintained by @sepinetam and [Stata LSP](https://github.com/euglevi/stata-language-server) maintained by @euglevi. Installation commands:
+```bash
+# Install stata-mcp marketplace first
+claude plugin marketplace add sepinetam/stata-mcp
+
+# Install plugin to local, project or user scope
+claude plugin install stata-toolbox -s local
+```
 
 ### Agent Mode
 The details of agent mode find [here](source/agent_examples/README.md).
