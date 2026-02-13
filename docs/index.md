@@ -64,6 +64,7 @@ If you want to explore more [clients](clients.md) or [agents](agents/index.md), 
 - **[Usage](usage.md)**: Common usage patterns and examples
 - **[Configuration](configuration.md)**: Complete configuration guide with all options
 - **[Clients](clients.md)**: Supported MCP clients and setup instructions
+- **[Claude Plugin](claude-plugin.md)**: Official Claude Code plugin integration guide
 
 ### Advanced Features
 

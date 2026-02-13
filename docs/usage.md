@@ -197,7 +197,44 @@ result = await Runner.run(
 
 Stata-MCP is designed for seamless integration with modern AI coding agents. Below are tested configurations for popular platforms.
 
-### Claude Code (Recommended)
+### Claude Plugin (Recommended)
+
+We recommend using the official plugin for the best experience. Therefore the simplest way to use Stata-MCP with Claude Code is through the official plugin, which provides both MCP server and LSP integration:
+
+```bash
+# Add marketplace registry
+claude plugin marketplace add sepinetam/stata-mcp
+
+# Install plugin globally
+claude plugin install stata-toolbox -s user
+```
+
+If you want to work with your partners, also could install it with: 
+```bash
+# claude plugin marketplace add sepinetam/stata-mcp
+
+claude plugin install stata-toolbox@stata-plugin-lib -s project
+```
+
+Then, you can find the plugin in `.claude/settings.json` with
+```json
+{
+  "enabledPlugins": {
+    "stata-toolbox@stata-plugin-lib": true
+  }
+}
+```
+
+**Plugin Features:**
+- ✅ One-command installation
+- ✅ MCP server + LSP configured together
+- ✅ Pre-configured optimal Stata LSP settings
+
+For complete plugin documentation, see [Claude Plugin Guide](claude-plugin.md).
+
+### Manual MCP Configuration for Claude Code
+
+Alternatively, configure MCP server manually:
 
 Claude Code is our recommended solution for AI-assisted empirical research.
 
