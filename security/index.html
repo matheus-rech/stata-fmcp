@@ -1,0 +1,2705 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://docs.statamcp.com/security/">
+      
+      
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../monitoring/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://r2.statamcp.com/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Security - Stata-MCP Documents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#security-guard-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Stata-MCP Documents" class="md-header__button md-logo" aria-label="Stata-MCP Documents" data-md-component="logo">
+      
+  <img src="https://example-data.statamcp.com/android-chrome-512x512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Stata-MCP Documents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Security
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sepinetam/stata-mcp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stata-mcp
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Stata-MCP Documents" class="md-nav__button md-logo" aria-label="Stata-MCP Documents" data-md-component="logo">
+      
+  <img src="https://example-data.statamcp.com/android-chrome-512x512.png" alt="logo">
+
+    </a>
+    Stata-MCP Documents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sepinetam/stata-mcp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stata-mcp
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude-plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clients
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dangerous-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dangerous Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dangerous Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shell-execution-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell Execution Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabledisable-security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enable/Disable Security Guard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable/Disable Security Guard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Configuration File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Environment Variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-validation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Validation Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#securityreport-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecurityReport Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#riskitem-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RiskItem Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dangerous-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dangerous Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dangerous Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shell-command-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell Command Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-operation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Operation Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Execution Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-keep-security-guard-enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Keep Security Guard Enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-review-security-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Review Security Reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-whitelist-for-allowed-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Use Whitelist for Allowed Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-educate-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Educate Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#false-positives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        False Positives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disabling-security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disabling Security Guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizing-blacklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing Blacklist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-guard-protects-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Guard Protects Against
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defense-in-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defense in Depth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-mcp-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with MCP Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with MCP Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extensibility
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extensibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-custom-validators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating Custom Validators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-multiple-validators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining Multiple Validators
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-safe-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 1: Safe Code Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-dangerous-code-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 2: Dangerous Code Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-multiple-violations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 3: Multiple Violations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agents
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/claude_code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreTech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CoreTech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/finder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Finder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/do/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Runner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/help/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Help
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dangerous-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dangerous Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dangerous Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shell-execution-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell Execution Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabledisable-security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enable/Disable Security Guard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Enable/Disable Security Guard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-configuration-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Configuration File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Environment Variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-validation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Validation Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#programmatic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#securityreport-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecurityReport Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#riskitem-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RiskItem Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dangerous-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dangerous Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dangerous Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shell-command-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shell Command Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-operation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Operation Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Execution Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-keep-security-guard-enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Keep Security Guard Enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-review-security-reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Review Security Reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-whitelist-for-allowed-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Use Whitelist for Allowed Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-educate-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Educate Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#false-positives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        False Positives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disabling-security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disabling Security Guard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customizing-blacklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customizing Blacklist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-guard-protects-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Guard Protects Against
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defense-in-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defense in Depth
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-mcp-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with MCP Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with MCP Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extensibility
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Extensibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-custom-validators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating Custom Validators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-multiple-validators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining Multiple Validators
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-safe-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 1: Safe Code Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-dangerous-code-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 2: Dangerous Code Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-multiple-violations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 3: Multiple Violations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="security-guard-system">Security Guard System</h1>
+<p>The Security Guard system provides protection against dangerous commands and operations in Stata dofiles. It acts as a safety layer between LLM-generated code and actual execution.</p>
+<h2 id="overview">Overview</h2>
+<p>The Security Guard is <strong>enabled by default</strong> to prevent accidental execution of destructive operations. It validates all dofile code against a blacklist of dangerous commands and patterns before execution.</p>
+<h3 id="key-features">Key Features</h3>
+<ul>
+<li><strong>Blacklist-Based Validation</strong>: Blocks known dangerous commands</li>
+<li><strong>Pattern Matching</strong>: Detects potentially dangerous operations using regex</li>
+<li><strong>Line-by-Line Analysis</strong>: Provides detailed risk reporting with line numbers</li>
+<li><strong>Configurable</strong>: Can be disabled if needed (not recommended)</li>
+<li><strong>Zero False Positives for Safe Code</strong>: Only flags genuinely dangerous operations</li>
+</ul>
+<h2 id="dangerous-commands">Dangerous Commands</h2>
+<p>The Security Guard blocks the following dangerous commands:</p>
+<h3 id="shell-execution-commands">Shell Execution Commands</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>!</code></td>
+<td>Unix-style shell escape</td>
+<td><code>! ls -la</code></td>
+</tr>
+<tr>
+<td><code>!!</code></td>
+<td>Extended shell command</td>
+<td><code>!! vi file.do</code></td>
+</tr>
+<tr>
+<td><code>shell</code></td>
+<td>Shell command execution</td>
+<td><code>shell dir</code></td>
+</tr>
+<tr>
+<td><code>xshell</code></td>
+<td>Extended shell for Mac/Unix(GUI)</td>
+<td><code>xshell vi file.do</code></td>
+</tr>
+<tr>
+<td><code>winexec</code></td>
+<td>Windows program execution</td>
+<td><code>winexec notepad.exe</code></td>
+</tr>
+<tr>
+<td><code>unixcmd</code></td>
+<td>Unix command execution</td>
+<td><code>unixcmd ls</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="file-operations">File Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>erase</code></td>
+<td>File deletion</td>
+<td>Data loss</td>
+</tr>
+<tr>
+<td><code>rm</code></td>
+<td>File deletion (alias)</td>
+<td>Data loss</td>
+</tr>
+<tr>
+<td><code>rmdir</code></td>
+<td>Directory removal</td>
+<td>Data loss</td>
+</tr>
+<tr>
+<td><code>copy</code></td>
+<td>File copy</td>
+<td>Can overwrite files</td>
+</tr>
+</tbody>
+</table>
+<h3 id="code-execution">Code Execution</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td>Run another do-file</td>
+<td>Untrusted code execution</td>
+</tr>
+<tr>
+<td><code>do</code></td>
+<td>Execute do-file</td>
+<td>Untrusted code execution</td>
+</tr>
+<tr>
+<td><code>include</code></td>
+<td>Include another do-file</td>
+<td>Untrusted code execution</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+<h3 id="enabledisable-security-guard">Enable/Disable Security Guard</h3>
+<h4 id="option-1-configuration-file">Option 1: Configuration File</h4>
+<p>Edit <code>~/.statamcp/config.toml</code>:</p>
+<pre><code class="language-toml">[SECURITY]
+IS_GUARD = true  # Default: true
+</code></pre>
+<h4 id="option-2-environment-variable">Option 2: Environment Variable</h4>
+<pre><code class="language-bash"># Enable (default)
+export STATA_MCP__IS_GUARD=true
+
+# Disable (not recommended)
+export STATA_MCP__IS_GUARD=false
+</code></pre>
+<h3 id="default-behavior">Default Behavior</h3>
+<ul>
+<li><strong>Default</strong>: Enabled (<code>IS_GUARD = true</code>)</li>
+<li><strong>Recommended</strong>: Keep enabled for production use</li>
+<li><strong>Development</strong>: Can be disabled for testing (use with caution)</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="basic-usage">Basic Usage</h3>
+<p>The Security Guard is automatically applied when using the <code>stata_do</code> tool:</p>
+<pre><code class="language-python"># When IS_GUARD is enabled (default)
+result = stata_mcp.stata_do(code=&quot;&quot;&quot;
+    sysuse auto
+    regress price mpg weight
+&quot;&quot;&quot;)
+
+# Safe code executes normally
+</code></pre>
+<h3 id="security-validation-example">Security Validation Example</h3>
+<p>When dangerous code is detected:</p>
+<pre><code class="language-python">result = stata_mcp.stata_do(code=&quot;&quot;&quot;
+    sysuse auto
+    ! rm -rf /  # Dangerous command
+&quot;&quot;&quot;)
+
+# Error: Security validation failed
+# ❌ Security validation failed. Found dangerous items:
+#   - Line 3: command '!'
+</code></pre>
+<h3 id="programmatic-usage">Programmatic Usage</h3>
+<p>If you're using Stata-MCP as a library:</p>
+<pre><code class="language-python">from stata_mcp.guard import GuardValidator
+
+# Create validator
+validator = GuardValidator()
+
+# Validate code
+code = &quot;&quot;&quot;
+sysuse auto
+regress price mpg weight
+&quot;&quot;&quot;
+
+report = validator.validate(code)
+
+if report.is_safe:
+    print(&quot;✅ Code is safe to execute&quot;)
+else:
+    print(f&quot;❌ Found {len(report.dangerous_items)} dangerous items:&quot;)
+    for item in report.dangerous_items:
+        print(f&quot;  {item}&quot;)
+</code></pre>
+<h2 id="security-report">Security Report</h2>
+<h3 id="securityreport-object">SecurityReport Object</h3>
+<pre><code class="language-python">@dataclass
+class SecurityReport:
+    is_safe: bool                              # True if no dangerous items found
+    dangerous_items: List[RiskItem]            # List of detected risks
+</code></pre>
+<h3 id="riskitem-object">RiskItem Object</h3>
+<pre><code class="language-python">@dataclass
+class RiskItem:
+    type: str                                  # &quot;command&quot; or &quot;pattern&quot;
+    content: str                               # The dangerous content
+    line: int                                  # Line number (1-indexed)
+</code></pre>
+<h3 id="example-output">Example Output</h3>
+<pre><code class="language-python"># Safe code
+report = validator.validate(&quot;sysuse auto&quot;)
+print(report)
+# Output: ✅ Code passed security validation
+
+# Dangerous code
+report = validator.validate(&quot;! rm file.txt&quot;)
+print(report)
+# Output:
+# ❌ Security validation failed. Found dangerous items:
+#   - Line 1: command '!'
+</code></pre>
+<h2 id="dangerous-patterns">Dangerous Patterns</h2>
+<p>The Security Guard uses regex patterns to detect dangerous operations:</p>
+<h3 id="shell-command-patterns">Shell Command Patterns</h3>
+<pre><code class="language-python">r&quot;!\s*\w+&quot;           # Shell escape with command: ! ls
+r&quot;!!\s*\w+&quot;          # Extended shell: !! vi file.do
+r&quot;shell\s+\w+&quot;       # Shell command: shell dir
+r&quot;xshell\s+\w+&quot;      # Extended shell: xshell vi file.do
+r&quot;winexec\s+\S+&quot;     # Windows execution: winexec program.exe
+r&quot;unixcmd\s+\w+&quot;     # Unix command: unixcmd ls
+</code></pre>
+<h3 id="file-operation-patterns">File Operation Patterns</h3>
+<pre><code class="language-python">r&quot;erase\s+.*&quot;        # File deletion: erase file.dta
+r&quot;rm\s+.*&quot;           # File deletion: rm file.dta
+r&quot;rmdir\s+.*&quot;        # Directory removal: rmdir mydir
+r&quot;copy\s+.*&quot;         # File copy: copy file1.dta file2.dta
+</code></pre>
+<h3 id="code-execution-patterns">Code Execution Patterns</h3>
+<pre><code class="language-python">r&quot;run\s+.*&quot;          # Run do-file: run script.do
+r&quot;\bdo\s+.*&quot;         # Execute do-file: do script.do
+r&quot;include\s+.*&quot;      # Include do-file: include setup.do
+</code></pre>
+<h2 id="validation-process">Validation Process</h2>
+<h3 id="step-by-step-validation">Step-by-Step Validation</h3>
+<ol>
+<li><strong>Code Input</strong>: Receive dofile code string</li>
+<li><strong>Line Split</strong>: Split code into lines for line number tracking</li>
+<li><strong>Filtering</strong>: Skip empty lines and comments (starting with <code>*</code>)</li>
+<li><strong>Command Check</strong>: Check each line against dangerous commands</li>
+<li><strong>Pattern Check</strong>: Check each line against dangerous patterns</li>
+<li><strong>Report Generation</strong>: Create SecurityReport with all findings</li>
+</ol>
+<h3 id="example-validation">Example Validation</h3>
+<pre><code class="language-python">code = &quot;&quot;&quot;
+* This is a comment
+sysuse auto
+! rm dangerous.txt  # Line 3
+regress price mpg
+&quot;&quot;&quot;
+
+report = validator.validate(code)
+# Report:
+# ❌ Security validation failed. Found dangerous items:
+#   - Line 3: command '!'
+</code></pre>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-keep-security-guard-enabled">1. Keep Security Guard Enabled</h3>
+<pre><code class="language-toml">[SECURITY]
+IS_GUARD = true  # Always keep enabled
+</code></pre>
+<h3 id="2-review-security-reports">2. Review Security Reports</h3>
+<p>Always review security validation reports:</p>
+<pre><code class="language-python">report = validator.validate(code)
+if not report.is_safe:
+    # Log or notify about dangerous items
+    for item in report.dangerous_items:
+        logger.warning(f&quot;Dangerous item found: {item}&quot;)
+</code></pre>
+<h3 id="3-use-whitelist-for-allowed-operations">3. Use Whitelist for Allowed Operations</h3>
+<p>If you need to execute certain dangerous operations:</p>
+<ol>
+<li>Review the code manually</li>
+<li>Remove dangerous commands</li>
+<li>Use safe alternatives</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-stata">* Instead of: ! rm tempfile.dta
+* Use: erase tempfile.dta  (still blocked, but shows intent)
+
+* Better approach: Use Stata's built-in safe operations
+capture erase tempfile.dta
+</code></pre>
+<h3 id="4-educate-users">4. Educate Users</h3>
+<p>Document which commands are blocked and why:</p>
+<pre><code class="language-markdown">## Blocked Commands
+
+The following commands are blocked for security reasons:
+- Shell commands (!, shell, xshell, etc.)
+- File deletion (erase, rm)
+- External code execution (run, do, include)
+
+Please use safe alternatives or contact administrator for assistance.
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="false-positives">False Positives</h3>
+<p>If you believe a command is incorrectly flagged:</p>
+<ol>
+<li><strong>Review the command</strong>: Is it actually dangerous?</li>
+<li><strong>Check for patterns</strong>: Does it match a dangerous pattern?</li>
+<li><strong>Consider alternatives</strong>: Is there a safer way to accomplish the task?</li>
+</ol>
+<h3 id="disabling-security-guard">Disabling Security Guard</h3>
+<p><strong>⚠️ Warning</strong>: Disabling the Security Guard is not recommended.</p>
+<p>Only disable if:
+- You're in a trusted environment
+- All code is manually reviewed
+- You understand the risks</p>
+<pre><code class="language-bash"># Temporary disable (current session only)
+export STATA_MCP__IS_GUARD=false
+stata-mcp
+
+# Permanent disable (add to config)
+# Edit ~/.statamcp/config.toml
+[SECURITY]
+IS_GUARD = false
+</code></pre>
+<h3 id="customizing-blacklist">Customizing Blacklist</h3>
+<p>You can extend the blacklist by modifying the code:</p>
+<pre><code class="language-python">from stata_mcp.guard.blacklist import DANGEROUS_COMMANDS
+
+# Add custom dangerous commands
+DANGEROUS_COMMANDS.add(&quot;my_dangerous_command&quot;)
+
+# Use custom validator
+from stata_mcp.guard import GuardValidator
+validator = GuardValidator()
+validator.dangerous_commands.add(&quot;another_command&quot;)
+</code></pre>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="what-the-guard-protects-against">What the Guard Protects Against</h3>
+<p>✅ <strong>Prevents</strong>:
+- Shell command execution
+- File deletion operations
+- Untrusted code execution
+- System-level operations</p>
+<p>❌ <strong>Does Not Prevent</strong>:
+- Data modification within Stata
+- Infinite loops
+- Memory exhaustion
+- Stata crashes</p>
+<h3 id="limitations">Limitations</h3>
+<p>The Security Guard:
+- Does not analyze data flow
+- Does not track variable values
+- Does not prevent resource exhaustion
+- Is not a substitute for proper code review</p>
+<h3 id="defense-in-depth">Defense in Depth</h3>
+<p>The Security Guard is one layer of protection. Combine with:</p>
+<ol>
+<li><strong>Monitoring</strong>: Enable RAM monitoring (see <a href="../monitoring/">Monitoring Documentation</a>)</li>
+<li><strong>Sandboxing</strong>: Use isolated environments for untrusted code</li>
+<li><strong>Code Review</strong>: Manually review generated code</li>
+<li><strong>Backups</strong>: Maintain regular backups of important data</li>
+</ol>
+<h2 id="integration-with-mcp-tools">Integration with MCP Tools</h2>
+<h3 id="automatic-integration">Automatic Integration</h3>
+<p>The Security Guard is automatically integrated with:</p>
+<ul>
+<li><code>stata_do</code>: Execute Stata do-files (validated by default)</li>
+<li><code>write_dofile</code>: Create do-files (not validated until execution)</li>
+<li><code>append_dofile</code>: Append to do-files (not validated until execution)</li>
+</ul>
+<h3 id="validation-flow">Validation Flow</h3>
+<pre><code>User Request → MCP Tool → Security Guard → Validation
+                                      ↓
+                                 Pass? → Execute
+                                      ↓
+                                 Fail? → Return Error
+</code></pre>
+<h2 id="extensibility">Extensibility</h2>
+<h3 id="creating-custom-validators">Creating Custom Validators</h3>
+<p>You can create custom validators for specific use cases:</p>
+<pre><code class="language-python">from stata_mcp.guard import GuardValidator, RiskItem, SecurityReport
+
+class CustomValidator(GuardValidator):
+    &quot;&quot;&quot;Custom validator with additional rules.&quot;&quot;&quot;
+
+    def validate(self, code: str) -&gt; SecurityReport:
+        # Get base validation results
+        report = super().validate(code)
+
+        # Add custom validation logic
+        if &quot;custom_dangerous_thing&quot; in code:
+            report.dangerous_items.append(
+                RiskItem(
+                    type=&quot;custom&quot;,
+                    content=&quot;custom_dangerous_thing&quot;,
+                    line=code.find(&quot;custom_dangerous_thing&quot;)
+                )
+            )
+            report.is_safe = False
+
+        return report
+</code></pre>
+<h3 id="combining-multiple-validators">Combining Multiple Validators</h3>
+<pre><code class="language-python">from stata_mcp.guard import GuardValidator
+
+# Create multiple validators
+basic_validator = GuardValidator()
+custom_validator = CustomValidator()
+
+# Validate with both
+code = &quot;some stata code&quot;
+report1 = basic_validator.validate(code)
+report2 = custom_validator.validate(code)
+
+# Combine results
+if report1.is_safe and report2.is_safe:
+    print(&quot;✅ All validations passed&quot;)
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="example-1-safe-code-execution">Example 1: Safe Code Execution</h3>
+<pre><code class="language-python">from stata_mcp.guard import GuardValidator
+
+validator = GuardValidator()
+
+safe_code = &quot;&quot;&quot;
+* Load sample data
+sysuse auto
+
+* Run regression
+regress price mpg weight
+
+* Display results
+display &quot;R-squared: &quot; + string(e(r2))
+&quot;&quot;&quot;
+
+report = validator.validate(safe_code)
+print(report)
+# Output: ✅ Code passed security validation
+</code></pre>
+<h3 id="example-2-dangerous-code-detection">Example 2: Dangerous Code Detection</h3>
+<pre><code class="language-python">dangerous_code = &quot;&quot;&quot;
+sysuse auto
+
+* This will be blocked
+! rm -rf /important/data
+
+regress price mpg
+&quot;&quot;&quot;
+
+report = validator.validate(dangerous_code)
+print(report)
+# Output:
+# ❌ Security validation failed. Found dangerous items:
+#   - Line 5: command '!'
+</code></pre>
+<h3 id="example-3-multiple-violations">Example 3: Multiple Violations</h3>
+<pre><code class="language-python">multiple_violations = &quot;&quot;&quot;
+sysuse auto
+shell delete file.txt
+run untrusted_script.do
+&quot;&quot;&quot;
+
+report = validator.validate(multiple_violations)
+print(f&quot;Found {len(report.dangerous_items)} violations:&quot;)
+for item in report.dangerous_items:
+    print(f&quot;  {item}&quot;)
+# Output:
+# Found 2 violations:
+#   Line 3: command 'shell'
+#   Line 4: pattern 'run\s+.*'
+</code></pre>
+<h2 id="summary">Summary</h2>
+<p>The Security Guard system provides essential protection for automated Stata execution:</p>
+<ul>
+<li>✅ <strong>Enabled by default</strong> for safety</li>
+<li>✅ <strong>Blocks dangerous commands</strong> (shell, file deletion, etc.)</li>
+<li>✅ <strong>Pattern-based detection</strong> for comprehensive coverage</li>
+<li>✅ <strong>Detailed reporting</strong> with line numbers</li>
+<li>✅ <strong>Configurable</strong> for different use cases</li>
+<li>✅ <strong>Zero overhead</strong> when disabled (not recommended)</li>
+</ul>
+<p>For production use, always keep the Security Guard enabled and review validation reports regularly.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.code.select", "navigation.path", "navigation.sections", "navigation.expand", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

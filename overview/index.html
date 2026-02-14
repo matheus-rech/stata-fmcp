@@ -1,0 +1,1899 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://docs.statamcp.com/overview/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../cli/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://r2.statamcp.com/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Overview - Stata-MCP Documents</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#stata-mcp-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Stata-MCP Documents" class="md-header__button md-logo" aria-label="Stata-MCP Documents" data-md-component="logo">
+      
+  <img src="https://example-data.statamcp.com/android-chrome-512x512.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Stata-MCP Documents
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sepinetam/stata-mcp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stata-mcp
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Stata-MCP Documents" class="md-nav__button md-logo" aria-label="Stata-MCP Documents" data-md-component="logo">
+      
+  <img src="https://example-data.statamcp.com/android-chrome-512x512.png" alt="logo">
+
+    </a>
+    Stata-MCP Documents
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sepinetam/stata-mcp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    stata-mcp
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-stata-mcp-and-stata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Stata-MCP and Stata?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is Stata-MCP and Stata?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-stata-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Stata-MCP?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-protocol-layer-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Protocol Layer (MCP Server)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-execution-layer-stata-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Execution Layer (Stata Integration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-security-monitoring-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Security &amp; Monitoring Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configuration-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuration Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-application-layer-modes-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Application Layer (Modes &amp; Tools)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Application Layer (Modes &amp; Tools)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcp-server-mode-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Server Mode (Default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-mode-agent-run-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Mode (agent run command)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Processing Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Processing Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datainfo-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataInfo Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Statistical Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caching Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-structure-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Structure Convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-ai-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In AI Clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in-python-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In Python Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terminal-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Terminal REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-platform-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Platform Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Guard ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ram-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAM Monitoring ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unified-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unified Configuration ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sandbox-system-not-support-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sandbox System (not support now)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-language-support-not-support-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Language Support (not support now)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation-and-acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation and Acknowledgments
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude-plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clients
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agents
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/claude_code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CoreTech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CoreTech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/finder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Finder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/do/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Runner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/help/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata Help
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/stata/package/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stata package
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-stata-mcp-and-stata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Stata-MCP and Stata?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is Stata-MCP and Stata?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-stata-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Stata-MCP?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-protocol-layer-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Protocol Layer (MCP Server)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-execution-layer-stata-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Execution Layer (Stata Integration)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-security-monitoring-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Security &amp; Monitoring Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configuration-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configuration Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-application-layer-modes-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Application Layer (Modes &amp; Tools)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Application Layer (Modes &amp; Tools)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcp-server-mode-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Server Mode (Default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-mode-agent-run-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Mode (agent run command)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-processing-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Processing Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Processing Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datainfo-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DataInfo Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Statistical Metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Caching Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-structure-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Structure Convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-ai-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In AI Clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in-python-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In Python Agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terminal-repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Terminal REPL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-platform-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Platform Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Guard ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ram-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAM Monitoring ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unified-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unified Configuration ✅
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sandbox-system-not-support-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sandbox System (not support now)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-language-support-not-support-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Language Support (not support now)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation-and-acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citation and Acknowledgments
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="stata-mcp-overview">Stata-MCP Overview</h1>
+<h2 id="what-is-stata-mcp-and-stata">What is Stata-MCP and Stata?</h2>
+<p><strong>Stata-MCP</strong> is a Model Context Protocol (MCP) server that bridges Large Language Models (LLMs) with Stata, enabling autonomous econometric analysis and statistical computation. Built on the FastMCP framework, Stata-MCP exposes Stata's comprehensive analytical capabilities as structured tools that LLMs can invoke programmatically, transforming natural language queries into reproducible Stata workflows.</p>
+<h3 id="why-stata-mcp">Why Stata-MCP?</h3>
+<p>Stata remains the dominant analytical engine in empirical social science research. In China's economics discipline alone, over 80% of published articles are empirical studies, with more than 98.4% utilizing Stata for analysis. This prevalence stems from Stata's mature ecosystem, methodological completeness, and reliability in reproducing published research.</p>
+<p>Stata-MCP addresses a critical gap in AI-assisted research: while modern LLMs excel at code generation and statistical reasoning, they lack native execution environments for domain-specific tools like Stata. By implementing the MCP protocol, Stata-MCP enables:</p>
+<ul>
+<li><strong>Deterministic Execution</strong>: LLM-generated Stata code executes in a controlled, reproducible environment</li>
+<li><strong>Methodological Rigor</strong>: Access to Stata's validated econometric implementations ensures analytical integrity</li>
+<li><strong>Workflow Orchestration</strong>: Complex multi-step analyses (data cleaning → estimation → visualization) become automated pipelines</li>
+<li><strong>Cross-Platform Compatibility</strong>: Unified abstraction layer across macOS, Windows, and Linux environments</li>
+</ul>
+<h2 id="architecture-overview">Architecture Overview</h2>
+<p>Stata-MCP operates through four architectural layers:</p>
+<h3 id="1-protocol-layer-mcp-server">1. <strong>Protocol Layer (MCP Server)</strong></h3>
+<p>The <code>FastMCP</code>-based server (<code>src/stata_mcp/__init__.py</code>) implements the Model Context Protocol, exposing Stata operations as structured tools. Each tool defines:
+- Input parameter schemas with type validation
+- Output serialization for LLM consumption
+- Error handling and logging infrastructure
+- Resource registration for stateful operations</p>
+<h3 id="2-execution-layer-stata-integration">2. <strong>Execution Layer (Stata Integration)</strong></h3>
+<p>Platform-specific Stata controllers manage command execution:
+- <strong><code>StataFinder</code></strong>: Locates Stata executables across operating systems (macOS: <code>/Applications/Stata/</code>, Windows: <code>Program Files</code>, Linux: system PATH)
+- <strong><code>StataController</code></strong>: Manages Stata process lifecycle, command invocation, and exit code monitoring
+- <strong><code>StataDo</code></strong>: Handles do-file execution with log capture and error reporting</p>
+<h3 id="3-security-monitoring-layer">3. <strong>Security &amp; Monitoring Layer</strong></h3>
+<p>Advanced safety features for production deployments:
+- <strong><a href="../security/">Security Guard</a></strong>: Validates dofiles against dangerous commands (shell execution, file deletion, etc.)
+- <strong><a href="../monitoring/">Monitoring System</a></strong>: Real-time RAM monitoring with automatic process termination
+- <strong>Blacklist-based validation</strong>: Blocks dangerous operations before execution
+- <strong>Resource limits</strong>: Prevents memory exhaustion and system instability</p>
+<h3 id="4-configuration-layer">4. <strong>Configuration Layer</strong></h3>
+<p>Unified configuration management with hierarchical priority:
+- <strong><a href="../configuration/">Configuration System</a></strong>: TOML-based config file at <code>~/.statamcp/config.toml</code>
+- <strong>Environment variables</strong>: Override settings for specific sessions
+- <strong>Priority</strong>: Environment variables &gt; config file &gt; defaults
+- <strong>Sections</strong>: DEBUG, SECURITY, PROJECT, MONITOR</p>
+<h3 id="5-application-layer-modes-tools">5. <strong>Application Layer (Modes &amp; Tools)</strong></h3>
+<p>Two primary operational modes:</p>
+<h4 id="mcp-server-mode-default"><strong>MCP Server Mode</strong> (Default)</h4>
+<p>Operates as a stdio/HTTP/SSE server, responding to tool invocation requests from MCP-compliant clients. Tools include:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stata_do</code></td>
+<td>Execute do-files with log retrieval</td>
+</tr>
+<tr>
+<td><code>write_dofile</code></td>
+<td>Create timestamped do-files</td>
+</tr>
+<tr>
+<td><code>append_dofile</code></td>
+<td>Extend existing do-files immutably</td>
+</tr>
+<tr>
+<td><code>get_data_info</code></td>
+<td>Analyze CSV/DTA files with statistical summaries</td>
+</tr>
+<tr>
+<td><code>help</code></td>
+<td>Retrieve Stata command documentation (cached)</td>
+</tr>
+<tr>
+<td><code>ssc_install</code></td>
+<td>Install packages from SSC/GitHub/net sources</td>
+</tr>
+<tr>
+<td><code>load_figure</code></td>
+<td>Load Stata-generated graphics for display</td>
+</tr>
+<tr>
+<td><code>read_file</code></td>
+<td>Generic file reading with encoding support</td>
+</tr>
+<tr>
+<td><code>mk_dir</code></td>
+<td>Secure directory creation with validation</td>
+</tr>
+</tbody>
+</table>
+<h4 id="agent-mode-agent-run-command"><strong>Agent Mode</strong> (<code>agent run</code> command)</h4>
+<p>Interactive REPL agent for conversational analysis:
+- Read-Eval-Print Loop (REPL) interface for multi-turn sessions
+- SQLite-based session management for conversation history
+- Custom working directory support via <code>agent run &lt;path&gt;</code>
+- Environment variables for model configuration (<code>STATA_MCP_MODEL</code>, <code>STATA_MCP_API_KEY</code>)
+- Supports any OpenAI-compatible API endpoint</p>
+<h2 id="data-processing-pipeline">Data Processing Pipeline</h2>
+<p>Stata-MCP implements a polymorphic data analysis system supporting multiple formats:</p>
+<h3 id="datainfo-architecture"><strong>DataInfo Architecture</strong></h3>
+<p>Abstract base class <code>DataInfoBase</code> with format-specific implementations:
+- <strong><code>DtaDataInfo</code></strong>: Native Stata <code>.dta</code> format with metadata extraction
+- <strong><code>CsvDataInfo</code></strong>: CSV files with encoding detection and type inference
+- <strong><code>ExcelDataInfo</code></strong>: Excel workbooks with sheet selection</p>
+<h3 id="statistical-metrics"><strong>Statistical Metrics</strong></h3>
+<p>Configurable metric computation (via <code>~/.statamcp/config.toml</code> or environment variables):
+- <strong>Default</strong>: observations, mean, standard error, minimum, maximum
+- <strong>Extended</strong>: Q1, Q3, skewness, kurtosis, unique value sampling</p>
+<h3 id="caching-strategy"><strong>Caching Strategy</strong></h3>
+<p>Content-addressable cache using MD5 hashing:</p>
+<pre><code>~/.statamcp/.cache/data_info__&lt;name&gt;_&lt;ext&gt;__hash_&lt;suffix&gt;.json
+</code></pre>
+<p>Cache invalidation occurs automatically on content change detection.</p>
+<h2 id="project-structure-convention">Project Structure Convention</h2>
+<p>Stata-MCP enforces a standardized directory layout for reproducible research:</p>
+<pre><code class="language-text">~/Documents/stata-mcp-folder/
+├── stata-mcp-log/      # Stata execution logs (timestamped)
+├── stata-mcp-dofile/   # Generated do-files (ISO 8601 timestamps)
+├── stata-mcp-result/   # Command outputs (outreg2, esttab exports)
+└── stata-mcp-tmp/      # Temporary artifacts (data info cache)
+</code></pre>
+<p>For AI-assisted research projects, the recommended template (<code>stata-mcp --init</code>) creates:</p>
+<pre><code class="language-text">&lt;project_name&gt;/
+├── .claude/
+│   ├── skills/              # Custom Claude Code skills
+│   └── settings.local.json  # MCP server registration
+├── source/
+│   ├── data/
+│   │   ├── raw/             # Immutable source data
+│   │   ├── processing/      # Intermediate datasets
+│   │   └── final/           # Analysis-ready data
+│   ├── figs/                # Publication figures
+│   └── tabs/                # Publication tables
+├── stata-mcp-folder/        # Stata-MCP working directory
+└── CLAUDE.md                # Project-specific instructions
+</code></pre>
+<h2 id="integration-patterns">Integration Patterns</h2>
+<h3 id="in-ai-clients"><strong>In AI Clients</strong></h3>
+<p>MCP-compliant clients (Claude Code, Cline, Continue) register Stata-MCP as a server in their configuration:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;stata-mcp&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [&quot;stata-mcp&quot;]
+    }
+  }
+}
+</code></pre>
+<h3 id="in-python-agents"><strong>In Python Agents</strong></h3>
+<p>Stata-MCP agents can be embedded as tools within other agent workflows:</p>
+<pre><code class="language-python">from stata_mcp.agent_as import StataAgent
+from agents import Agent, Runner
+
+# Initialize Stata agent and convert to tool
+stata_agent = StataAgent()
+stata_tool = stata_agent.as_tool
+
+# Embed in a larger agent workflow
+research_assistant = Agent(
+    name=&quot;Research Assistant&quot;,
+    instructions=&quot;You help with economic research using Stata&quot;,
+    tools=[stata_tool]
+)
+
+# Run the agent
+result = await Runner.run(
+    research_assistant,
+    &quot;Analyze the relationship between education and income&quot;
+)
+</code></pre>
+<h3 id="terminal-repl"><strong>Terminal REPL</strong></h3>
+<p>Interactive analysis sessions:</p>
+<pre><code class="language-python">from stata_mcp.agent_as import REPLAgent
+
+agent = REPLAgent(work_dir=&quot;~/analysis&quot;)
+agent.run()  # Starts interactive REPL
+</code></pre>
+<h2 id="cross-platform-support">Cross-Platform Support</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Stata Detection</th>
+<th>Package Installation</th>
+<th>Help System</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>macOS</td>
+<td><code>/Applications/Stata/StataMP</code></td>
+<td>Native CLI</td>
+<td>✅ Cached</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>Program Files</code> registry</td>
+<td>Do-file delegation</td>
+<td>❌ Not supported</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>stata-mp</code> from PATH</td>
+<td>Native CLI</td>
+<td>✅ Cached</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-philosophy">Design Philosophy</h2>
+<ol>
+<li><strong>Immutability</strong>: Source files remain unmodified; all operations create timestamped artifacts</li>
+<li><strong>Fail-Safety</strong>: Graceful degradation (e.g., <code>append_dofile</code> creates new files if source missing)</li>
+<li><strong>Reproducibility</strong>: Deterministic paths, automatic logging, and cache invalidation</li>
+<li><strong>Extensibility</strong>: Plugin architecture for custom tools and data format handlers</li>
+<li><strong>Security First</strong>:</li>
+<li><strong>Security Guard</strong>: Blocks dangerous commands before execution</li>
+<li><strong>Path Validation</strong>: Restricts file operations to working directory</li>
+<li><strong>Resource Monitoring</strong>: Prevents memory exhaustion via RAM monitoring</li>
+<li><strong>Sandboxed Execution</strong>: Isolated execution environments for safety</li>
+</ol>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="security-guard"><strong>Security Guard</strong> ✅</h3>
+<p>Automatically validates all dofile code against dangerous commands:
+- Blocks shell execution (<code>!</code>, <code>shell</code>, <code>xshell</code>, etc.)
+- Prevents file deletion operations (<code>erase</code>, <code>rm</code>)
+- Stops untrusted code execution (<code>run</code>, <code>do</code>, <code>include</code>)
+- Configurable via <a href="../configuration/#security-section">Security settings</a></p>
+<h3 id="ram-monitoring"><strong>RAM Monitoring</strong> ✅</h3>
+<p>Real-time monitoring of Stata process memory usage:
+- Tracks RAM usage during execution
+- Automatically terminates processes exceeding limits
+- Configurable RAM limits per project
+- Minimal overhead with daemon thread architecture
+- See <a href="../monitoring/">Monitoring documentation</a> for details</p>
+<h3 id="unified-configuration"><strong>Unified Configuration</strong> ✅</h3>
+<p>Hierarchical configuration system:
+- TOML-based configuration file (<code>~/.statamcp/config.toml</code>)
+- Environment variable overrides
+- Sections: DEBUG, SECURITY, PROJECT, MONITOR
+- See <a href="../configuration/">Configuration documentation</a> for details</p>
+<h3 id="sandbox-system-not-support-now"><strong>Sandbox System</strong> (not support now)</h3>
+<p>Alternative execution backend using Jupyter kernels for environments without Stata licenses or for testing purposes.</p>
+<h3 id="multi-language-support-not-support-now"><strong>Multi-Language Support</strong> (not support now)</h3>
+<p>Configurable language settings for localized error messages and documentation.</p>
+<h2 id="citation-and-acknowledgments">Citation and Acknowledgments</h2>
+<p>Stata-MCP is developed by the empirical research community to bridge AI assistance with domain-specific analytical tools. Contributions, bug reports, and feature requests are welcome via the <a href="https://github.com/sepinetam/stata-mcp">GitHub repository</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.code.select", "navigation.path", "navigation.sections", "navigation.expand", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
