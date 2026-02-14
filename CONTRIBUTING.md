@@ -196,11 +196,11 @@ When making changes, ensure you:
 
 ### Getting Help
 
-- **Documentation**: See [docs/](docs/) for complete guides
-- **Architecture**: Read [docs/overview.md](docs/overview.md) for system design
-- **Configuration**: Refer to [docs/configuration.md](docs/configuration.md)
-- **Security**: Check [docs/security.md](docs/security.md)
-- **Monitoring**: See [docs/monitoring.md](docs/monitoring.md)
+- **Documentation**: See [docs.statamcp.com](https://docs.statamcp.com/) for complete guides
+- **Architecture**: Read [Architecture Overview](https://docs.statamcp.com/overview) for system design
+- **Configuration**: Refer to [Configuration Guide](https://docs.statamcp.com/configuration)
+- **Security**: Check [Security Guard](https://docs.statamcp.com/security)
+- **Monitoring**: See [Monitoring System](https://docs.statamcp.com/monitoring)
 
 ## Issue Reporting
 

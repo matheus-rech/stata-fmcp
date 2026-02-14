@@ -81,6 +81,8 @@ claude plugin marketplace add sepinetam/stata-mcp
 claude plugin install stata-toolbox -s local
 ```
 
+详细的安装指南和故障排除，请查看[插件安装文档](https://docs.statamcp.com/claude-plugin)。
+
 ### 代理模式
 代理模式的详细信息请查看[此处](../../../agent_examples/README.md)。
 

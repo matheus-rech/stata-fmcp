@@ -218,11 +218,11 @@ uvx /path/to/your/whl/stata_mcp-1.13.0-py3-non-any.whl  # here is the wheel file
 ## 📝 Documentation
 
 ### Core Documentation
-- **[Complete Documentation](docs/)**: Full documentation site with all features
-- **[Configuration Guide](docs/configuration.md)**: Unified TOML-based configuration system
-- **[Security Guard](docs/security.md)**: Security validation for dangerous commands
-- **[Monitoring System](docs/monitoring.md)**: RAM monitoring and resource limits
-- **[Architecture Overview](docs/overview.md)**: System design and integration patterns
+- **[Complete Documentation](https://docs.statamcp.com/)**: Full documentation site with all features
+- **[Configuration Guide](https://docs.statamcp.com/configuration)**: Unified TOML-based configuration system
+- **[Security Guard](https://docs.statamcp.com/security)**: Security validation for dangerous commands
+- **[Monitoring System](https://docs.statamcp.com/monitoring)**: RAM monitoring and resource limits
+- **[Architecture Overview](https://docs.statamcp.com/overview)**: System design and integration patterns
 
 ### Usage Guides
 - For more detailed usage information, visit the [Usage guide](source/docs/Usages/Usage.md)
@@ -231,9 +231,9 @@ uvx /path/to/your/whl/stata_mcp-1.13.0-py3-non-any.whl  # here is the wheel file
 - Difference with [Stata-MCP@hanlulong](https://github.com/hanlulong/stata-mcp), visit the [Difference](source/docs/Difference.md)
 
 ### Key Features
-- **[Security Guard](docs/security.md)**: Blocks dangerous commands (`!`, `shell`, `erase`, etc.)
-- **[RAM Monitoring](docs/monitoring.md)**: Prevents memory exhaustion with configurable limits
-- **[Unified Configuration](docs/configuration.md)**: TOML config + environment variables
+- **[Security Guard](https://docs.statamcp.com/security)**: Blocks dangerous commands (`!`, `shell`, `erase`, etc.)
+- **[RAM Monitoring](https://docs.statamcp.com/monitoring)**: Prevents memory exhaustion with configurable limits
+- **[Unified Configuration](https://docs.statamcp.com/configuration)**: TOML config + environment variables
 - Cross-platform support (macOS, Windows, Linux)
 - Automatic log capture and error reporting
 
